@@ -15,12 +15,12 @@ const {
 } = Astro.props;
 
 const sections = [
-  { href: '/shen-cha', label: '審查' },
-  { href: '/kang-shen-cha', label: '抗審查' },
-  { href: '/pai-xu', label: '首頁排序' },
-  { href: '/guan-li-yuan', label: '管理員手段' },
-  { href: '/shi-jian-xian', label: '時間軸' },
-  { href: '/yan-shen', label: '延伸' },
+  { href: '/detection', label: '偵測' },
+  { href: '/false-positive', label: '偽陽性' },
+  { href: '/ranking', label: '排序' },
+  { href: '/censorship-resistance', label: '抗審查' },
+  { href: '/history', label: '治理史' },
+  { href: '/start', label: '全部主題' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '');
 ---

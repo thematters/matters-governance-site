@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InteractionSlot from '../components/InteractionSlot.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="偵測技術">
+  <p class="kicker">主題 · 垃圾偵測技術與集團掃描</p>
+  <h1>怎麼把垃圾從每天 2–3 萬篇裡找出來</h1>
+  <p class="lead">「最好的方式就是用它的魔法打敗它——它在發 spam，我們就用語言模型偵測它在講什麼。」</p>
+
+  <h2>兩條防線</h2>
+  <p><strong>行為層</strong>：reCAPTCHA／Turnstile 在註冊、登入、讚賞處擋機器人（2020）。<strong>內容層</strong>：2024 年起用語言模型分析每篇內容。</p>
+
+  <h2>內容模型怎麼學</h2>
+  <p>
+    選 Encoder（BERT 類）而非生成式，因為任務是「理解語意」。用運營人工標記的<strong>約 4 萬篇</strong>正負樣本訓練
+    <code>granite-embedding</code> + LoRA。被判違規的文章<strong>不刪除，只是不出現在公共頁面</strong>。
+    攔阻成功率 <strong>96% → 99.7%</strong>，誤判率 <strong>3.1% → 0.13%</strong>。留言另用更小的 <code>e5-small</code>，偽陽性僅 <strong>0.33%</strong>——小模型反而比笨重模型更準。
+  </p>
+  <InteractionSlot title="決策邊界：看資料點落在移動分界線兩側" reference="R2D3" />
+
+  <h2>模型會「自我中毒」</h2>
+  <p>
+    舊模型在每天重訓中會被自己污染——不是被攻擊，而是「錯殺放大」：一個帳號某天被標記，之後正常文仍被當垃圾，
+    「像把可樂倒進麵團，越揉越分不出」。好在分數只在後台、沒落到排序上。修正方法：用大模型（Sonnet）重標 5,000 筆，
+    成本約 <strong>1 美元</strong>，<strong>偽陽性降 10 倍</strong>。
+  </p>
+
+  <h2 id="ring">集團偵測 Ring：抓行為，不抓字句</h2>
+  <p>
+    有種垃圾單篇分數很低（某「高雄翻譯社」只有 <strong>0.09</strong>），卻是一整群帳號用同一模板洗版。Ring 偵測抓的是
+    「同一指紋、大量新帳號、短時間」這個<strong>行為樣態</strong>。關鍵一步是<strong>繁簡折疊</strong>——「披著…」繁體 0 命中，
+    折成簡體「披着…」命中 28 個帳號。處置可逆、雙訊號才動作。
+  </p>
+  <InteractionSlot title="垃圾集團網路圖：看一個 Ring 怎麼長出來、又怎麼被掃" reference="Nicky Case《群眾的智慧與瘋狂》" />
+
+  <h2>一個便宜又有效的解法</h2>
+  <p>面對短文垃圾，團隊沒只靠模型，而用社群設計：「閒聊」頻道採 opt-in 白名單，<strong>半個月杜絕 100% 垃圾</strong>，「比模型還便宜有效」。</p>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/false-positive">偽陽性</a>　<a class="read-more" href="/crowd">群眾協力</a></p>
+</BaseLayout>

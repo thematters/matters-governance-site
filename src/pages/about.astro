@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="關於">
+  <p class="kicker">關於・方法・授權</p>
+  <h1>關於這個計畫</h1>
+  <p class="lead">
+    這是 2026 年度 TWNIC 網路社群計畫《審查還是抗審查？網路平台「透明開盒」的兩難》的結案網站，
+    以 Matters.town 自身的平台治理為案例，向一般人、政策關係人與開發者科普垃圾審查、排序演算法與抗審查。
+  </p>
+
+  <h2>方法與資料來源</h2>
+  <p>
+    本站內容母本是一份 14 章研究報告，採文件與田野整合分析：以平台開源程式碼為主要田野，輔以內部運營史料、
+    對外演講逐字稿、深度用戶訪談、主持人個人研究文章與 NCC 監管文件，交叉佐證、引用到底。敏感內容依分層原則
+    去識別與抽象化處理。
+  </p>
+
+  <h2>授權</h2>
+  <ul>
+    <li>程式碼：MIT／AGPL-3.0</li>
+    <li>文件（含本站）：CC BY 4.0</li>
+    <li>研究資料：依敏感度採開放或研究專用授權，並去識別化</li>
+  </ul>
+
+  <h2>抗審查取用</h2>
+  <p>本站規劃部署於 GitHub Pages 與 <strong>IPFS</strong>：就算網域被封，內容指紋仍在——用結果示範抗審查。</p>
+
+  <h2>致謝</h2>
+  <p>感謝 TWNIC 網路社群計畫支持，以及所有受訪的馬特市使用者（匿名引述）。</p>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/start">全部主題</a>　<a class="read-more" href="/conclusion">結論建言</a></p>
+</BaseLayout>

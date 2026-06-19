@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="NCC 合規">
+  <p class="kicker">延伸 · NCC 合規自評</p>
+  <h1>用兩份指引照一次鏡子</h1>
+  <p class="lead">2025 年底 NCC 公布《透明度報告指引》與《申訴及救濟機制指引》。因為 Matters 全開源，主持人「手癢」全餵進去比對——「結果幾乎都合規，大概只剩一到兩成要再做」。</p>
+
+  <h2>整體判定</h2>
+  <p>四類目前都「部分達成」。最強基礎是<strong>守望相助隊</strong>（公開可稽核，與指引精神高度相符）；最缺的是<strong>制度化與公開性</strong>。</p>
+
+  <h2>五個最高優先缺口</h2>
+  <ol>
+    <li>缺統一的申訴與救濟入口（建議新增 <code>/appeals</code> 集中所有管道）</li>
+    <li>缺平台級案件狀態與處理時限（一般檢舉只有「送出成功」）</li>
+    <li>缺透明度報告的資料模型（report/處置/分數應收斂成可匯出 schema）</li>
+    <li>缺政府要求揭露統計（最明確的尚未達成項）</li>
+    <li>自動化與 AI 個案揭露不足（模型影響可見性時應說明來源、版本、門檻、申訴）</li>
+  </ol>
+
+  <h2>一個尖銳的張力</h2>
+  <p>「透明開盒」若要徹底，平台不只要公開它如何治理使用者，<strong>也要公開它如何回應公權力</strong>——這對一個保護跨境敏感書寫者的抗審查平台，是需要謹慎拿捏的揭露邊界。</p>
+  <p class="note">完整 41 項逐條判定見獨立報告《Matters.town NCC 自主合規檢測報告》。</p>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/censorship-resistance">抗審查</a>　<a class="read-more" href="/conclusion">結論建言</a></p>
+</BaseLayout>

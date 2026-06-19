@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/story.css';
+
+const topics = [
+  { href: '/', label: '主敘事', desc: '綠紅卡片捲動走完審查的意義（從這裡開始）', lane: '一般' },
+  { href: '/detection', label: '偵測技術 + 集團掃描', desc: '模型怎麼抓垃圾、Ring 怎麼抓集團', lane: '開發者' },
+  { href: '/false-positive', label: '偽陽性 ★', desc: '拖門檻看誤殺——一條分數線兩種代價', lane: '一般' },
+  { href: '/moderation', label: '七種處置', desc: '從打掃到註銷的光譜、小黑屋的設計史', lane: '一般' },
+  { href: '/ranking', label: '首頁排序', desc: '降權 ≠ 刪除、決定誰被看見', lane: '開發者' },
+  { href: '/crowd', label: '群眾協力', desc: '守望相助隊、海巡 bot、陪審團的失敗', lane: '一般' },
+  { href: '/censorship-resistance', label: '抗審查 + DNS-RPZ', desc: 'IPFS 三層韌性、2025 春節誤封事件', lane: '政策' },
+  { href: '/history', label: '治理史編年', desc: '2018–2025，工具如何被事件逼出來', lane: '政策' },
+  { href: '/ncc', label: 'NCC 合規自評', desc: '兩份指引 41 項對照', lane: '政策' },
+  { href: '/data', label: '開源與資料集', desc: '分層揭露、垃圾資料庫公開', lane: '開發者' },
+  { href: '/conclusion', label: '結論與建言', desc: '三悖論、政策建言', lane: '政策' },
+  { href: '/about', label: '關於・方法', desc: '計畫、資料來源、授權', lane: '全部' },
+];
+---
+<BaseLayout title="全部主題">
+  <p class="kicker">全章節索引</p>
+  <h1>全部主題</h1>
+  <p class="lead">想跳著讀？這裡是全部主題。一般人建議從<a href="/">主敘事</a>開始；政策與開發者可直接挑章。</p>
+  <div class="pillars" style="margin-top:24px">
+    {topics.map((t) => (
+      <a class="pillar" href={t.href}>
+        <h3>{t.label} <small style="font-weight:500;color:var(--ink-soft);font-size:12px">· {t.lane}</small></h3>
+        <p>{t.desc}</p>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

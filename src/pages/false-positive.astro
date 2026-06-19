@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FalsePositiveSlider from '../components/FalsePositiveSlider.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="偽陽性">
+  <p class="kicker">旗艦主題 · 偽陽性與門檻的倫理</p>
+  <h1>一條分數線，兩種代價</h1>
+  <p class="lead">
+    任何「分數加門檻」的系統，都在同一條線上同時決定兩件事：擋掉多少垃圾，與誤殺多少表達。
+    它們不可能同時為零——這是數學事實，不是工程疏失。
+  </p>
+
+  <table style="width:100%;border-collapse:collapse;font-size:15px;margin:18px 0;">
+    <tbody>
+      <tr style="border-bottom:1px solid var(--line)"><td style="padding:8px;font-weight:700;color:var(--c-spam)">偽陽性</td><td style="padding:8px">正常內容被誤判為垃圾 → <strong>誤傷正常使用者，言論自由的代價</strong></td></tr>
+      <tr><td style="padding:8px;font-weight:700;color:var(--c-spam)">偽陰性</td><td style="padding:8px">垃圾沒被抓到 → <strong>漏接 spam，公共空間品質的代價</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h2>親手拖拖看</h2>
+  <p>往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺；往鬆拖，誤殺少了，垃圾漏回。甜蜜點在中間——而真實內容遠比這 22 張複雜。</p>
+  <FalsePositiveSlider />
+
+  <h2>Matters 版的「base-rate」問題</h2>
+  <p>
+    教科書說「垃圾稀有時，再準的過濾器也會誤告一堆」。Matters 是它的鏡像、更尖銳：平台 70–80% 是垃圾，
+    模型的<strong>絕對誤殺率很低（3.1% 降到 0.13%）</strong>；但受保護的公民、政治、調查內容只佔約 <strong>1%</strong>——
+    而模型「錯殺放大」時，剛好就是把這 1% 誤判成垃圾。<strong>即使誤判率低到 0.13%，被誤殺的那一小撮，剛好是平台存在理由的那 1%。</strong>
+  </p>
+  <blockquote style="border-left:4px solid var(--mustard);padding-left:16px;font-size:19px;margin:20px 0">
+    在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。
+  </blockquote>
+
+  <h2>工程上的對策：conformal 棄權</h2>
+  <p>
+    新一代不再「過線就硬判」，而是加一層 conformal 決策：輸出 <code>allow / block / review</code>，
+    <strong>不確定的不判、交給人</strong>。光這一步，就把文章模型的真實誤殺率從 <strong>24% 壓到 1.6%</strong>。
+    它也提供統計保證：合法內容被誤擋的機率被控制在一個上界之內。
+  </p>
+
+  <h2>門檻不該由工程師獨斷</h2>
+  <p>那條線該劃在哪，是價值問題，不是技術問題。這正是本計畫舉辦研討、把「偽陽／偽陰門檻往哪邊調」當第一道問題的原因。</p>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/detection">偵測技術</a>　<a class="read-more" href="/moderation">誤殺後怎麼處置</a></p>
+</BaseLayout>

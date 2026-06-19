@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InteractionSlot from '../components/InteractionSlot.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="首頁排序">
+  <p class="kicker">主題 · 首頁排序與末日爆滑</p>
+  <h1>大家口中的「演算法」</h1>
+  <p class="lead">「平台治理真正的權力，不在刪除內容，而在決定誰被看見。」</p>
+
+  <h2>降權 ≠ 刪除</h2>
+  <p>
+    最常被誤解的一點：垃圾不是被「排到後面」，而是被<strong>二元剔除</strong>出候選池（SQL 直接 <code>WHERE</code> 過濾）。
+    一般內容彼此之間才是靠熱門公式競爭可見度。所以「文章還在卻沒人看到」其實有兩種完全不同的原因：被過濾掉，或排序競爭不過。
+  </p>
+
+  <h2>熱門排序公式</h2>
+  <p>首頁熱門大致是：<code>0.3·閱讀 + 0.4·留言 + 0.3·讚賞</code>，進榜要 5 個讀者或 3 則留言，回看 5 天、3 天線性衰減，還有壓抑大戶洗榜的正規化。<strong>留言權重最高</strong>——平台想獎勵的是「引發討論」，不是單純曝光或金錢。</p>
+  <InteractionSlot title="排序拆兩半：先猜哪則排前面，再看演算法怎麼排" reference="The Markup「Split Screen」+ Place Your Bets" />
+
+  <h2>正當程序的缺口</h2>
+  <p>
+    當審查從「刪除」轉成「降權」，救濟鏈就斷了：內容仍在、無通知、不會發現、無從申訴、無從救濟。這對應歐盟 DSA
+    第 17 條尚未解決的前沿——降權算不算限制？「不推薦」要不要被解釋？這也是新首頁（2025.07）刻意「弱化首頁演算法」的背景。
+  </p>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/crowd">群眾協力</a>　<a class="read-more" href="/censorship-resistance">抗審查</a></p>
+</BaseLayout>

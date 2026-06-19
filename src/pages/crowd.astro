@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InteractionSlot from '../components/InteractionSlot.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="群眾協力">
+  <p class="kicker">主題 · 群眾協力</p>
+  <h1>不靠站方、也不靠模型，靠社群自己</h1>
+  <p class="lead">最便宜有效的治理是好的社群設計，但它的天花板是規模與永續。</p>
+
+  <h2>守望相助隊：自己的困擾自己解</h2>
+  <p>
+    讓可信市民「打掃」垃圾留言，<strong>每個動作公開可稽核</strong>（誰、何時、為何、申訴、複核），且 v1 階段 AI 不得自動移除。
+    一週實驗：二十餘人打掃 <strong>339 則</strong>（一人「打掃超人」佔近九成），其中 70% 來自四個機器帳號，<strong>零申訴</strong>。
+    這些公開移除紀錄，本身就是模型的訓練真相——形成「群眾標註 → 模型」的閉環。
+  </p>
+
+  <h2>海巡 bot：機器當隊員，但綁上煞車</h2>
+  <p>
+    自動巡邏、重用留言模型偵測。兩級處置（檢舉≥0.55／移除≥0.80，後者預設關閉），加上一道<strong>反轉率煞車</strong>：
+    若守望隊近期「被推翻率」超過 10%，bot 直接罷工——把人類複核變成自動化的即時安全閥。
+  </p>
+  <InteractionSlot title="海巡 bot 的三道護欄模擬" reference="自訂互動" />
+
+  <h2>歷史的失敗：把裁決下放普通人，為什麼難</h2>
+  <p>
+    社區訴訟（2019）敗於抱團拉票、小號灌票；建築師陪審團（2021）不到一年收場，因為「裁決需要的專業度被忽略」、
+    建築師之間也站隊形成派系——「站方最花時間的，不是訴訟案，而是陪審團內部的爭吵與調停」。但團隊保留了價值：
+    「讓社群決定社群的事，仍是珍貴的——只是要用什麼制度讓它延續。」
+  </p>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/moderation">七種處置</a>　<a class="read-more" href="/detection">偵測技術</a></p>
+</BaseLayout>

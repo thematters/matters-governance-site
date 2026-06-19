@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InteractionSlot from '../components/InteractionSlot.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="抗審查">
+  <p class="kicker">主題 · 抗審查（原理）＋ DNS-RPZ（案例）</p>
+  <h1>就算被下架，內容仍在你手上</h1>
+  <p class="lead">「有些記者在上面發文，即使記者不見了，文章可能會比記者活得久一點。」</p>
+
+  <h2>內容定址 vs 位置定址</h2>
+  <p>
+    HTTP 是位置定址：內容綁在 IP／網域，刪檔或改 DNS 就失效。IPFS 改用<strong>內容定址</strong>：內容有一個唯一指紋（CID），
+    只要還有節點持有就讀得到，傳統封鎖失效。三件技術：IPFS（2018）→ IPNS 固定地址（2022）→ ENS 好記名（2022）。
+  </p>
+  <InteractionSlot title="刪得掉嗎？關掉中心伺服器，IPFS 版本還在" reference="location vs content addressing 對照" />
+
+  <h2>三層內容韌性</h2>
+  <p>
+    <strong>Layer 3</strong>（首頁/搜尋/推薦）可被收編；<strong>Layer 2</strong>（IPFS 內容）不可下架；<strong>Layer 1</strong>（ENS/Tor/Fediverse）另闢蹊徑。
+    關鍵推論：「憲法言論保障到得了 Layer 2（內容存在），卻到不了 Layer 3（入口排序）」。本計畫的核心倡議就是這個分層治理——
+    平台可封禁內容，使用者仍持有去中心網址。
+  </p>
+
+  <h2>2025 春節 DNS-RPZ 誤封</h2>
+  <p>
+    二次詐騙文觸動政府打詐掃描 → TWNIC 以改寫 DNS 封鎖 → 部分台灣用戶連不上，適逢連假、救濟「形式存在實質失靈」、無預警，
+    靠私人關係聯繫執行長才解封，歷時<strong>三天</strong>。這讓平台第一次成為被治理者，照出一面「倫理鏡像」：
+    我們對使用者要求的程序透明、申訴可近、救濟可用，自己也應得到。
+  </p>
+  <blockquote style="border-left:4px solid var(--mustard);padding-left:16px;font-size:18px;margin:18px 0">
+    一邊是威權的防火牆，另一邊是民主社會的反詐基礎設施。兩者都可能——有意或無意——被用來關閉脆弱的公共空間。
+  </blockquote>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/history">治理史</a>　<a class="read-more" href="/ncc">NCC 合規</a></p>
+</BaseLayout>

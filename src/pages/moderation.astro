@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InteractionSlot from '../components/InteractionSlot.astro';
+import '../styles/story.css';
+
+const d = [
+  ['註銷', '帳號刪除，不可逆。最嚴厲，早期僅用於色情/賭博/迷姦藥', '最重'],
+  ['凍結', '全面停權，連提領、付款都不行', '重'],
+  ['禁言', '一段時間不能發言（1–180 天/永久）', '中'],
+  ['折疊', '留言收合，仍存在、可展開', '輕'],
+  ['小黑屋', '把帳號/文章移出公共列表，但仍 active、直連可開', '中'],
+  ['降噪', '依分數在排序 SQL 直接排除', '輕'],
+  ['打掃', '守望相助隊移除留言並公開存證', '視情況'],
+];
+---
+<BaseLayout title="管理員手段">
+  <p class="kicker">主題 · 七種處置</p>
+  <h1>從打掃到註銷的光譜</h1>
+  <p class="lead">處置的上限是降低可見度，而非刪除；每一步都在降低「處置的不可逆成本」。</p>
+
+  <table style="width:100%;border-collapse:collapse;font-size:15px;margin:18px 0">
+    <thead><tr style="text-align:left;border-bottom:2px solid var(--line)"><th style="padding:8px">手段</th><th style="padding:8px">效果</th><th style="padding:8px">嚴厲度</th></tr></thead>
+    <tbody>{d.map((r) => (<tr style="border-bottom:1px solid var(--line)"><td style="padding:8px;font-weight:700">{r[0]}</td><td style="padding:8px;color:var(--ink-soft)">{r[1]}</td><td style="padding:8px"><span class="wip">{r[2]}</span></td></tr>))}</tbody>
+  </table>
+
+  <h2>小黑屋：歪打正著的關鍵發明</h2>
+  <p>
+    小黑屋（2023.04）的起源出乎設計者意料——它是兩條需求合流：一是運營要逐頻道手動把文章拉出 feed「太累、需要一鍵」；
+    二是面對網軍洗版「與其隱藏單篇，不如直接屏蔽帳號，而且新帳號還能衝註冊數」。有了它，洗版多半「踢進去就好」，
+    處置反而變得更輕、更可逆。
+  </p>
+
+  <h2>未解的張力：帳號主義 vs 作品主義</h2>
+  <p>
+    運營問「這個帳號違規嗎」，產品問「這篇好嗎、人會不會變」。系統長期<strong>從未定義「誰是 spammer」</strong>，
+    用時間切片每期重評、不永久標記——但「人會變好」卻沒有對應的放回機制。這是真實組織在治理複雜度下的痕跡，至今未解。
+  </p>
+  <InteractionSlot title="be the moderator：換你當審查員，先猜再揭曉" reference="Nicky Case《Evolution of Trust》" />
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/false-positive">偽陽性</a>　<a class="read-more" href="/ranking">首頁排序</a></p>
+</BaseLayout>

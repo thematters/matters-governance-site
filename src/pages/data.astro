@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/story.css';
+---
+<BaseLayout title="開源與資料集">
+  <p class="kicker">延伸 · 開源與資料集公開</p>
+  <h1>透明開盒是一道光譜，不是開關</h1>
+
+  <h2>開源 ≠ 透明 ≠ 共創</h2>
+  <p>把程式碼丟出來<strong>不等於透明</strong>（一般人讀不懂，還需要文件、案例、說明、申訴管道——這正是本網站的理由）；開放 API 也<strong>不等於共創</strong>（資深用戶 Denken：「開源最終沒有促成共創，到最後常常只發現只有我」）。</p>
+
+  <h2>為什麼 Matters 敢開源</h2>
+  <p>大平台不敢，因為一開源就被繞過。Matters 的理由很反直覺：「我們已經太小了，開源換到的回饋已經更多，再多一點點沒關係。」</p>
+
+  <h2>分層開源</h2>
+  <p>程式碼公開，但<strong>可被直接濫用的敏感參數延遲六到十二個月</strong>或抽象化。<code>spamThreshold</code> 是敏感營運資產。結論略顯悲涼卻誠實：「維持抗審查平台，往往需要為了安全而犧牲透明。」</p>
+
+  <h2>垃圾內容靜態資料庫公開</h2>
+  <p>
+    <code>matters-spam-dataset</code>：去識別研究資料集，HMAC id、聯絡方式正規化、釋出到 Hugging Face（gated、CC BY-NC），
+    首版約 <strong>4 萬筆</strong>。資料卡主動揭露早期代理標籤瑕疵與 5–15% 殘餘誤標。⚠️ <strong>目前尚未正式發布。</strong>
+  </p>
+
+  <h2>授權</h2>
+  <p>程式碼 MIT/AGPL · 文件 CC BY 4.0 · 研究資料依敏感度授權並去識別化。每個互動旁也將附「文字版資料表」，同時當無障礙退化與開放資料。</p>
+
+  <hr class="soft" />
+  <p><a class="read-more" href="/">← 回主敘事</a>　<a class="read-more" href="/detection">偵測技術</a>　<a class="read-more" href="/about">關於</a></p>
+</BaseLayout>

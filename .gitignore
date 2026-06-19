@@ -1,0 +1,17 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# macOS
+.DS_Store
+
+# env
+.env
+.env.*
+
+# 原始材料：含內部訪談等敏感資料，不進版控。
+# 需要共用時改成白名單（個別檔案 git add -f）。
+materials/

@@ -1,0 +1,94 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+import AudienceToggle from '../components/AudienceToggle.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+}
+const {
+  title,
+  description = '以 Matters 自身的治理史為案例，科普垃圾審查、排序演算法與抗審查。',
+  lang = 'zh-Hant',
+} = Astro.props;
+
+const sections = [
+  { href: '/shen-cha', label: '審查' },
+  { href: '/kang-shen-cha', label: '抗審查' },
+  { href: '/pai-xu', label: '首頁排序' },
+  { href: '/guan-li-yuan', label: '管理員手段' },
+  { href: '/shi-jian-xian', label: '時間軸' },
+  { href: '/yan-shen', label: '延伸' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '');
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}｜Matters 平台治理</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=Noto+Serif+TC:wght@400;600;700&display=swap"
+    />
+  </head>
+  <body>
+    <div id="progress"></div>
+
+    <header class="site-header">
+      <nav class="nav">
+        <a class="brand" href="/">透明開盒 <small>· Matters 平台治理</small></a>
+        <span class="nav-spacer"></span>
+        <div class="nav-links">
+          {sections.map((s) => (
+            <a href={s.href} aria-current={path === s.href ? 'page' : undefined}>{s.label}</a>
+          ))}
+        </div>
+        <AudienceToggle />
+        <a class="nav-links" href="/en/" style="text-decoration:none;color:var(--ink-soft);font-size:14px;">EN</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          <strong>審查還是抗審查？網路平台「透明開盒」的兩難</strong><br />
+          TWNIC 社群計畫結案網站 · 以 Matters.town 為案例的平台治理科普
+        </p>
+        <p class="note">
+          程式碼 MIT／文件 CC BY 4.0／研究資料依敏感度授權 ·
+          本站規劃部署於 IPFS：網域被封，內容指紋仍在。
+        </p>
+      </div>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        var bar = document.getElementById('progress');
+        function onScroll() {
+          var h = document.documentElement;
+          var max = h.scrollHeight - h.clientHeight;
+          var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+          bar.style.width = p + '%';
+        }
+        document.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      })();
+    </script>
+  </body>
+</html>

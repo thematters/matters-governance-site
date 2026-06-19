@@ -1,0 +1,26 @@
+---
+import data from '../data/timeline.json';
+interface Item { date: string; type: string; title: string; body?: string; }
+interface Props { items?: Item[]; limit?: number; }
+const { items, limit } = Astro.props;
+const all = (items ?? (data as Item[]));
+const list = limit ? all.slice(0, limit) : all;
+const klass: Record<string, string> = {
+  '治理事件': 'event', '服務升級': 'upgrade', 'Legal': 'legal', '背景': 'bg',
+};
+---
+<ol class="timeline">
+  {list.map((it) => {
+    const k = klass[it.type] ?? 'bg';
+    return (
+      <li class={`tl-item tl-${k}`}>
+        <div class="tl-date">{it.date}</div>
+        <div class="tl-card">
+          <span class={`tl-tag tl-tag-${k}`}>{it.type}</span>
+          <h3>{it.title}</h3>
+          {it.body && <p>{it.body}</p>}
+        </div>
+      </li>
+    );
+  })}
+</ol>

@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Cite from '../components/Cite.astro';
+---
+<BaseLayout title="延伸">
+  <p class="kicker">延伸主題</p>
+  <h1>延伸：合規、資料公開、與一場真實的封鎖</h1>
+
+  <section class="block">
+    <h2 id="dns-rpz">DNS-RPZ 事件：當內容問題變成基礎設施封鎖</h2>
+    <p>
+      2025 年春節，部分台灣用戶突然連不上 matters.town。研判是
+      <Cite src="官方公告（2025.01）" quote="可能是 TWNIC 收到他人檢舉，以攔截和改寫 DNS 查詢的方式，阻止台灣使用者訪問 Matters.Town">TWNIC 以改寫 DNS 的方式封鎖</Cite>。
+      敘事鏈是這樣的：<strong>二次詐騙文（2022 起）→ 觸動政府打詐掃描 → DNS-RPZ 改寫解析 → 整站部分封鎖</strong>，
+      偏偏遇上連假，程序救濟沒能即時啟動。
+    </p>
+    <p>
+      這是全站「抗審查為何必要」最有力的真實案例：一個<strong>內容層</strong>的垃圾問題，沿著治理鏈放大成
+      <strong>基礎設施層</strong>的封鎖；而 IPFS 的內容定址，正是當時內容仍可被讀取的原因。
+      本計畫據此提出建言——跨層級治理、跨機關通報流程、證據格式標準的制度缺口該如何補。
+    </p>
+    <div class="layer-policy">
+      <span class="layer-tag">範疇聲明</span>
+      依計畫範疇，本站僅以平台自身困境為案例、產出倡議方向，<Cite src="TWNIC 計畫主要內容（原始提案）" quote="本計畫僅以平台自身面臨之困境作為案例，最終產出倡議方向，不涉入既有的國家政策流程討論">不涉入既有國家政策流程</Cite>。
+    </div>
+  </section>
+
+  <hr class="soft" />
+
+  <section class="block">
+    <h2>NCC 合規對照</h2>
+    <p>用《透明度報告指引》《申訴及救濟機制指引》對照 Matters 現況，做一份合規自評。<span class="wip">建構中</span></p>
+  </section>
+
+  <section class="block">
+    <h2>垃圾內容靜態資料庫公開</h2>
+    <p>
+      介紹並連到 <Cite src="thematters/matters-spam-dataset" url="https://github.com/thematters/matters-spam-dataset" quote="v2026.06 約 4 萬筆、去識別、Hugging Face gated、CC BY-NC 4.0；尚未發布">去識別研究資料集</Cite>。
+      ⚠️ 目前尚未正式發布，呈現時不可講成已上線。<span class="wip">建構中</span>
+    </p>
+  </section>
+
+  <section class="block">
+    <h2>安全指南 · RSS／IPNS 訂閱 · 英文版</h2>
+    <p>加分主題，視餘裕製作。英文版見 <a href="/en/">EN</a>。<span class="wip">建構中</span></p>
+  </section>
+</BaseLayout>

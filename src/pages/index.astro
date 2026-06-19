@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Timeline from '../components/Timeline.astro';
+
+const pillars = [
+  { href: '/shen-cha', title: '審查', desc: '為什麼平台必須審——以及它怎麼審：垃圾偵測模型、集團掃描、群眾協力。' },
+  { href: '/kang-shen-cha', title: '抗審查', desc: '為什麼也必須抗——IPFS／IPNS／ENS 讓內容被刪也讀得到。' },
+  { href: '/pai-xu', title: '首頁排序', desc: '大家口中的「演算法」：降權不等於刪除，排序決定誰被看見。' },
+];
+---
+<BaseLayout title="首頁">
+  <section class="hero">
+    <p class="kicker">透明開盒 · 一般平台不會開源的審查演算法</p>
+    <h1>審查，還是抗審查？</h1>
+    <div class="hero-illust" role="img" aria-label="可探索插畫導覽（待接）">
+      〔可探索插畫 hero · 滑過剖面圖各區進入章節｜待接 GPT-image 插畫＋SVG 熱區〕
+    </div>
+    <p class="thesis">
+      垃圾抑制與異議消音，在技術上共用同一機制——一個分數加一個門檻；在價值上卻彼此對立。
+      在不確定時，<strong>寧可漏看一篇垃圾，不願消音一篇表達。</strong>
+    </p>
+    <p class="lead">
+      這個網站以 Matters.town 自己 2018–2025 的治理史為案例，讓你「親手操作」垃圾審查、排序演算法與抗審查，
+      而且每一句話都能點開看出處。
+    </p>
+  </section>
+
+  <hr class="soft" />
+
+  <section class="block">
+    <p class="kicker">三大主軸</p>
+    <div class="pillars">
+      {pillars.map((p) => (
+        <a class="pillar" href={p.href}>
+          <h3>{p.title}</h3>
+          <p>{p.desc}</p>
+        </a>
+      ))}
+    </div>
+    <p class="note">
+      另有〈<a href="/guan-li-yuan">管理員手段</a>〉七種處置、〈<a href="/yan-shen">延伸</a>〉
+      NCC 合規・垃圾資料庫公開・DNS-RPZ 反思・英文版。
+    </p>
+  </section>
+
+  <section class="block">
+    <p class="kicker">一條真實的脊椎：治理事件 → 服務升級</p>
+    <h2>治理史時間線（摘錄）</h2>
+    <p class="lead">每一次服務升級，背後都對應一個真實的治理事件。完整版見〈<a href="/shi-jian-xian">時間軸</a>〉。</p>
+    <Timeline limit={6} />
+    <p><a href="/shi-jian-xian">看完整時間軸 →</a></p>
+  </section>
+</BaseLayout>

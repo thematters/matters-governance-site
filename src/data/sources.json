@@ -1,0 +1,50 @@
+{
+  "proposal": {
+    "label": "TWNIC 計畫主要內容（原始提案）",
+    "type": "提案文件",
+    "url": "",
+    "quote": "在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。"
+  },
+  "filter": {
+    "label": "內容過濾機制（工程端資料）",
+    "type": "工程文件",
+    "url": "",
+    "quote": "從上線以來，攔阻無效文章成功率從 96% 逐漸上升至 99.7%；模型誤判用戶文章比例從 3.1% 降至 0.13%。"
+  },
+  "decentralized": {
+    "label": "去中心內容發佈（工程端資料）",
+    "type": "工程文件",
+    "url": "",
+    "quote": "IPFS 將內容經演算法產生唯一的內容指紋，只要網絡中存在持有該指紋的節點，內容便具備抗審查性與續存性。"
+  },
+  "dns-block": {
+    "label": "關於部分台灣用戶無法正常連線 matters.town 的說明（2025.01）",
+    "type": "官方公告",
+    "url": "",
+    "quote": "可能是 TWNIC 收到他人檢舉，以攔截和改寫 DNS 查詢的方式，阻止台灣使用者訪問 Matters.Town。"
+  },
+  "scaffold": {
+    "label": "thematters/spam-detection-scaffold",
+    "type": "程式碼／報告",
+    "url": "https://github.com/thematters/spam-detection-scaffold",
+    "quote": "不刪除，只是不再被看見。"
+  },
+  "community-watch": {
+    "label": "馬特市守望相助隊",
+    "type": "服務／公開稽核板",
+    "url": "https://community-watch.matters.town",
+    "quote": "每個移除動作公開可稽核：誰、何時、為何、申訴與複核狀態。v1 階段 AI 不得自動移除。"
+  },
+  "dataset": {
+    "label": "thematters/matters-spam-dataset",
+    "type": "資料集（規劃中）",
+    "url": "https://github.com/thematters/matters-spam-dataset",
+    "quote": "計畫釋出 v2026.06 約 4 萬筆、去識別、Hugging Face gated、CC BY-NC 4.0；尚未發布。"
+  },
+  "prototype": {
+    "label": "platform-governance 既有報告（豆泥）",
+    "type": "前期網站／報告",
+    "url": "https://thematters.github.io/platform-governance/",
+    "quote": "被治理者，同時是治理者。"
+  }
+}

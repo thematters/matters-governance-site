@@ -1,0 +1,198 @@
+/* ===========================================================================
+   全站樣式 — 波隆納土系色場 + Matters 品牌紫當「互動信號色」
+   token 來自 vendored design-system（src/styles/tokens.css），此處只取
+   字體/品牌色，背景大色場用自訂土系，避免和 DS 的高彩數位色打架。
+   =========================================================================== */
+
+:root {
+  /* 土系色場（自訂） */
+  --bg:         #F3ECDD; /* 暖象牙 */
+  --bg-paper:   #FBF6EC;
+  --ink:        #2C2A24; /* 炭墨 */
+  --ink-soft:   #5E584C;
+  --line:       #DED3BE;
+  --mustard:    #C9A227;
+  --olive:      #6E7A4F;
+  --sage:       #9DA882;
+  --teal:       #6C8A89;
+  --terracotta: #B45F45;
+  --void:       #23211C; /* 左側黑色虛空 */
+
+  /* 互動信號色 = Matters 品牌紫（可點 / 可拖 / 可展開都用它） */
+  --accent: var(--color-brand-new-purple, #7258FF);
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+
+  --font-ui:   var(--font-family-ui, "Noto Sans TC", system-ui, sans-serif);
+  --font-read: var(--font-family-reading, "Noto Serif TC", serif);
+
+  --maxw: 780px;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-read);
+  font-size: 18px;
+  line-height: 1.75; /* CJK 友善 */
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-underline-offset: 3px; }
+
+h1, h2, h3 { font-family: var(--font-ui); line-height: 1.35; }
+
+/* ---- 版面 ---- */
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+main { padding: 40px 0 96px; }
+section.block { margin: 56px 0; }
+.lead { font-size: 21px; color: var(--ink-soft); }
+.kicker {
+  font-family: var(--font-ui); font-size: 13px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--olive); font-weight: 700;
+}
+
+/* ---- 進度條 ---- */
+#progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+  background: var(--accent); z-index: 50; transition: width .1s linear;
+}
+
+/* ---- 導覽 ---- */
+.site-header {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.2) blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.nav { display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 10px 20px; max-width: 1080px; margin: 0 auto; }
+.brand { font-family: var(--font-ui); font-weight: 800; color: var(--ink);
+  text-decoration: none; font-size: 16px; }
+.brand small { font-weight: 500; color: var(--ink-soft); }
+.nav-links { display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--font-ui);
+  font-size: 14px; }
+.nav-links a { color: var(--ink-soft); text-decoration: none; }
+.nav-links a:hover { color: var(--accent); }
+.nav-spacer { flex: 1 1 auto; }
+
+/* ---- 受眾切換（漸進揭露） ---- */
+.audience-toggle { display: inline-flex; border: 1px solid var(--line);
+  border-radius: 999px; overflow: hidden; font-family: var(--font-ui); font-size: 13px; }
+.audience-toggle button { border: 0; background: transparent; color: var(--ink-soft);
+  padding: 5px 12px; cursor: pointer; }
+.audience-toggle button.is-active { background: var(--accent); color: #fff; }
+
+/* 依受眾顯示/隱藏深度層 */
+:root[data-audience="general"] .layer-policy,
+:root[data-audience="general"] .layer-dev,
+:root[data-audience="policy"]  .layer-dev { display: none; }
+
+.layer-policy, .layer-dev {
+  border-left: 3px solid var(--teal);
+  background: color-mix(in srgb, var(--teal) 7%, transparent);
+  padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0;
+}
+.layer-dev { border-left-color: var(--accent);
+  background: var(--accent-soft); }
+.layer-tag { font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; color: var(--teal); display: block; margin-bottom: 4px; }
+.layer-dev .layer-tag { color: var(--accent); }
+
+/* ---- 引註 ---- */
+.cite { position: relative; }
+.cite > details { display: inline; }
+.cite summary { display: inline; cursor: pointer; color: var(--accent);
+  font-family: var(--font-ui); font-size: 12px; vertical-align: super;
+  list-style: none; user-select: none; padding: 0 2px; }
+.cite summary::-webkit-details-marker { display: none; }
+.cite[data-claim] { border-bottom: 1px dotted var(--sage); }
+.cite-body { display: block; margin: 8px 0; padding: 10px 14px;
+  background: var(--bg-paper); border: 1px solid var(--line); border-radius: 8px;
+  font-family: var(--font-ui); font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+.cite-body strong { color: var(--ink); }
+.cite-body q { display: block; color: var(--ink); margin: 4px 0; }
+.cite-body a { font-size: 13px; }
+
+/* ---- 互動佔位 ---- */
+.interaction-slot {
+  border: 2px dashed var(--accent); border-radius: var(--radius);
+  background: var(--accent-soft); padding: 28px 22px; margin: 24px 0;
+  text-align: center; font-family: var(--font-ui);
+}
+.islot-badge { display: inline-block; font-size: 11px; font-weight: 800;
+  letter-spacing: .1em; color: #fff; background: var(--accent);
+  padding: 3px 10px; border-radius: 999px; }
+.islot-title { font-size: 18px; font-weight: 700; margin: 10px 0 4px; color: var(--ink); }
+.islot-ref { font-size: 13px; color: var(--ink-soft); }
+.islot-status { font-size: 12px; color: var(--accent); margin-top: 8px; }
+
+/* ---- 內容類別 tag（長文/動態/留言透鏡） ---- */
+.ctag { font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px; margin-right: 4px; vertical-align: middle; }
+.ctag-article { background: color-mix(in srgb, var(--olive) 22%, transparent); color: var(--olive); }
+.ctag-moment  { background: color-mix(in srgb, var(--mustard) 25%, transparent); color: #8a6d12; }
+.ctag-comment { background: color-mix(in srgb, var(--terracotta) 20%, transparent); color: var(--terracotta); }
+
+/* ---- 支柱卡片 ---- */
+.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px; margin: 28px 0; }
+.pillar { display: block; text-decoration: none; color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 20px;
+  background: var(--bg-paper); transition: transform .12s, border-color .12s; }
+.pillar:hover { transform: translateY(-2px); border-color: var(--accent); }
+.pillar h3 { margin: 0 0 6px; }
+.pillar p { margin: 0; font-size: 15px; color: var(--ink-soft); }
+
+/* ---- hero ---- */
+.hero { padding: 40px 0 8px; }
+.hero-illust { border: 2px dashed var(--sage); border-radius: var(--radius);
+  background: linear-gradient(180deg, #EDE7D6, #E3DAC4);
+  min-height: 280px; display: flex; align-items: center; justify-content: center;
+  text-align: center; color: var(--ink-soft); font-family: var(--font-ui); margin: 18px 0; }
+.hero h1 { font-size: 40px; margin: 8px 0 6px; }
+.thesis { font-size: 22px; color: var(--ink); border-left: 4px solid var(--mustard);
+  padding-left: 16px; margin: 24px 0; }
+
+/* ---- 時間軸 ---- */
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.timeline::before { content: ""; position: absolute; left: 96px; top: 0; bottom: 0;
+  width: 2px; background: var(--line); }
+.tl-item { display: grid; grid-template-columns: 86px 1fr; gap: 18px; margin: 0 0 22px;
+  position: relative; }
+.tl-date { font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--ink-soft);
+  text-align: right; padding-top: 14px; }
+.tl-card { background: var(--bg-paper); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 16px; position: relative; }
+.tl-card::before { content: ""; position: absolute; left: -22px; top: 18px;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--sage);
+  border: 2px solid var(--bg); }
+.tl-event  .tl-card::before { background: var(--terracotta); }
+.tl-upgrade .tl-card::before { background: var(--teal); }
+.tl-legal  .tl-card::before { background: var(--mustard); }
+.tl-card h3 { margin: 4px 0; font-size: 17px; }
+.tl-card p { margin: 4px 0 0; font-size: 15px; color: var(--ink-soft); }
+.tl-tag { font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px; }
+.tl-tag-event   { background: color-mix(in srgb, var(--terracotta) 18%, transparent); color: var(--terracotta); }
+.tl-tag-upgrade { background: color-mix(in srgb, var(--teal) 18%, transparent); color: var(--teal); }
+.tl-tag-legal   { background: color-mix(in srgb, var(--mustard) 25%, transparent); color: #8a6d12; }
+.tl-tag-bg      { background: var(--line); color: var(--ink-soft); }
+
+/* ---- footer ---- */
+.site-footer { border-top: 1px solid var(--line); background: var(--bg-paper);
+  font-family: var(--font-ui); font-size: 14px; color: var(--ink-soft); }
+.site-footer .container { padding: 28px 20px; }
+.site-footer a { color: var(--ink-soft); }
+
+/* ---- 雜項 ---- */
+.note { font-size: 14px; color: var(--ink-soft); font-family: var(--font-ui); }
+hr.soft { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+.wip { display: inline-block; font-family: var(--font-ui); font-size: 12px;
+  background: var(--mustard); color: #3a2e06; padding: 2px 10px; border-radius: 999px; }

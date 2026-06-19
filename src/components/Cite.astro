@@ -1,0 +1,18 @@
+---
+// 可展開引註。用法：
+// <Cite src="內容過濾機制（工程端）" quote="攔阻成功率 96%→99.7%" url="...">主張文字</Cite>
+interface Props {
+  src: string;
+  url?: string;
+  quote?: string;
+}
+const { src, url, quote } = Astro.props;
+---
+<span class="cite" data-claim><slot /><details>
+  <summary aria-label={`出處：${src}`}>＊</summary>
+  <span class="cite-body">
+    <strong>{src}</strong>
+    {quote && <q>{quote}</q>}
+    {url && <a href={url} target="_blank" rel="noopener">原始連結 ↗</a>}
+  </span>
+</details></span>

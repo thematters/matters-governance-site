@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Cite from '../components/Cite.astro';
+import InteractionSlot from '../components/InteractionSlot.astro';
+---
+<BaseLayout title="審查">
+  <p class="kicker">第一部 · 升級類別</p>
+  <h1>審查：為什麼必須審、怎麼審</h1>
+  <p class="lead">
+    Matters 是一個抗審查平台，卻每天都在做審查——這不矛盾。每月 2–3 萬篇文章、4–6 千名活躍作者，
+    加上政治敏感帶來的大量惡意攻擊，<Cite src="TWNIC 計畫主要內容（原始提案）">沒有審查，公共頁面會被垃圾淹沒</Cite>。
+    問題從來不是「審不審」，而是「<strong>怎麼審才不會傷到真正的表達</strong>」。
+  </p>
+
+  <div class="layer-policy">
+    <span class="layer-tag">政策視角</span>
+    平台審查的正當性，建立在「可閱讀、可討論、可稽核」的人機協作流程上，而非黑箱。本計畫的主張是把這套流程開源、攤開來談。
+  </div>
+
+  <hr class="soft" />
+
+  <!-- 內容類別透鏡 -->
+  <section class="block">
+    <h2>先分清楚：你在審的是哪一種內容？</h2>
+    <p>
+      同樣叫「垃圾」，但
+      <span class="ctag ctag-article">長文</span>
+      <span class="ctag ctag-moment">動態</span>
+      <span class="ctag ctag-comment">留言</span>
+      的對抗機制完全不同，用的甚至是不同模型：
+    </p>
+    <ul>
+      <li><span class="ctag ctag-article">長文</span>內容農場、SEO 濫用、二次詐騙——語意導向，用嵌入模型判斷。</li>
+      <li><span class="ctag ctag-comment">留言</span>高度模板化的洗版廣告——約 50 個模板家族，用輕量的 e5-small＋邏輯回歸即可。</li>
+      <li><span class="ctag ctag-moment">動態</span>介於兩者之間，且常被當成繞過長文偵測的後門。</li>
+    </ul>
+    <p class="note">下面六節是「垃圾偵測方法」的核心：模型 → 類型 → 打標籤 → 集團 → 偽陽性 → 你來試。</p>
+  </section>
+
+  <!-- 1 模型升級史 -->
+  <section class="block">
+    <p class="kicker">垃圾偵測方法 1／6</p>
+    <h2>模型升級史：從人工到模型</h2>
+    <p>
+      最早是<Cite src="內容過濾機制（工程端）" quote="2020 年最先使用 reCAPTCHA，後期改採 Turnstile，大部分情況可在背景完成機器人辨識">行為層</Cite>——
+      用 reCAPTCHA／Turnstile 在註冊、登入、讚賞處擋掉機器人。但機器人的「內容」不斷進化，關鍵字過濾擋不住上下文。
+    </p>
+    <p>
+      2024 年 8 月，內容分析模型上線。團隊用日常值班累積的
+      <Cite src="內容過濾機制（工程端）" quote="初期累計正負樣本總數 4 萬多篇文章">約 4 萬篇正負樣本</Cite>訓練模型；
+      被判定違規的文章<strong>不會被刪除，只是不再出現在公共頁面</strong>（首頁精選、熱文、各頻道列表）。
+      成效是<Cite src="內容過濾機制（工程端）" quote="攔阻無效文章成功率從 96% 逐漸上升至 99.7%；模型誤判用戶文章比例從 3.1% 降至 0.13%">攔阻成功率 96%→99.7%，誤判率 3.1%→0.13%</Cite>。
+    </p>
+    <div class="layer-dev">
+      <span class="layer-tag">技術細節</span>
+      架構選 Encoder（BERT 類）而非 Decoder（GPT 類），因任務是「理解語意、判斷關係」而非生成；
+      實際模型為 <code>ibm-granite/granite-embedding-107m-multilingual</code> ＋ LoRA 微調，部署在 AWS Lambda。
+      留言模型另用 <code>e5-small</code>＋邏輯回歸頭，leave-one-family-out recall 0.88，遠優於舊共用模型的 0.68。
+    </div>
+    <InteractionSlot title="決策邊界：看著資料點落在分界線兩側" reference="R2D3「機器學習視覺入門」" />
+  </section>
+
+  <!-- 2 垃圾類型 -->
+  <section class="block">
+    <p class="kicker">垃圾偵測方法 2／6</p>
+    <h2>垃圾的類型（以及它怎麼進化）</h2>
+    <p>
+      垃圾不是固定的。從時間軸可以看到它一路變形：色情廣告（外送茶）→ 賣藥（迷姦藥）→ 集體刷讚 →
+      政治洗版 → <Cite src="Matters 治理史時間線" quote="2022.06 二次詐騙文開始大量出現">二次詐騙文</Cite> → 內容農場 SEO 濫用。
+    </p>
+    <div class="layer-dev">
+      <span class="layer-tag">研究用分類</span>
+      資料集的 <code>spam_category</code>：seo／gambling／pharma／scam／porn／mlm／market_report／circumvention／other。
+      這只供研究，產品端的判定是二元的 spam／ham。
+    </div>
+  </section>
+
+  <!-- 3 人工打標籤 -->
+  <section class="block">
+    <p class="kicker">垃圾偵測方法 3／6</p>
+    <h2>人工打標籤：模型的真相從哪來</h2>
+    <p>
+      模型的「正解」來自人。標籤來源被分級記錄——管理員標記、守望相助隊移除、被推翻的處置、被復原的內容、人工複標……
+      <Cite src="thematters/matters-spam-dataset" url="https://github.com/thematters/matters-spam-dataset" quote="human-confirmed 標籤權重高（2.0/1.0/0.5），以抑制 over-kill">人工確認的標籤權重最高</Cite>，
+      用來壓低誤殺。
+    </p>
+    <div class="layer-policy">
+      <span class="layer-tag">誠實揭露</span>
+      早期有一種代理標籤的瑕疵：「作者被限制 → 他所有內容都被當成垃圾」，因而誤掃了一些中文政治／學術／創作長文。
+      約 5,000 筆已人工修正，但未修正的中文長文仍可能有 5–15% 殘餘誤標。把這件事講出來，本身就是透明開盒的一部分。
+    </div>
+  </section>
+
+  <!-- 4 Ring 防治 -->
+  <section class="block">
+    <p class="kicker">垃圾偵測方法 4／6</p>
+    <h2>集團掃描（Ring）：抓的是行為，不是字句</h2>
+    <p>
+      有些垃圾單看一則分數很低，卻是一整群帳號用同一套模板洗版。這種「集團」要靠行為訊號抓：
+      同一指紋被大量新帳號／低信用帳號重複張貼。比對時還要做<Cite src="thematters/spam-detection-scaffold" url="https://github.com/thematters/spam-detection-scaffold" quote="OpenCC 繁簡折疊 + 字元 n-gram Jaccard；繁體『披著…』0 命中、簡體『披着…』命中 28 個帳號">繁簡折疊</Cite>，
+      否則繁體一條、簡體一條就漏了。
+    </p>
+    <p class="note">
+      實例：某「高雄翻譯社」廣告，單則模型分數只有 0.09，幾乎被當正常；但它在集團視角下整群現形。
+    </p>
+    <InteractionSlot title="垃圾集團網路圖：看一個 Ring 怎麼長出來、又怎麼被掃" reference="Nicky Case《群眾的智慧與瘋狂》" />
+  </section>
+
+  <!-- 5 偽陽性互動區（招牌） -->
+  <section class="block">
+    <p class="kicker">垃圾偵測方法 5／6 · 全站招牌</p>
+    <h2>偽陽性：同一條分數線，傷及無辜</h2>
+    <p>
+      一個門檻同時決定兩件事：「擋掉多少垃圾」與「誤殺多少表達」。把線往下拉，垃圾少了，但無辜的文章也一起被掃進去。
+      這就是為什麼<Cite src="TWNIC 計畫主要內容（原始提案）" quote="在不確定時，寧可漏看一篇垃圾，不願消音一篇表達">寧可漏看一篇垃圾，不願消音一篇表達</Cite>。
+    </p>
+    <p>
+      工程上的對策是 conformal 棄權決策：不確定的不硬判，丟給人複核。光是這一步，就把長文模型的真實誤殺率
+      <Cite src="thematters/spam-detection-serverless" url="https://github.com/thematters/spam-detection-serverless" quote="article model true over-kill 24.0% → 1.6% (@0.5)；conformal ε=0.02 下 ham 誤擋 ~1.8–1.9%、recall ~93%">從 24% 壓到 1.6%</Cite>。
+    </p>
+    <InteractionSlot title="偽陽性分數線：拖動門檻，親眼看誰被誤殺" reference="Nicky Case《多邊形的寓言》" status="★ 最高優先原型——下一步就做這個" />
+  </section>
+
+  <!-- 6 Mock 測試 -->
+  <section class="block">
+    <p class="kicker">垃圾偵測方法 6／6</p>
+    <h2>換你當審查員</h2>
+    <p>
+      看一則內容，分數 0.7，你按「擋」還是「放」？先猜，再看模型怎麼判、以及如果這是你的文章被誤殺會是什麼感覺。
+    </p>
+    <InteractionSlot title="Mock 案例小測試：先猜再揭曉" reference="The Pudding 式「先預測再揭曉」" />
+  </section>
+
+  <hr class="soft" />
+  <p class="note">延伸：垃圾的「處置」手段見〈<a href="/guan-li-yuan">管理員手段</a>〉；社群一起審見本章「群眾協力」（建構中）。</p>
+</BaseLayout>

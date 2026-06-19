@@ -1,0 +1,31 @@
+---
+// 漸進揭露：切換 <html data-audience> 控制 .layer-policy / .layer-dev 的顯示。
+---
+<div class="audience-toggle" role="group" aria-label="閱讀深度切換">
+  <button type="button" data-aud="general">一般</button>
+  <button type="button" data-aud="policy">政策</button>
+  <button type="button" data-aud="dev">開發者</button>
+</div>
+
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    var saved = localStorage.getItem('audience') || 'general';
+    root.setAttribute('data-audience', saved);
+    var btns = document.querySelectorAll('.audience-toggle button');
+    function sync(active) {
+      btns.forEach(function (b) {
+        b.classList.toggle('is-active', b.getAttribute('data-aud') === active);
+      });
+    }
+    sync(saved);
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var a = b.getAttribute('data-aud');
+        root.setAttribute('data-audience', a);
+        localStorage.setItem('audience', a);
+        sync(a);
+      });
+    });
+  })();
+</script>

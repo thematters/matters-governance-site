@@ -1,0 +1,15 @@
+---
+// 互動 island 的佔位框。原型做好後，把實作放進預設 slot 取代狀態文字。
+interface Props {
+  title: string;
+  reference?: string;
+  status?: string;
+}
+const { title, reference = '', status = '互動原型待接' } = Astro.props;
+---
+<div class="interaction-slot" role="group" aria-label={`互動區：${title}`}>
+  <span class="islot-badge">互動區</span>
+  <div class="islot-title">{title}</div>
+  {reference && <div class="islot-ref">參考範本：{reference}</div>}
+  <slot><div class="islot-status">{status}</div></slot>
+</div>

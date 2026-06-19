@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Cite from '../components/Cite.astro';
+import InteractionSlot from '../components/InteractionSlot.astro';
+---
+<BaseLayout title="首頁排序">
+  <p class="kicker">第三部 · 升級類別</p>
+  <h1>首頁排序：大家口中的「演算法」</h1>
+  <p class="lead">
+    「演算法決定你看到什麼」——這句話最具體的形式，就是首頁怎麼排序。但要先分清楚兩件常被混為一談的事。
+  </p>
+
+  <section class="block">
+    <h2>降權 ≠ 刪除</h2>
+    <p>
+      垃圾是被<strong>二元過濾</strong>（直接不出現在公共頁面），不是「排到後面」；
+      而一般內容彼此之間才是靠<Cite src="platform-governance 既有報告" url="https://thematters.github.io/platform-governance/">熱門排序公式</Cite>競爭可見度。
+      把這兩者分開，才看得懂「為什麼我的文章還在、卻沒人看到」其實有兩種完全不同的原因。
+    </p>
+  </section>
+
+  <section class="block">
+    <h2>新首頁（2025.07）</h2>
+    <p>
+      2025 年 7 月新首頁上線，排序邏輯與權重重新設計。這一節要把「哪些訊號被加權、為什麼」攤開來談。
+      <span class="wip">內容建構中</span>
+    </p>
+    <div class="layer-dev">
+      <span class="layer-tag">資料待接</span>
+      需要新首頁排序的權重設定與樣本 feed（去識別）來驅動下方互動。見 PLAN §12。
+    </div>
+    <InteractionSlot title="排序拆兩半：改權重，兩欄首頁同時重排" reference="The Markup「Split Screen」" />
+  </section>
+</BaseLayout>

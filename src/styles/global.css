@@ -5,18 +5,18 @@
    =========================================================================== */
 
 :root {
-  /* 土系色場（自訂） */
-  --bg:         #F3ECDD; /* 暖象牙 */
-  --bg-paper:   #FBF6EC;
-  --ink:        #2C2A24; /* 炭墨 */
-  --ink-soft:   #5E584C;
-  --line:       #DED3BE;
+  /* 白底 + 土系強調色（內容語意）；DS 品牌紫為互動信號 */
+  --bg:         #FFFFFF; /* 白底 */
+  --bg-paper:   #F7F6F2; /* 微暖卡片底 */
+  --ink:        #2A2823; /* 炭墨 */
+  --ink-soft:   #5C574C;
+  --line:       #E8E5DE;
   --mustard:    #C9A227;
   --olive:      #6E7A4F;
   --sage:       #9DA882;
   --teal:       #6C8A89;
   --terracotta: #B45F45;
-  --void:       #23211C; /* 左側黑色虛空 */
+  --void:       #23211C;
 
   /* 互動信號色 = Matters 品牌紫（可點 / 可拖 / 可展開都用它） */
   --accent: var(--color-brand-new-purple, #7258FF);

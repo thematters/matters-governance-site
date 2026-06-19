@@ -1,0 +1,103 @@
+---
+// 招牌互動：集團偵測 Ring。單篇模型漏抓低分集團，集團偵測靠「同模板、多帳號」整群抓。
+const W = 600, H = 380;
+const cx = 285, cy = 175;
+const nodes = [
+  { x: 70,  y: 50,  t: 'normal', s: 8,  label: '時事' },
+  { x: 520, y: 60,  t: 'normal', s: 12, label: '書評' },
+  { x: 130, y: 300, t: 'normal', s: 18, label: '日記' },
+  { x: 545, y: 280, t: 'normal', s: 7,  label: '考據' },
+  { x: 300, y: 40,  t: 'normal', s: 22, label: '科普' },
+  { x: 55,  y: 180, t: 'normal', s: 15, label: '藝文' },
+  { x: 470, y: 330, t: 'spam',   s: 96, label: '賭場' },
+  { x: 540, y: 200, t: 'spam',   s: 99, label: '外送茶' },
+  { x: 240, y: 130, t: 'ring', s: 9,  label: '翻譯社' },
+  { x: 320, y: 115, t: 'ring', s: 11, label: '翻譯社' },
+  { x: 280, y: 185, t: 'ring', s: 10, label: '翻譯社' },
+  { x: 355, y: 165, t: 'ring', s: 8,  label: '翻譯社' },
+  { x: 220, y: 205, t: 'ring', s: 12, label: '翻譯社' },
+  { x: 345, y: 230, t: 'ring', s: 9,  label: '翻譯社' },
+  { x: 205, y: 110, t: 'ring', s: 10, label: '翻譯社' },
+  { x: 290, y: 250, t: 'ring', s: 11, label: '翻譯社' },
+];
+const rings = nodes.map((n, i) => ({ n, i })).filter((o) => o.n.t === 'ring');
+---
+<div class="ring" id="ring-root">
+  <svg viewBox={`0 0 ${W} ${H}`} class="ring-svg" role="img" aria-label="帳號分佈圖：6 個正常帳號、2 個明顯垃圾、8 個同模板的『翻譯社』集團帳號">
+    {rings.map((o) => (
+      <line class="ring-line" x1={cx} y1={cy} x2={o.n.x} y2={o.n.y} />
+    ))}
+    {nodes.map((n, i) => (
+      <g class={`ring-node ring-${n.t}`} data-i={i} data-score={n.s} data-type={n.t} transform={`translate(${n.x},${n.y})`}>
+        <circle r="17" />
+        <text class="ring-label" text-anchor="middle" dy="3">{n.label}</text>
+        <text class="ring-score" text-anchor="middle" dy="30">{(n.s / 100).toFixed(2)}</text>
+      </g>
+    ))}
+  </svg>
+
+  <div class="ring-controls">
+    <button type="button" id="ring-btn-single">① 單篇模型偵測</button>
+    <button type="button" id="ring-btn-ring">② 集團偵測 Ring</button>
+    <button type="button" id="ring-btn-reset" class="ring-reset">重置</button>
+  </div>
+  <p class="ring-readout" id="ring-readout" aria-live="polite">每個圓是一個帳號，下方是它單篇內容的垃圾分數。先按「單篇模型偵測」，再按「集團偵測」，比較兩者抓到什麼。</p>
+  <noscript><p class="ring-readout">互動需 JavaScript。重點：8 個「翻譯社」帳號用同一模板洗版，但每篇單看分數只有 0.08–0.12，單篇模型幾乎漏抓；集團偵測靠「同模板、多帳號、短時間」的行為樣態，整群一次抓。</p></noscript>
+</div>
+
+<style>
+  .ring { max-width: 620px; margin: 0 auto; }
+  .ring-svg { width: 100%; height: auto; background: var(--bg-paper); border: 1px solid var(--line); border-radius: 14px; }
+  .ring-node circle { fill: #fff; stroke-width: 2; transition: fill .35s, stroke .35s, opacity .35s; }
+  .ring-normal circle { stroke: var(--c-legit, #6f8f4e); fill: var(--c-legit-bg, #eef2e3); }
+  .ring-spam circle, .ring-ring circle { stroke: var(--c-spam, #c0584a); fill: var(--c-spam-bg, #f6e6e1); }
+  .ring-label { font: 700 11px var(--font-ui); fill: var(--ink); }
+  .ring-score { font: 700 9px var(--font-ui); fill: var(--ink-soft); }
+  .ring-node.caught circle { fill: #e7e3d8; stroke: #b7b0a0; opacity: .85; }
+  .ring-node.caught .ring-label { fill: #8a8474; }
+  .ring-line { stroke: var(--accent, #7258FF); stroke-width: 2; opacity: 0; transition: opacity .5s; }
+  .ring-line.show { opacity: .55; }
+  .ring-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 14px 0 8px; }
+  .ring-controls button { font: 700 14px var(--font-ui); padding: 8px 16px; border-radius: 999px;
+    border: 1.5px solid var(--accent, #7258FF); background: #fff; color: var(--accent, #7258FF); cursor: pointer; }
+  .ring-controls button:hover { background: var(--accent, #7258FF); color: #fff; }
+  .ring-controls .ring-reset { border-color: var(--line); color: var(--ink-soft); }
+  .ring-readout { text-align: center; font-size: 16px; min-height: 3em; max-width: 540px; margin: 0 auto; }
+  @media (prefers-reduced-motion: reduce) {
+    .ring-node circle, .ring-line { transition: none; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var root = document.getElementById('ring-root');
+    if (!root) return;
+    var nodes = [].slice.call(root.querySelectorAll('.ring-node'));
+    var lines = [].slice.call(root.querySelectorAll('.ring-line'));
+    var out = document.getElementById('ring-readout');
+    function clear() { nodes.forEach(function (n) { n.classList.remove('caught'); }); lines.forEach(function (l) { l.classList.remove('show'); }); }
+    document.getElementById('ring-btn-single').addEventListener('click', function () {
+      clear();
+      var caught = 0, missed = 0;
+      nodes.forEach(function (n) {
+        var s = +n.getAttribute('data-score'), spam = n.getAttribute('data-type') !== 'normal';
+        if (s >= 70) { n.classList.add('caught'); caught++; }
+        else if (spam) { missed++; }
+      });
+      out.innerHTML = '單篇模型抓到 <b>' + caught + '</b> 篇明顯垃圾，但<b>漏掉 ' + missed + ' 個「翻譯社」集團帳號</b>——它們每篇分數只有 0.08–0.12，單看像正常內容。';
+    });
+    document.getElementById('ring-btn-ring').addEventListener('click', function () {
+      clear();
+      var n2 = 0;
+      lines.forEach(function (l) { l.classList.add('show'); });
+      nodes.forEach(function (n) {
+        if (n.getAttribute('data-type') === 'ring') { n.classList.add('caught'); n2++; }
+      });
+      out.innerHTML = '集團偵測：同一模板、<b>' + n2 + ' 個帳號</b>、短時間重複出現——<b>抓行為、不抓字句</b>，整群一次掃掉。這正是單篇模型抓不到的盲區。';
+    });
+    document.getElementById('ring-btn-reset').addEventListener('click', function () {
+      clear();
+      out.textContent = '每個圓是一個帳號，下方是它單篇內容的垃圾分數。先按「單篇模型偵測」，再按「集團偵測」，比較兩者抓到什麼。';
+    });
+  })();
+</script>

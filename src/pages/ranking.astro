@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InteractionSlot from '../components/InteractionSlot.astro';
+import RankingSplitScreen from '../components/RankingSplitScreen.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="首頁排序">
@@ -16,7 +16,7 @@ import '../styles/story.css';
 
   <h2>熱門排序公式</h2>
   <p>首頁熱門大致是：<code>0.3·閱讀 + 0.4·留言 + 0.3·讚賞</code>，進榜要 5 個讀者或 3 則留言，回看 5 天、3 天線性衰減，還有壓抑大戶洗榜的正規化。<strong>留言權重最高</strong>——平台想獎勵的是「引發討論」，不是單純曝光或金錢。</p>
-  <InteractionSlot title="排序拆兩半：先猜哪則排前面，再看演算法怎麼排" reference="The Markup「Split Screen」+ Place Your Bets" />
+  <RankingSplitScreen />
 
   <h2>正當程序的缺口</h2>
   <p>

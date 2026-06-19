@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import InteractionSlot from '../components/InteractionSlot.astro';
+import RingDetector from '../components/RingDetector.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="偵測技術">
@@ -32,7 +33,7 @@ import '../styles/story.css';
     「同一指紋、大量新帳號、短時間」這個<strong>行為樣態</strong>。關鍵一步是<strong>繁簡折疊</strong>——「披著…」繁體 0 命中，
     折成簡體「披着…」命中 28 個帳號。處置可逆、雙訊號才動作。
   </p>
-  <InteractionSlot title="垃圾集團網路圖：看一個 Ring 怎麼長出來、又怎麼被掃" reference="Nicky Case《群眾的智慧與瘋狂》" />
+  <RingDetector />
 
   <h2>一個便宜又有效的解法</h2>
   <p>面對短文垃圾，團隊沒只靠模型，而用社群設計：「閒聊」頻道採 opt-in 白名單，<strong>半個月杜絕 100% 垃圾</strong>，「比模型還便宜有效」。</p>

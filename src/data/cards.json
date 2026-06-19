@@ -1,0 +1,29 @@
+{
+  "_note": "合成範例卡（去識別）。truth=legit/spam 是真相；score 是模型分數（0–100）。borderline 為 legit 但分數偏高，是偽陽性主角。待替換為真實去識別 Matters 案例（見 docs/design/scrollytelling-storyboard.md §4）。",
+  "cards": [
+    { "id": "n1", "truth": "legit", "cat": "生活", "score": 8, "text": "今天爬象山，雲很厚，還是看到一點點盆地。" },
+    { "id": "n2", "truth": "legit", "cat": "書評", "score": 12, "text": "讀完《房思琪的初戀樂園》，寫一點心得。" },
+    { "id": "n3", "truth": "legit", "cat": "時事", "score": 28, "text": "談能源政策時，大家常忽略基載問題。" },
+    { "id": "n4", "truth": "legit", "cat": "生活", "score": 6, "text": "週末燉了一鍋馬鈴薯燉肉，附食譜。" },
+    { "id": "n5", "truth": "legit", "cat": "創作", "score": 18, "text": "貼一首自己寫的詩：〈雨季〉。" },
+    { "id": "n6", "truth": "legit", "cat": "藝文", "score": 10, "text": "整理了一份台北獨立書店地圖。" },
+    { "id": "n7", "truth": "legit", "cat": "音樂", "score": 9, "text": "學三個月烏克麗麗，錄一段練習。" },
+    { "id": "n8", "truth": "legit", "cat": "科技", "score": 22, "text": "分享一個冷門但好用的開源筆記軟體。" },
+    { "id": "n9", "truth": "legit", "cat": "評論", "score": 31, "text": "關於 AI 生成內容的著作權，一些想法。" },
+    { "id": "n10", "truth": "legit", "cat": "時事", "score": 33, "text": "香港朋友的近況，還是很掛念。" },
+
+    { "id": "s1", "truth": "spam", "cat": "色情廣告", "score": 96, "text": "【加賴 abc123】專業外送茶，可指定。" },
+    { "id": "s2", "truth": "spam", "cat": "賣藥", "score": 92, "text": "失眠救星！德國進口X藥，加微信免費試。" },
+    { "id": "s3", "truth": "spam", "cat": "賭博", "score": 94, "text": "百家樂破解程式，首儲送1000，LINE:winwin" },
+    { "id": "s4", "truth": "spam", "cat": "MLM", "score": 88, "text": "想在家月入十萬？點連結看被動收入秘密。" },
+    { "id": "s5", "truth": "spam", "cat": "違法代辦", "score": 85, "text": "代辦各國護照簽證證件，優惠，加TG。" },
+    { "id": "s6", "truth": "spam", "cat": "內容農場", "score": 82, "text": "震驚！醫生不敢說的秘密，這方法治百病。" },
+    { "id": "s7", "truth": "spam", "cat": "二次詐騙", "score": 78, "text": "我被詐騙30萬，後來找XX團隊追回，私訊我。" },
+    { "id": "s8", "truth": "spam", "cat": "SEO農場", "score": 70, "text": "窗簾批發工廠直營，全台最低價，大量外鏈→" },
+
+    { "id": "b1", "truth": "legit", "cat": "創作（似色情）", "score": 72, "border": true, "text": "一篇關於身體自主的散文，含性情節。" },
+    { "id": "b2", "truth": "legit", "cat": "防詐科普（似詐騙）", "score": 68, "border": true, "text": "整理常見投資詐騙手法，教你如何識別。" },
+    { "id": "b3", "truth": "legit", "cat": "學術考據（似SEO）", "score": 62, "border": true, "text": "考據：清代台灣的鴉片貿易與專賣制度。" },
+    { "id": "b4", "truth": "legit", "cat": "政治評論（似洗版）", "score": 58, "border": true, "text": "對某政治人物近期言論的批評分析。" }
+  ]
+}

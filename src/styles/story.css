@@ -1,0 +1,121 @@
+/* ===========================================================================
+   主敘事 scrollytelling 樣式：綠紅卡片系統 + 場景捲動 + 偽陽性滑桿
+   配色：正常＝土綠、垃圾＝土紅、誤殺＝灰、互動信號＝品牌紫
+   =========================================================================== */
+
+:root {
+  --c-legit: #6f8f4e;
+  --c-legit-bg: #eef2e3;
+  --c-spam: #c0584a;
+  --c-spam-bg: #f6e6e1;
+  --c-killed: #b6 af9d;
+  --c-killed: #b7b0a0;
+}
+
+/* ---- 場景 ---- */
+.scene { max-width: 720px; margin: 0 auto; padding: 14vh 20px; }
+.scene-wide { max-width: 1000px; }
+.scene h2 { font-size: 30px; margin: 0 0 14px; }
+.scene .kicker { margin-bottom: 8px; }
+.scene p { font-size: 19px; line-height: 1.85; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in-view { opacity: 1; transform: none; }
+
+/* ---- 主頁 hero ---- */
+.story-hero { min-height: 86vh; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 40px 20px; position: relative; }
+.story-hero .hero-illust { width: min(680px, 92vw); }
+.story-hero h1 { font-size: clamp(34px, 6vw, 56px); margin: 18px 0 8px; }
+.story-hero .sub { font-size: 20px; color: var(--ink-soft); max-width: 560px; }
+.scroll-cue { margin-top: 36px; font-family: var(--font-ui); font-size: 14px; color: var(--accent); }
+.scroll-cue::after { content: "↓"; display: block; font-size: 22px; animation: bob 1.6s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+/* ---- 內容卡片系統 ---- */
+.feed { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 22px 0; }
+.card-mini { width: 150px; min-height: 64px; border-radius: 10px; padding: 8px 10px;
+  font-family: var(--font-ui); font-size: 13px; line-height: 1.4; position: relative;
+  border: 1px solid; transition: opacity .45s ease, transform .45s ease, background .45s ease; }
+.card-legit { background: var(--c-legit-bg); border-color: var(--c-legit); color: #3f4a2c; }
+.card-spam  { background: var(--c-spam-bg);  border-color: var(--c-spam);  color: #6e2c23; }
+.card-mini .tag { display: inline-block; font-size: 10px; font-weight: 700; opacity: .8; }
+.card-legit .tag { color: var(--c-legit); }
+.card-spam .tag  { color: var(--c-spam); }
+
+/* 場景 1/2：卡片捲入動畫（staggered） */
+.feed-flood .card-mini { opacity: 0; transform: translateY(16px) scale(.96); }
+.feed-flood.in-view .card-mini { opacity: 1; transform: none; }
+.feed-flood.in-view .card-mini:nth-child(n) { transition-delay: calc(var(--i, 0) * 60ms); }
+
+/* ---- 偽陽性滑桿 ---- */
+.fp { max-width: 860px; margin: 0 auto; }
+.fp-feed { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0 0 22px; }
+.fp-card { width: 150px; min-height: 70px; border-radius: 10px; padding: 8px 26px 8px 10px;
+  font-family: var(--font-ui); font-size: 12.5px; line-height: 1.4; position: relative; border: 1.5px solid;
+  display: flex; flex-direction: column; gap: 2px;
+  transition: opacity .4s ease, transform .4s ease, background .4s ease, border-color .4s ease, filter .4s ease; }
+.fp-legit { background: var(--c-legit-bg); border-color: var(--c-legit); color: #3f4a2c; }
+.fp-spam  { background: var(--c-spam-bg);  border-color: var(--c-spam);  color: #6e2c23; }
+.fp-cat { font-size: 10px; font-weight: 700; }
+.fp-legit .fp-cat { color: var(--c-legit); }
+.fp-spam .fp-cat { color: var(--c-spam); }
+.fp-score { position: absolute; top: 6px; right: 7px; font-size: 10px; font-weight: 800; opacity: .55; }
+.fp-border { border-style: dashed; }
+
+/* 被移除（判為垃圾）：縮小、變淡 */
+.fp-removed { opacity: .35; transform: scale(.9); filter: grayscale(.4); }
+/* 誤殺正常（綠被移除）：灰掉、紅虛線框、輕微傾倒 → 最該被看見的代價 */
+.fp-is-fp { opacity: .9; filter: grayscale(1); background: #e7e3d8; border-color: var(--c-spam);
+  border-style: dashed; transform: scale(.92) rotate(-2deg); }
+.fp-is-fp::after { content: "誤殺"; position: absolute; bottom: 5px; right: 7px; font-size: 9px;
+  font-weight: 800; color: var(--c-spam); }
+/* 漏網垃圾（紅被保留）：保持紅、實線提示仍在 */
+.fp-is-leaked { box-shadow: 0 0 0 2px var(--c-spam) inset; }
+
+.fp-controls { margin: 8px auto 18px; max-width: 560px; text-align: center; }
+.fp-label { display: block; font-family: var(--font-ui); font-size: 15px; margin-bottom: 10px; }
+.fp-label strong { color: var(--accent); font-size: 18px; }
+.fp input[type="range"] { width: 100%; accent-color: var(--accent); height: 28px; cursor: pointer; }
+.fp-scale { display: flex; justify-content: space-between; font-family: var(--font-ui);
+  font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+
+.fp-readout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 560px; margin: 0 auto 14px; }
+.fp-stat { background: var(--bg-paper); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 6px; text-align: center; font-family: var(--font-ui); }
+.fp-stat b { display: block; font-size: 24px; line-height: 1; }
+.fp-stat span { font-size: 12px; color: var(--ink-soft); }
+.fp-stat-blocked b { color: var(--c-legit); }
+.fp-stat-leaked b { color: var(--c-spam); }
+.fp-stat-fp b { color: var(--c-spam); }
+.fp-stat-safe b { color: var(--ink); }
+.fp-conclusion { text-align: center; font-size: 17px; min-height: 2.6em; max-width: 560px;
+  margin: 0 auto; color: var(--ink); }
+.fp-noscript { text-align: center; color: var(--ink-soft); font-size: 14px; }
+
+/* ---- read more 外連 ---- */
+.read-more { display: inline-block; margin-top: 10px; font-family: var(--font-ui); font-size: 15px;
+  color: var(--accent); text-decoration: none; font-weight: 700; }
+.read-more::after { content: " →"; }
+.read-more:hover { text-decoration: underline; }
+
+/* ---- 工具箱小卡（場景 6） ---- */
+.toolkit { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 18px 0; }
+.toolkit .tool { background: var(--bg-paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.toolkit .tool h3 { font-size: 16px; margin: 0 0 4px; }
+.toolkit .tool p { font-size: 14px; margin: 0; color: var(--ink-soft); }
+
+/* ---- 更大的問題（場景 9） ---- */
+.bigq { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+.bigq a { display: block; text-decoration: none; color: var(--ink); border: 1px solid var(--line);
+  border-radius: 14px; padding: 18px; background: var(--bg-paper); transition: border-color .15s, transform .15s; }
+.bigq a:hover { border-color: var(--accent); transform: translateY(-2px); }
+.bigq h3 { margin: 0 0 6px; }
+.bigq p { margin: 0; font-size: 15px; color: var(--ink-soft); }
+
+/* ---- 無障礙 / reduced-motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .feed-flood .card-mini, .fp-card { transition: none; }
+  .reveal { opacity: 1; transform: none; }
+  .feed-flood .card-mini { opacity: 1; transform: none; }
+  .scroll-cue::after { animation: none; }
+}

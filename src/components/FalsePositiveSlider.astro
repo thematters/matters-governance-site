@@ -1,0 +1,84 @@
+---
+// 招牌互動：偽陽性分數線。綠＝正常、紅＝垃圾；拖門檻看誤殺與漏網的取捨。
+// 漸進增強：無 JS 時卡片仍可見、結論用 noscript 說明；有 JS 才可拖曳。
+import data from '../data/cards.json';
+const cards = data.cards;
+const initial = 75;
+---
+<div class="fp" id="fp-root" data-initial={initial}>
+  <div class="fp-feed" aria-label="一組正常（綠）與垃圾（紅）貼文，依模型分數被門檻過濾">
+    {cards.map((c) => (
+      <div
+        class={`fp-card fp-${c.truth}${c.border ? ' fp-border' : ''}`}
+        data-score={c.score}
+        data-truth={c.truth}
+      >
+        <span class="fp-cat">{c.cat}</span>
+        <span class="fp-text">{c.text}</span>
+        <span class="fp-score" aria-hidden="true">{c.score}</span>
+      </div>
+    ))}
+  </div>
+
+  <div class="fp-controls">
+    <label class="fp-label" for="fp-threshold">
+      審查門檻：分數 ≥ <strong id="fp-threshold-val">{initial}</strong> 就當成垃圾移除
+    </label>
+    <input type="range" id="fp-threshold" min="0" max="100" value={initial} step="1" aria-describedby="fp-conclusion" />
+    <div class="fp-scale"><span>← 寬鬆：少誤殺，多漏網</span><span>嚴格：多誤殺，少漏網 →</span></div>
+  </div>
+
+  <div class="fp-readout" aria-live="polite">
+    <div class="fp-stat fp-stat-blocked"><b id="fp-blocked">0</b><span>擋下垃圾</span></div>
+    <div class="fp-stat fp-stat-leaked"><b id="fp-leaked">0</b><span>漏網垃圾</span></div>
+    <div class="fp-stat fp-stat-fp"><b id="fp-fp">0</b><span>誤殺正常</span></div>
+    <div class="fp-stat fp-stat-safe"><b id="fp-safe">0</b><span>安全保留</span></div>
+  </div>
+
+  <p class="fp-conclusion" id="fp-conclusion"></p>
+  <noscript>
+    <p class="fp-noscript">這是一個可拖曳的互動：拖動門檻，看模型如何在「擋垃圾」與「誤殺正常內容」之間取捨。請開啟 JavaScript 操作。結論是——門檻調得越嚴，被誤殺的正常內容越多，而那往往正是平台最該保護的表達。</p>
+  </noscript>
+</div>
+
+<script is:inline>
+  (function () {
+    var root = document.getElementById('fp-root');
+    if (!root) return;
+    var slider = document.getElementById('fp-threshold');
+    var cards = [].slice.call(root.querySelectorAll('.fp-card'));
+    var elVal = document.getElementById('fp-threshold-val');
+    var elB = document.getElementById('fp-blocked');
+    var elL = document.getElementById('fp-leaked');
+    var elF = document.getElementById('fp-fp');
+    var elS = document.getElementById('fp-safe');
+    var elC = document.getElementById('fp-conclusion');
+    function update() {
+      var t = +slider.value, blocked = 0, leaked = 0, fp = 0, safe = 0;
+      cards.forEach(function (c) {
+        var score = +c.getAttribute('data-score');
+        var spam = c.getAttribute('data-truth') === 'spam';
+        var removed = score >= t;
+        c.classList.toggle('fp-removed', removed);
+        c.classList.toggle('fp-is-fp', removed && !spam);
+        c.classList.toggle('fp-is-leaked', !removed && spam);
+        if (spam) { removed ? blocked++ : leaked++; } else { removed ? fp++ : safe++; }
+      });
+      elVal.textContent = t; elB.textContent = blocked; elL.textContent = leaked;
+      elF.textContent = fp; elS.textContent = safe;
+      var msg;
+      if (fp === 0 && leaked === 0) {
+        msg = '幾乎完美——但這種甜蜜點很罕見，真實內容遠比這 22 張複雜。';
+      } else if (fp > 0 && leaked > 0) {
+        msg = '你誤殺了 ' + fp + ' 篇正常內容，卻仍有 ' + leaked + ' 篇垃圾漏網——兩種代價同時存在。';
+      } else if (fp > 0) {
+        msg = '為了把垃圾擋乾淨，你誤殺了 ' + fp + ' 篇正常內容（偽陽性）。被誤殺的，往往正是平台最該保護的表達。';
+      } else {
+        msg = '沒有誤殺，但還有 ' + leaked + ' 篇垃圾漏網。想再擋嚴一點？小心代價。';
+      }
+      elC.textContent = msg;
+    }
+    slider.addEventListener('input', update);
+    update();
+  })();
+</script>

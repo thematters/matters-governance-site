@@ -18,7 +18,8 @@ import '../styles/story.css';
       <p class="kicker">技術文件 · 經典案例 · 開放原始碼大公開</p>
       <h1>看不見的平台清道夫</h1>
       <p class="sub">社群平台的垃圾打掃方法大揭秘</p>
-      <p class="scroll-cue">往下捲，親手走一遍 ↓</p>
+      <p class="scroll-cue">往下捲，親手走一遍</p>
+      <img class="scroll-arrow" src="illustrations/objects/down-arrow.png" alt="" aria-hidden="true" />
     </div>
   </section>
 
@@ -95,17 +96,26 @@ import '../styles/story.css';
     <p class="kicker">更大的問題</p>
     <h2>審查與抗審查，是同一件事的兩面</h2>
     <div class="bigq">
-      <a class="board board--hover" href="censorship-resistance" style="--bigq-c:#6f8f4e">
-        <h3>抗審查 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p>
+      <a class="board board--hover bigq-card" href="censorship-resistance" style="--bigq-c:#6f8f4e">
+        <img class="bigq-thumb" src="illustrations/card-censorship-resistance.jpg" alt="" loading="lazy" />
+        <div class="bigq-body">
+          <h3>抗審查 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+          <p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p>
+        </div>
       </a>
-      <a class="board board--hover" href="ranking" style="--bigq-c:#c8a020">
-        <h3>排序與末日爆滑 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>就算沒被刪，你看到的順序也被決定了——「決定誰被看見」才是真正的權力。</p>
+      <a class="board board--hover bigq-card" href="ranking" style="--bigq-c:#c8a020">
+        <img class="bigq-thumb" src="illustrations/card-ranking.jpg" alt="" loading="lazy" />
+        <div class="bigq-body">
+          <h3>排序與末日爆滑 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+          <p>就算沒被刪，你看到的順序也被決定了——「決定誰被看見」才是真正的權力。</p>
+        </div>
       </a>
-      <a class="board board--hover" href="history" style="--bigq-c:#c0584a">
-        <h3>當整個網域被封 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p>
+      <a class="board board--hover bigq-card" href="history" style="--bigq-c:#c0584a">
+        <img class="bigq-thumb" src="illustrations/card-dns-rpz.jpg" alt="" loading="lazy" />
+        <div class="bigq-body">
+          <h3>當整個網域被封 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+          <p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p>
+        </div>
       </a>
     </div>
   </section>

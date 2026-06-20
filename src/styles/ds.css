@@ -1,0 +1,124 @@
+/* ===========================================================================
+   設計系統層（P0）：全部建在 @matters/design-system-tokens 之上。
+   共用元件：btn / board / stat / callout / chip / figure / chapter-nav / banner。
+   原則：不寫死色號與 magic number，一律引用 DS token 或本檔別名。
+   =========================================================================== */
+
+:root {
+  /* DS 漏發的 spacing，補 fallback（其元件有引用 sp18/20/24/48） */
+  --space-sp18: 18px;
+  --space-sp20: 20px;
+  --space-sp24: 24px;
+  --space-sp48: 48px;
+
+  /* 圓角別名（DS 無 radius token，對齊其元件事實慣例） */
+  --radius-pill: 999px;
+  --radius-card: 12px;
+  --radius-chip: 4px;
+
+  /* 容器寬度（收斂多軌） */
+  --col-read: 680px;   /* 內文單一 measure */
+  --col-wide: 1000px;  /* 圖/互動 */
+
+  /* 語意別名 → DS token（全站只引用這層） */
+  --c-brand: var(--color-brand-new-purple, #7258FF);
+  --c-brand-press: var(--color-primary-800, #4b3acc);
+  --c-pos: var(--color-function-positive, #5c9969);
+  --c-neg: var(--color-function-negative, #c85c41);
+  --c-warn: var(--color-function-warn, #c8a020);
+
+  /* 等寬字（給數據標籤；DS 沒有，用系統 mono） */
+  --font-mono: "SFMono-Regular", ui-monospace, "Roboto Mono", monospace;
+}
+
+/* ---- 按鈕：primary / secondary / ghost 三階層 ---- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sp4);
+  font-family: var(--font-ui); font-weight: 700; font-size: 15px; line-height: 1;
+  padding: var(--space-sp10) var(--space-sp18); border-radius: var(--radius-pill);
+  border: 1.5px solid transparent; cursor: pointer; text-decoration: none;
+  transition: background .15s, color .15s, border-color .15s, box-shadow .15s, transform .12s;
+  min-height: 40px;
+}
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--color-primary-100, #e7e3ff); }
+.btn--primary { background: var(--c-brand); color: #fff; }
+.btn--primary:hover { background: var(--c-brand-press); }
+.btn--secondary { background: #fff; color: var(--c-brand); border-color: var(--c-brand); }
+.btn--secondary:hover { background: var(--color-primary-0, #f6f4ff); }
+.btn--ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
+.btn--ghost:hover { color: var(--c-brand); border-color: var(--c-brand); }
+.btn--sm { font-size: 13px; padding: var(--space-sp6) var(--space-sp14); min-height: 32px; }
+
+/* ---- 卡片 / 面板 ---- */
+.board {
+  background: var(--bg-paper); border: 1px solid var(--line);
+  border-radius: var(--radius-card); padding: var(--space-sp18);
+  box-shadow: var(--shadow-shadow1, 0 2px 8px rgba(0,0,0,.05));
+}
+.board--hover { transition: transform .14s, box-shadow .14s, border-color .14s; }
+.board--hover:hover { transform: translateY(-3px); box-shadow: var(--shadow-dropdown-new, 0 10px 28px rgba(0,0,0,.12)); border-color: var(--c-brand); }
+
+/* ---- Stat 卡：大數字 + 前後對比迷你長條 ---- */
+.stat { text-align: center; }
+.stat__num { font: 800 36px/1 var(--font-ui); color: var(--ink); letter-spacing: -.01em; }
+.stat__num--pos { color: var(--c-pos); }
+.stat__num--neg { color: var(--c-neg); }
+.stat__label { font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); margin-top: var(--space-sp4); }
+.stat__bar { height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; margin-top: var(--space-sp8); }
+.stat__bar > i { display: block; height: 100%; background: var(--c-brand); border-radius: 99px; }
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-sp12); margin: var(--space-sp24) 0; }
+
+/* ---- Callout：左側品牌邊條的引言/重點 ---- */
+.callout {
+  border-left: 4px solid var(--c-brand); background: var(--color-primary-0, #f6f4ff);
+  padding: var(--space-sp14) var(--space-sp18); border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  margin: var(--space-sp24) 0; font-size: 19px; line-height: 1.7; color: var(--ink);
+}
+.callout--quote { font-family: var(--font-read); font-style: italic; border-left-color: var(--c-warn); background: transparent; }
+
+/* ---- Chip / Badge ---- */
+.chip {
+  display: inline-block; font: 700 11px var(--font-ui); padding: 3px 9px;
+  border-radius: var(--radius-chip); background: var(--color-primary-100, #e7e3ff); color: var(--c-brand-press);
+  letter-spacing: .02em;
+}
+.chip--pos { background: color-mix(in srgb, var(--c-pos) 16%, transparent); color: var(--c-pos); }
+.chip--neg { background: color-mix(in srgb, var(--c-neg) 16%, transparent); color: var(--c-neg); }
+.chip--warn { background: color-mix(in srgb, var(--c-warn) 22%, transparent); color: #8a6d12; }
+
+/* ---- Figure：所有互動的統一外殼 ---- */
+.figure { max-width: var(--col-wide); margin: var(--space-sp24) auto; }
+.figure__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-sp8);
+  padding-bottom: var(--space-sp8); border-bottom: 1px solid var(--line); margin-bottom: var(--space-sp16); }
+.figure__title { font: 800 16px var(--font-ui); color: var(--ink); }
+.figure__hint { font: 600 12px var(--font-ui); color: var(--c-brand); }
+.figure__controls { display: flex; gap: var(--space-sp10); flex-wrap: wrap; justify-content: center; margin-top: var(--space-sp14); }
+
+/* ---- 章節導航：prev / next ---- */
+.chapter-nav { display: flex; justify-content: space-between; gap: var(--space-sp12); margin: var(--space-sp48) 0 0;
+  border-top: 1px solid var(--line); padding-top: var(--space-sp20); }
+.chapter-nav a { font-family: var(--font-ui); font-size: 15px; color: var(--ink); text-decoration: none;
+  display: flex; flex-direction: column; gap: 2px; max-width: 46%; }
+.chapter-nav a span { font-size: 12px; color: var(--ink-soft); }
+.chapter-nav a:hover { color: var(--c-brand); }
+.chapter-nav .next { text-align: right; align-items: flex-end; }
+
+/* ---- 滿版 Banner：底圖 + scrim + 疊字 ---- */
+.full-bleed { width: 100vw; margin-left: 50%; transform: translateX(-50%); }
+.banner { position: relative; min-height: 62vh; display: flex; align-items: flex-end;
+  overflow: hidden; }
+.banner > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.banner::after { content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(20,18,14,.10) 0%, rgba(20,18,14,.06) 40%, rgba(20,18,14,.55) 100%); }
+.banner__inner { position: relative; z-index: 2; max-width: var(--col-read); margin: 0 auto;
+  width: 100%; padding: var(--space-sp48) var(--space-sp20); color: #fff; }
+.banner__inner .kicker { color: rgba(255,255,255,.85); }
+.banner__inner h1 { color: #fff; font-size: clamp(30px, 5vw, 52px); margin: var(--space-sp8) 0 0;
+  text-shadow: 0 2px 18px rgba(0,0,0,.35); }
+.banner--hero { min-height: 88vh; align-items: center; text-align: center; }
+.banner--hero .banner__inner .sub { color: rgba(255,255,255,.9); font-size: 20px; margin-top: var(--space-sp10); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .board--hover { transition: none; }
+}

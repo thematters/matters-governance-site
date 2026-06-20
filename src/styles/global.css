@@ -22,7 +22,7 @@
   --accent: var(--color-brand-new-purple, #7258FF);
   --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
 
-  --font-ui:   var(--font-family-ui, "Noto Sans TC", system-ui, sans-serif);
+  --font-ui:   "Noto Sans TC", system-ui, -apple-system, sans-serif;
   --font-read: var(--font-family-reading, "Noto Serif TC", serif);
 
   --maxw: 780px;
@@ -154,10 +154,7 @@ section.block { margin: 56px 0; }
 
 /* ---- hero ---- */
 .hero { padding: 40px 0 8px; }
-.hero-illust { border: 2px dashed var(--sage); border-radius: var(--radius);
-  background: linear-gradient(180deg, #EDE7D6, #E3DAC4);
-  min-height: 280px; display: flex; align-items: center; justify-content: center;
-  text-align: center; color: var(--ink-soft); font-family: var(--font-ui); margin: 18px 0; }
+/* 舊 hero 佔位樣式已移除（A8）；hero 圖樣式見 story.css，章節 banner 見 ds.css */
 .hero h1 { font-size: 40px; margin: 8px 0 6px; }
 .thesis { font-size: 22px; color: var(--ink); border-left: 4px solid var(--mustard);
   padding-left: 16px; margin: 24px 0; }

@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InteractionSlot from '../components/InteractionSlot.astro';
 import RingDetector from '../components/RingDetector.astro';
 import '../styles/story.css';
 ---
@@ -19,7 +18,6 @@ import '../styles/story.css';
     <code>granite-embedding</code> + LoRA。被判違規的文章<strong>不刪除，只是不出現在公共頁面</strong>。
     攔阻成功率 <strong>96% → 99.7%</strong>，誤判率 <strong>3.1% → 0.13%</strong>。留言另用更小的 <code>e5-small</code>，偽陽性僅 <strong>0.33%</strong>——小模型反而比笨重模型更準。
   </p>
-  <InteractionSlot title="決策邊界：看資料點落在移動分界線兩側" reference="R2D3" />
 
   <h2>模型會「自我中毒」</h2>
   <p>

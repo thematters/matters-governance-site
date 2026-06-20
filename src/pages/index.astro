@@ -8,12 +8,20 @@ import '../styles/story.css';
 <BaseLayout title="主敘事">
   <ChapterRail />
 
-  <!-- 序幕 — HERO（滿版電影感 banner） -->
-  <section class="full-bleed banner banner--hero" id="ch-prologue">
-    <video class="banner-media" muted loop playsinline preload="auto" poster="illustrations/hero.jpg" aria-hidden="true" data-autoplay>
+  <!-- ───────── 電影感固定背景：常駐影片 + 暗幕（隨捲動變暗→淡出） ─────────
+       放在頁面最上層（不在 .banner--hero 內），因為 .full-bleed 帶 transform，
+       會讓 position:fixed 失效。這兩層 fixed 在所有內容之後、body 暖米底之上；
+       GSAP 驅動 .hero-dark 變暗，捲過 StickyScroller 後整組（影片+暗幕）一起淡出。 -->
+  <div class="hero-bg" id="hero-bg" aria-hidden="true">
+    <video class="hero-bg__video" muted loop playsinline preload="auto" poster="illustrations/hero.jpg" data-autoplay>
       <source src="illustrations/anim/hero-everyone-moves-loop.webm" type="video/webm" />
       <source src="illustrations/anim/hero-everyone-moves-loop.mp4" type="video/mp4" />
     </video>
+  </div>
+  <div class="hero-dark" id="hero-dark" aria-hidden="true"></div>
+
+  <!-- 序幕 — HERO（滿版電影感 banner；影片改由上方固定背景提供） -->
+  <section class="full-bleed banner banner--hero banner--hero-fixed" id="ch-prologue">
     <div class="banner__inner">
       <p class="kicker">技術文件 · 經典案例 · 開放原始碼大公開</p>
       <h1>看不見的平台清道夫</h1>
@@ -161,4 +169,79 @@ import '../styles/story.css';
     }, { threshold: 0.18 });
     [].forEach.call(nodes, function (e) { io.observe(e); });
   })();
+</script>
+
+<script>
+  // ───────── 電影感固定背景：隨捲動變暗 → 淡出（GSAP ScrollTrigger） ─────────
+  // 完全獨立於 StickyScroller 的 timeline，只操作頁面級的 #hero-bg / #hero-dark。
+  // 觸發與範圍：
+  //   ① 變暗：以 #scrolly（核心 scrollytelling）為 trigger，從它頂端進場（花園漸暗）
+  //      推到中段達到峰值；到後段「收斂」讓位給 scrolly 自己的 .scrolly-atmos，
+  //      避免兩層暗幕疊起來變死黑。
+  //   ② 淡出：捲過 #scrolly、抵達第二章休息點(#ch-2) 時，整組（影片+暗幕）opacity→0，
+  //      下方章節回到 body 暖米底（影片不透在後面）。
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initHeroBg() {
+    const heroBg = document.getElementById('hero-bg');
+    const heroDark = document.getElementById('hero-dark');
+    const scrolly = document.getElementById('scrolly');
+    if (!heroBg || !heroDark || heroBg.dataset.inited) return;
+    heroBg.dataset.inited = '1';
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // reduced-motion：不做捲動變暗動畫；留一層溫和定值暗幕確保標題可讀，影片照常輪播。
+    if (reduce) {
+      gsap.set(heroDark, { opacity: 0.34 });
+      return;
+    }
+
+    // 安全保險：沒有 #scrolly 時退化成「只在序幕區段附近顯示、之後淡出」。
+    const ch2 = document.getElementById('ch-2');
+    const fadeRef = scrolly || ch2 || document.getElementById('ch-1');
+    if (!fadeRef) { gsap.set(heroDark, { opacity: 0.34 }); return; }
+
+    // 初始：暗幕清亮（變暗交給捲動），影片背景全顯示。
+    gsap.set(heroDark, { opacity: 0 });
+    gsap.set(heroBg, { opacity: 1 });
+
+    // 單一時間軸（關鍵：避免兩個 scrub trigger 同時寫 hero-bg/hero-dark 的 opacity 互相打架，
+    // 導致淡出失效、影片殘留在下方章節後面）。
+    //   trigger 從 #scrolly 頂端進場(top bottom) 起算，endTrigger 到第二章(#ch-2) 視窗中央(top center)。
+    //   前 ~88%：花園隨垃圾湧入而變暗，後段收斂讓位 scrolly 自己的 .scrolly-atmos（不過黑）；
+    //   末 ~12%：抵達第二章時整組（影片+暗幕）淡出 →0，下方章節回到 body 暖米底（影片不透在後面）。
+    const endEl = ch2 || document.getElementById('ch-3') || fadeRef;
+    const usingCh2 = endEl === ch2;
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: fadeRef,
+        start: 'top bottom',
+        endTrigger: endEl,
+        end: usingCh2 ? 'top center' : 'bottom center',
+        scrub: 1,
+      },
+    });
+    tl.to(heroDark, { opacity: 0.18, ease: 'none', duration: 0.10 })            // 進場：花園起霧
+      .to(heroDark, { opacity: 0.52, ease: 'none', duration: 0.40 })            // 中段：垃圾湧入/審查，最暗
+      .to(heroDark, { opacity: 0.30, ease: 'none', duration: 0.38 })            // 後段：收斂讓位 scrolly-atmos
+      .to([heroBg, heroDark], { opacity: 0, ease: 'power1.inOut', duration: 0.12 }); // 末段：整組淡出離場
+
+    // 圖片/字體載入造成版面位移 → 刷新 ScrollTrigger 起訖位置（否則 trigger 落點會偏，淡出對不準）。
+    window.addEventListener('load', () => ScrollTrigger.refresh());
+    let rt;
+    window.addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => ScrollTrigger.refresh(), 200);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroBg);
+  } else {
+    initHeroBg();
+  }
+  document.addEventListener('astro:page-load', initHeroBg);
 </script>

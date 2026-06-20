@@ -34,6 +34,7 @@ const steps = [
 ];
 ---
 <div class="scrolly" id="scrolly">
+  <div class="scrolly-atmos" id="scrolly-atmos" aria-hidden="true"></div>
   <div class="scrolly-grid">
     <div class="scrolly-figwrap">
       <div class="scrolly-fig" id="sg" data-state="green">
@@ -65,7 +66,10 @@ const steps = [
 
 <style>
   .scrolly { position: relative; width: min(1080px, 96vw); margin-left: 50%; transform: translateX(-50%); }
-  .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .scrolly-atmos { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100vw;
+    z-index: 0; opacity: 0; pointer-events: none;
+    background: radial-gradient(125% 78% at 50% 32%, #2c2640 0%, #14121e 58%, #0a0810 100%); }
+  .scrolly-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
   .scrolly-figwrap { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
   .scrolly-fig { width: 100%; background: var(--bg-paper); border: 1px solid var(--line); border-radius: 18px;
     padding: 18px; box-shadow: 0 8px 30px rgba(40,36,30,.07); will-change: background-color; }
@@ -128,6 +132,7 @@ const steps = [
     const cap = document.getElementById('sg-cap');
     const line = document.getElementById('sg-line');
     const ringSvg = document.getElementById('sg-ring-svg');
+    const atmos = document.getElementById('scrolly-atmos');
     const steps = Array.prototype.slice.call(document.querySelectorAll('#scrolly .scrolly-step'));
     const all = Array.prototype.slice.call(feed.querySelectorAll('.sg-card'));
     const pick = (k) => all.filter((c) => c.getAttribute('data-kind') === k);
@@ -181,6 +186,7 @@ const steps = [
     // 初始：非綠卡先藏在下方
     gsap.set([...red, ...border, ...ring], { opacity: 0, scale: 0.4, yPercent: 45 });
     gsap.set(green, { opacity: 1, scale: 1, yPercent: 0 });
+    gsap.set(atmos, { opacity: 0 });
 
     const tl = gsap.timeline({
       defaults: { ease: 'power2.out' },
@@ -230,6 +236,13 @@ const steps = [
     // 5 收束：整體微縮、靜下來
     tl.addLabel('settle');
     tl.to(feed, { scale: 0.97, duration: 0.5, ease: 'power1.inOut' }, 'settle');
+
+    // 黑/光脊椎：下潛到「誤殺」最暗、集團/收束回升（feed 卡片在暗中發光）
+    tl.to(atmos, { opacity: 0.42, duration: 0.9 }, 'flood');
+    tl.to(atmos, { opacity: 0.72, duration: 0.8 }, 'filter');
+    tl.to(atmos, { opacity: 0.74, duration: 0.8 }, 'fp+=0.1');
+    tl.to(atmos, { opacity: 0.5, duration: 0.5 }, 'ring');
+    tl.to(atmos, { opacity: 0.18, duration: 0.5 }, 'settle');
 
     // 文字高亮 + caption：每個 step 各自的 trigger（與 scrub 同步）
     steps.forEach((step, i) => {

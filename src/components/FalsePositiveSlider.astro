@@ -1,6 +1,7 @@
 ---
 // 招牌互動：偽陽性分數線。綠＝正常、紅＝垃圾；拖門檻看誤殺與漏網的取捨。
-// 漸進增強：無 JS 時卡片仍可見、結論用 noscript 說明；有 JS 才可拖曳。
+// 工藝級控制項：訂製 thumb／填色軌／跟手數值泡泡／刻度／<output>／focus 光環／ARIA／進場 demo。
+// 漸進增強：無 JS 時卡片仍可見、結論用 noscript；有 JS 才可拖曳。
 import data from '../data/cards.json';
 const cards = data.cards;
 const initial = 75;
@@ -22,9 +23,22 @@ const initial = 75;
 
   <div class="fp-controls">
     <label class="fp-label" for="fp-threshold">
-      審查門檻：分數 ≥ <strong id="fp-threshold-val">{initial}</strong> 就當成垃圾移除
+      審查門檻：分數 ≥ <output class="fp-out" id="fp-threshold-val" for="fp-threshold">{initial}</output> 就當成垃圾移除
     </label>
-    <input type="range" id="fp-threshold" min="0" max="100" value={initial} step="1" aria-describedby="fp-conclusion" />
+    <div class="fp-slider-wrap" id="fp-wrap">
+      <div class="fp-bubble" id="fp-bubble" aria-hidden="true">{initial}</div>
+      <input
+        type="range" id="fp-threshold" class="fp-range" min="0" max="100" value={initial} step="1"
+        aria-label="審查門檻分數，0 到 100" aria-describedby="fp-conclusion"
+      />
+      <div class="fp-ticks" aria-hidden="true">
+        <span style="left:0%"><i>0</i></span>
+        <span style="left:25%"></span>
+        <span style="left:50%"><i>50</i></span>
+        <span style="left:75%"></span>
+        <span style="left:100%"><i>100</i></span>
+      </div>
+    </div>
     <div class="fp-scale"><span>← 寬鬆：少誤殺，多漏網</span><span>嚴格：多誤殺，少漏網 →</span></div>
   </div>
 
@@ -41,11 +55,48 @@ const initial = 75;
   </noscript>
 </div>
 
+<style>
+  .fp-slider-wrap { position: relative; padding-top: 34px; }
+  .fp-range { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 99px;
+    background: linear-gradient(90deg, var(--c-brand, #7258FF) var(--val, 75%), var(--line) var(--val, 75%));
+    outline: none; cursor: pointer; margin: 0; }
+  .fp-range::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; margin-top: -10px;
+    border-radius: 50%; background: var(--c-brand, #7258FF); border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(40,30,90,.35); cursor: grab; }
+  .fp-range::-webkit-slider-thumb:active { cursor: grabbing; }
+  .fp-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--c-brand, #7258FF);
+    border: 3px solid #fff; box-shadow: 0 2px 8px rgba(40,30,90,.35); cursor: grab; }
+  .fp-range::-moz-range-track { height: 8px; border-radius: 99px; background: transparent; }
+  .fp-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 2px 8px rgba(40,30,90,.35),
+    0 0 0 5px color-mix(in srgb, var(--c-brand, #7258FF) 30%, transparent); }
+  .fp-range:focus-visible::-moz-range-thumb { box-shadow: 0 2px 8px rgba(40,30,90,.35),
+    0 0 0 5px color-mix(in srgb, var(--c-brand, #7258FF) 30%, transparent); }
+
+  .fp-bubble { position: absolute; top: 0; left: 75%; transform: translateX(-50%);
+    background: var(--ink); color: #fff; font: 700 12px var(--font-ui); padding: 2px 8px; border-radius: 6px;
+    white-space: nowrap; pointer-events: none; }
+  .fp-bubble::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: var(--ink); border-bottom: 0; }
+
+  .fp-ticks { position: relative; height: 20px; margin-top: 9px; }
+  .fp-ticks > span { position: absolute; top: 0; width: 1.5px; height: 6px; background: var(--line); transform: translateX(-50%); }
+  .fp-ticks > span > i { position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    font: 700 10px var(--font-ui); color: var(--ink-soft); font-style: normal; }
+
+  .fp-out { font-variant-numeric: tabular-nums; color: var(--c-brand, #7258FF); font-weight: 800; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fp-bubble { transition: left .08s linear; }
+  }
+</style>
+
 <script is:inline>
   (function () {
     var root = document.getElementById('fp-root');
     if (!root) return;
     var slider = document.getElementById('fp-threshold');
+    var wrap = document.getElementById('fp-wrap');
+    var bubble = document.getElementById('fp-bubble');
     var cards = [].slice.call(root.querySelectorAll('.fp-card'));
     var elVal = document.getElementById('fp-threshold-val');
     var elB = document.getElementById('fp-blocked');
@@ -53,6 +104,16 @@ const initial = 75;
     var elF = document.getElementById('fp-fp');
     var elS = document.getElementById('fp-safe');
     var elC = document.getElementById('fp-conclusion');
+    var THUMB = 28;
+
+    function setVisual(t) {
+      slider.style.setProperty('--val', t + '%');
+      var w = wrap.clientWidth || 1;
+      var x = (t / 100) * (w - THUMB) + THUMB / 2;
+      bubble.style.left = x + 'px';
+      bubble.textContent = t;
+      slider.setAttribute('aria-valuetext', '門檻 ' + t + ' 分');
+    }
     function update() {
       var t = +slider.value, blocked = 0, leaked = 0, fp = 0, safe = 0;
       cards.forEach(function (c) {
@@ -77,8 +138,44 @@ const initial = 75;
         msg = '沒有誤殺，但還有 ' + leaked + ' 篇垃圾漏網。想再擋嚴一點？小心代價。';
       }
       elC.textContent = msg;
+      setVisual(t);
     }
-    slider.addEventListener('input', update);
+
+    var userTouched = false;
+    slider.addEventListener('input', function () { userTouched = true; update(); });
+    window.addEventListener('resize', function () { setVisual(+slider.value); });
     update();
+
+    // 進場自動 demo：滑入視野時 thumb 輕輕 wiggle 一次，邀請動手（reduced-motion 不做）
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { io.disconnect(); setTimeout(demo, 500); }
+        });
+      }, { threshold: 0.5 });
+      io.observe(root);
+    }
+    function animateTo(target, done) {
+      var from = +slider.value, t0 = null, dur = 320;
+      function frame(ts) {
+        if (userTouched) return;
+        if (t0 === null) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var ease = 1 - Math.pow(1 - p, 3);
+        slider.value = Math.round(from + (target - from) * ease);
+        update();
+        if (p < 1) requestAnimationFrame(frame); else if (done) done();
+      }
+      requestAnimationFrame(frame);
+    }
+    function demo() {
+      if (userTouched) return;
+      var seq = [88, 60, 75], i = 0;
+      (function step() {
+        if (userTouched || i >= seq.length) return;
+        animateTo(seq[i], function () { i++; setTimeout(step, 130); });
+      })();
+    }
   })();
 </script>

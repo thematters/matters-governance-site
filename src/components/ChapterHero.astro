@@ -1,5 +1,16 @@
 ---
-// 分頁統一章節 hero：滿版底圖（或影片迴圈）+ scrim + 疊字。
+// 分頁統一章節 hero：電影感「固定在後、內容捲過、漸淡離場」的持續背景。
+//
+// 結構（沿用首頁 .hero-bg/.hero-dark 已驗證模式，章節版前綴 .chero-*）：
+//   ① .chero-bg   ── position:fixed 釘在視窗的底圖（img 或直式 9:16 影片），object-fit:cover。
+//   ② .chero-dark ── position:fixed 暗幕：一層定值淡 scrim（保證亮底圖上標題可讀）
+//                    ＋隨捲動的輕微加深。章節頁重點是「固定+漸淡」，不必像首頁大幅變暗。
+//   ③ .banner--chapter-fixed ── 透明的 banner，只承載 kicker/title 疊字。
+//
+// 關鍵踩雷（首頁已踩過）：
+//   .full-bleed 帶 transform: translateX(-50%) 會讓 position:fixed 失效，
+//   所以固定背景層（①②）必須放在 .full-bleed section「之外」、且排在它前面，
+//   讓 fixed 相對視窗（外層 <main>/.container 無 transform）。
 interface Props {
   kicker: string;
   title: string;
@@ -9,17 +20,65 @@ interface Props {
 }
 const { kicker, title, img, alt, video } = Astro.props;
 ---
-<section class="full-bleed banner banner--chapter">
+{/* ① 固定底圖層：img 或直式 9:16 影片，cover 置中，裁邊靠 scrim 遮 */}
+<div class="chero-bg" data-chero-bg aria-hidden="true">
   {video ? (
-    <video class="banner-media" muted loop playsinline preload="none" poster={img} aria-hidden="true" data-autoplay>
+    <video class="chero-bg__media" muted loop playsinline preload="none" poster={img} aria-hidden="true" data-autoplay>
       <source src={`illustrations/anim/${video}.webm`} type="video/webm" />
       <source src={`illustrations/anim/${video}.mp4`} type="video/mp4" />
     </video>
   ) : (
-    <img src={img} alt={alt} />
+    <img class="chero-bg__media" src={img} alt={alt} />
   )}
+</div>
+{/* ② 固定暗幕：定值淡 scrim（CSS 烘底，保證可讀）＋隨捲動輕微加深（GSAP 推） */}
+<div class="chero-dark" data-chero-dark aria-hidden="true"></div>
+
+{/* ③ 透明 banner：只承載疊字（底圖/暗幕都在上方固定層） */}
+<section class="full-bleed banner banner--chapter banner--chapter-fixed" data-chero-banner>
   <div class="banner__inner">
     <p class="kicker">{kicker}</p>
     <h1 set:html={title} />
   </div>
 </section>
+
+<script>
+  // ───────── 章節 hero 固定背景：捲過時「漸淡離場」 ─────────
+  // 用直接 scroll listener（比 ScrollTrigger 對位置更穩、不受 lazy 圖位移/refresh 時序影響，
+  // 之前 ScrollTrigger 版淡出落點對不準、文章出現時底圖還沒淡盡）：
+  //   依 scrollY 相對 hero 高度算 0→1 進度，在 ~70% hero 高內把 .chero-bg + .chero-dark 一起淡盡
+  //   （文章出現前底圖已透明、落回 body 暖米底），並加克制的 Ken-Burns 中心放大做電影感。
+  //   reduced-motion 不做動畫（底圖靜態 + CSS 定值 scrim，標題仍可讀）。
+  function initCheroBg() {
+    const bg = document.querySelector<HTMLElement>('[data-chero-bg]');
+    const dark = document.querySelector<HTMLElement>('[data-chero-dark]');
+    const banner = document.querySelector<HTMLElement>('[data-chero-banner]');
+    if (!bg || !dark || !banner || bg.dataset.inited) return;
+    bg.dataset.inited = '1';
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const fadeOver = Math.max(1, banner.offsetHeight * 0.7); // 在 70% hero 高度內淡盡
+      const p = Math.min(1, Math.max(0, window.scrollY / fadeOver));
+      const o = String(1 - p);
+      bg.style.opacity = o;
+      dark.style.opacity = o;
+      bg.style.transform = 'scale(' + (1 + p * 0.06).toFixed(4) + ')'; // 克制 Ken-Burns（中心放大、不留邊）
+    }
+    function onScroll() {
+      if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCheroBg);
+  } else {
+    initCheroBg();
+  }
+  document.addEventListener('astro:page-load', initCheroBg);
+</script>

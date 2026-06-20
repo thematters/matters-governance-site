@@ -152,6 +152,32 @@ html:not(.js) .hero-dark { opacity: .34; }
 .banner--chapter { min-height: 52vh; margin-top: -40px; }
 .banner--chapter .banner__inner { padding-top: var(--space-sp32); padding-bottom: var(--space-sp24); }
 
+/* ---- 章節 hero 固定背景：固定在後、內容捲過、漸淡離場 ----
+   堆疊：.chero-bg（底圖，z-index 0）→ .chero-dark（暗幕，z-index 1）→ 內容（z-index 2）。
+   .chero-bg/.chero-dark 皆 position:fixed 釘在視窗；GSAP 隨捲動讓整組淡出離場。
+   注意：它們不可放在 .full-bleed/.banner 內（那些帶 transform，會讓 fixed 失效），
+   故由 ChapterHero 輸出在 banner section「之前」、外層 <main>/.container 無 transform。 */
+.chero-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+  background: var(--bg); /* 底圖載入前的暖米底，避免黑屏 */ will-change: transform, opacity; }
+.chero-bg__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  /* 直式 9:16 影片/圖用 cover 置中：手機接近滿版（優勢）、桌面裁邊靠 scrim 遮 */
+  object-position: center; }
+/* 暗幕：一層定值淡 scrim（保證亮底圖上 kicker/title 可讀，無 JS / reduced-motion 也成立）
+   ＋隨捲動的輕微加深（GSAP 把 opacity 推過 1 來加深）。章節頁重點是固定+漸淡，不必大幅變暗。 */
+.chero-dark { position: fixed; inset: 0; z-index: 1; pointer-events: none; will-change: opacity;
+  background: linear-gradient(180deg, rgba(18,16,12,.20) 0%, rgba(18,16,12,.08) 40%, rgba(18,16,12,.58) 100%); }
+
+/* hero 標題塊浮在固定背景之上；透明 banner，不再需要自己的底圖/內建 scrim（暗幕已提供）。
+   關鍵：固定背景是滿版 100svh，banner 也必須 100svh，否則文章內容會疊在固定背景上（字糊在底圖上）。
+   章節頁「底圖全螢幕→捲過→漸淡離場」：滿版底圖 hero，捲過一屏後文章落到 body 暖米底。 */
+.banner--chapter-fixed { position: relative; z-index: 2; background: transparent; min-height: 100svh; }
+.banner--chapter-fixed::after { display: none; }
+/* 100svh hero + flex-end 會把標題壓到底邊外被裁；加大底 padding 把疊字抬進下三分之一、不被切。 */
+.banner--chapter-fixed .banner__inner { padding-bottom: clamp(48px, 12vh, 130px); }
+/* banner 之後的所有兄弟＝文章內容，抬到 z-index 2 蓋過固定背景；
+   底圖淡出後內容落在 body 暖米底（底圖不透在後面殘留）。header(z40)/footer 不受影響。 */
+.banner--chapter-fixed ~ * { position: relative; z-index: 2; }
+
 @media (prefers-reduced-motion: reduce) {
   .btn, .board--hover { transition: none; }
 }

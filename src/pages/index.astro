@@ -34,10 +34,22 @@ import '../styles/story.css';
     <p class="kicker">模型之外</p>
     <h2>光靠模型不夠</h2>
     <div class="toolkit">
-      <div class="tool"><h3>打掃・小黑屋</h3><p>不刪除，只是把帳號/文章移出公共視野——可逆。</p></div>
-      <div class="tool"><h3>人工標記</h3><p>被誤殺的內容被人撿回、重新標記，回灌模型。人在迴圈裡。</p></div>
-      <div class="tool"><h3>重新訓練</h3><p>模型會「自我中毒」誤判，用大模型重新校正，偽陽性降十倍。</p></div>
-      <div class="tool"><h3>群眾守望</h3><p>守望相助隊一起把垃圾收走，公開可稽核。</p></div>
+      <div class="tool board board--hover">
+        <span class="tool-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></span>
+        <h3>打掃・小黑屋</h3><p>不刪除，只是把帳號/文章移出公共視野——可逆。</p>
+      </div>
+      <div class="tool board board--hover">
+        <span class="tool-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
+        <h3>人工標記</h3><p>被誤殺的內容被人撿回、重新標記，回灌模型。人在迴圈裡。</p>
+      </div>
+      <div class="tool board board--hover">
+        <span class="tool-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>
+        <h3>重新訓練</h3><p>模型會「自我中毒」誤判，用大模型重新校正，偽陽性降十倍。</p>
+      </div>
+      <div class="tool board board--hover">
+        <span class="tool-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <h3>群眾守望</h3><p>守望相助隊一起把垃圾收走，公開可稽核。</p>
+      </div>
     </div>
     <a class="read-more" href="moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="crowd">深入：群眾協力</a>
   </section>
@@ -55,9 +67,18 @@ import '../styles/story.css';
     <p class="kicker">更大的問題</p>
     <h2>審查與抗審查，是同一件事的兩面</h2>
     <div class="bigq">
-      <a href="censorship-resistance"><h3>抗審查</h3><p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p></a>
-      <a href="ranking"><h3>排序與末日爆滑</h3><p>就算沒被刪，你看到的順序也被決定了——「決定誰被看見」才是真正的權力。</p></a>
-      <a href="history"><h3>當整個網域被封</h3><p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p></a>
+      <a class="board board--hover" href="censorship-resistance" style="--bigq-c:#6f8f4e">
+        <h3>抗審查 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p>
+      </a>
+      <a class="board board--hover" href="ranking" style="--bigq-c:#c8a020">
+        <h3>排序與末日爆滑 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>就算沒被刪，你看到的順序也被決定了——「決定誰被看見」才是真正的權力。</p>
+      </a>
+      <a class="board board--hover" href="history" style="--bigq-c:#c0584a">
+        <h3>當整個網域被封 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p>
+      </a>
     </div>
     <p style="text-align:center;margin-top:24px"><a class="read-more" href="start">看全部 14 個主題 →</a></p>
   </section>

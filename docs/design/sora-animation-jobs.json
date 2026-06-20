@@ -47,6 +47,16 @@
       "prompt": "Create a lively four-second hand-painted gouache animation from this exact illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. The left dark spam area should contain only black ghost-like spam creatures and fluttering content cards. Do not add any new human figures, human faces, or large people on the left side. Do not make the mustard-coat person on the left prominent; visually de-emphasize that figure and keep attention on the ghost creatures. The black ghost creatures should be the main action on the left: they bob, wobble, blink, raise tiny arms, protest, drift around each other, and react as a lively swarm while staying in the dark area. Across the rest of the scene, every existing robot and human should make clear gentle storybook motions. The white garden robot tips the watering can and visible water droplets fall onto plants. The control-room robot turns its head, raises a small arm, and the magnifying glass glints. Human readers turn pages, nod, lift hands, and subtly shift posture. People in the right crowd wave small arms and lean forward. Workers in the lower floor sweep cards into the cart with visible broom strokes. A few content cards flutter downward. Leaves, flowers, and grass sway. Motion should be clearly visible at webpage hero size, charming and animated, while preserving the illustration style and avoiding new text, logos, face morphing, or chaotic camera movement."
     },
     {
+      "id": "A1e",
+      "slug": "hero-no-left-human-ghosts-4s",
+      "source": "materials/sora-inputs/hero-no-left-human-reference.png",
+      "poster": "materials/sora-inputs/hero-no-left-human-reference.png",
+      "status": "ready",
+      "loopSeconds": 4,
+      "notes": "以編輯後 reference 生成。左側已移除捕網人物，只保留鬼怪與卡片。",
+      "prompt": "Create a lively four-second hand-painted gouache animation from this exact edited illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. On the entire left side and dark spam area, show only black ghost-like spam creatures, black ink shapes, plants, and fluttering rejected content cards. Do not create or reveal any human figures, human faces, human hands, human legs, or butterfly nets on the left side. The black ghost creatures on the left are the main action: they bob, wobble, blink, raise tiny arms, protest, drift around each other, and react as a lively swarm while staying in the dark area. Across the rest of the scene, every existing robot and human should make clear gentle storybook motions. The white garden robot tips the watering can and visible water droplets fall onto plants. The control-room robot turns its head, raises a small arm, and the magnifying glass glints. Human readers turn pages, nod, lift hands, and subtly shift posture. People in the right crowd wave small arms and lean forward. Workers in the lower floor sweep cards into the cart with visible broom strokes. A few content cards flutter downward. Leaves, flowers, and grass sway. Motion should be clearly visible at webpage hero size, charming and animated, while preserving the illustration style and avoiding new text, logos, face morphing, or chaotic camera movement."
+    },
+    {
       "id": "A3",
       "slug": "light-emergence-loop",
       "source": "materials/插畫視覺風格/產生的圖片 3.png",

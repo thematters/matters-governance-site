@@ -18,6 +18,20 @@ import '../styles/story.css';
     <code>granite-embedding</code> + LoRA。被判違規的文章<strong>不刪除，只是不出現在公共頁面</strong>。
     攔阻成功率 <strong>96% → 99.7%</strong>，誤判率 <strong>3.1% → 0.13%</strong>。留言另用更小的 <code>e5-small</code>，偽陽性僅 <strong>0.33%</strong>——小模型反而比笨重模型更準。
   </p>
+  <div class="stat-row">
+    <div class="stat board">
+      <div class="stat__num stat__num--pos">99.7%</div>
+      <div class="stat__label">文章攔阻成功率<span class="stat__delta">96% → 99.7%</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num stat__num--neg">0.13%</div>
+      <div class="stat__label">誤判率<span class="stat__delta">3.1% → 0.13%・↓ 24×</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">0.33%</div>
+      <div class="stat__label">留言偽陽性<span class="stat__delta">e5-small 小模型</span></div>
+    </div>
+  </div>
 
   <h2>模型會「自我中毒」</h2>
   <p>

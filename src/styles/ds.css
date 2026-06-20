@@ -64,7 +64,8 @@
 .stat__num { font: 800 36px/1 var(--font-ui); color: var(--ink); letter-spacing: -.01em; }
 .stat__num--pos { color: var(--c-pos); }
 .stat__num--neg { color: var(--c-neg); }
-.stat__label { font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); margin-top: var(--space-sp4); }
+.stat__label { font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); margin-top: var(--space-sp4); line-height: 1.5; }
+.stat__delta { display: block; margin-top: 3px; color: var(--c-brand); font-weight: 700; font-size: 12px; }
 .stat__bar { height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; margin-top: var(--space-sp8); }
 .stat__bar > i { display: block; height: 100%; background: var(--c-brand); border-radius: 99px; }
 .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-sp12); margin: var(--space-sp24) 0; }

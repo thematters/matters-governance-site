@@ -14,6 +14,8 @@ const {
   description = '以 Matters 自身的治理史為案例，科普垃圾審查、排序演算法與抗審查。',
   lang = 'zh-Hant',
 } = Astro.props;
+// 注意：<title>{expr}文字</title> 在 Astro 的 RCDATA 會吞掉運算式後的文字，故組成單一字串
+const fullTitle = `${title}｜Matters 平台小教室`;
 
 // Pages 子路徑：用 <base href> + 相對連結（detection、en/…），不寫死前導斜線。
 const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
@@ -35,13 +37,16 @@ const navLinksHtml = sections
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <base href={base} />
+    <link rel="icon" type="image/svg+xml" href={base + 'matters-logo-graph.svg'} />
     <script is:inline>document.documentElement.classList.add('js')</script>
-    <title>{title}｜Matters 平台治理</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={new URL(base + 'illustrations/og.jpg', Astro.site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

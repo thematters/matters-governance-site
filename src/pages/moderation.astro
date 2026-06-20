@@ -5,24 +5,55 @@ import ChapterHero from '../components/ChapterHero.astro';
 import BeModerator from '../components/BeModerator.astro';
 import '../styles/story.css';
 
+// 依「不可逆/嚴厲程度」由輕到重排序，t=0(輕)→1(重) 驅動漸層色
 const d = [
-  ['註銷', '帳號刪除，不可逆。最嚴厲，早期僅用於色情/賭博/迷姦藥', '最重'],
-  ['凍結', '全面停權，連提領、付款都不行', '重'],
-  ['禁言', '一段時間不能發言（1–180 天/永久）', '中'],
-  ['折疊', '留言收合，仍存在、可展開', '輕'],
-  ['小黑屋', '把帳號/文章移出公共列表，但仍 active、直連可開', '中'],
-  ['降噪', '依分數在排序 SQL 直接排除', '輕'],
-  ['打掃', '守望相助隊移除留言並公開存證', '視情況'],
+  { name: '打掃',   eff: '守望相助隊移除留言並公開存證',                   sev: '視情況', t: 0.10 },
+  { name: '降噪',   eff: '依分數在排序 SQL 直接排除',                      sev: '輕',     t: 0.22 },
+  { name: '折疊',   eff: '留言收合，仍存在、可展開',                       sev: '輕',     t: 0.34 },
+  { name: '小黑屋', eff: '把帳號/文章移出公共列表，但仍 active、直連可開', sev: '中',     t: 0.50 },
+  { name: '禁言',   eff: '一段時間不能發言（1–180 天/永久）',              sev: '中',     t: 0.64 },
+  { name: '凍結',   eff: '全面停權，連提領、付款都不行',                   sev: '重',     t: 0.82 },
+  { name: '註銷',   eff: '帳號刪除，不可逆。最嚴厲，早期僅用於色情/賭博/迷姦藥', sev: '最重', t: 1.00 },
 ];
 ---
 <BaseLayout title="管理員手段">
   <ChapterHero kicker="主題 · 七種處置" title="從打掃到註銷的光譜" img="illustrations/moderation.jpg" alt="一台推車裝滿被移除的垃圾與黑色小怪物、紅叉卡片" />
   <p class="lead">處置的上限是降低可見度，而非刪除；每一步都在降低「處置的不可逆成本」。</p>
 
-  <table style="width:100%;border-collapse:collapse;font-size:15px;margin:18px 0">
-    <thead><tr style="text-align:left;border-bottom:2px solid var(--line)"><th style="padding:8px">手段</th><th style="padding:8px">效果</th><th style="padding:8px">嚴厲度</th></tr></thead>
-    <tbody>{d.map((r) => (<tr style="border-bottom:1px solid var(--line)"><td style="padding:8px;font-weight:700">{r[0]}</td><td style="padding:8px;color:var(--ink-soft)">{r[1]}</td><td style="padding:8px"><span class="wip">{r[2]}</span></td></tr>))}</tbody>
-  </table>
+  <div class="spectrum">
+    <div class="spectrum-track" aria-hidden="true"></div>
+    <div class="spectrum-ends"><span>輕・可逆</span><span>重・不可逆</span></div>
+    <div class="spectrum-list">
+      {d.map((r) => (
+        <div class="spectrum-item board" style={`--sev:hsl(${Math.round(112 - r.t * 104)} 56% 45%)`}>
+          <span class="spectrum-bar" aria-hidden="true"></span>
+          <span class="spectrum-name">{r.name}</span>
+          <span class="spectrum-eff">{r.eff}</span>
+          <span class="chip spectrum-chip">{r.sev}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <style>
+    .spectrum { margin: 22px 0; }
+    .spectrum-track { height: 8px; border-radius: 99px;
+      background: linear-gradient(90deg, hsl(112 56% 45%), hsl(48 72% 50%), hsl(8 66% 50%)); }
+    .spectrum-ends { display: flex; justify-content: space-between; font: 700 12px var(--font-ui);
+      color: var(--ink-soft); margin: 8px 2px 16px; }
+    .spectrum-list { display: flex; flex-direction: column; gap: 10px; }
+    .spectrum-item { display: grid; grid-template-columns: 4px 84px 1fr auto; align-items: center;
+      gap: 14px; padding: 12px 16px; }
+    .spectrum-bar { width: 4px; align-self: stretch; border-radius: 99px; background: var(--sev); }
+    .spectrum-name { font: 800 16px var(--font-ui); color: var(--ink); }
+    .spectrum-eff { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+    .spectrum-chip { background: color-mix(in srgb, var(--sev) 18%, transparent); color: var(--sev); white-space: nowrap; }
+    @media (max-width: 640px) {
+      .spectrum-item { grid-template-columns: 4px 1fr; gap: 4px 12px; }
+      .spectrum-eff, .spectrum-chip { grid-column: 2; }
+      .spectrum-chip { justify-self: start; margin-top: 2px; }
+    }
+  </style>
 
   <h2>小黑屋：歪打正著的關鍵發明</h2>
   <p>

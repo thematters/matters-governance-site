@@ -20,6 +20,11 @@ mischievous round ink-blob creatures (dark blobs with tiny eyes); the "open / ga
 is warm sunlit greens and golds, full of life. A single violet accent (#7258FF) may appear
 ONLY as a tiny marker of a human or interactive element. Leave calm empty space at top and
 bottom of the frame for cropping.
+MATTY COMPANION ROBOT: when a robot appears, reinterpret the official Matty avatar as a
+small friendly helper in the same gouache world. Rounded teal-blue body and face panel,
+small square-ish black eyes, friendly open black smile with two cream tooth shapes, muted
+rainbow headband, and small yellow lightning-like ear tabs. It should feel like a human
+friend and steward, not a hard-edged pixel-art logo or pasted mascot.
 ```
 
 gpt-image 參數慣例：
@@ -219,6 +224,10 @@ O7: a simple hand-drawn downward arrow / chevron, gouache brushstroke, inviting 
 ## §7 2026-06-20 產出清單
 
 > 2026-06-20 style-v2 校正：`light-emergence`、`ncc`、`data`、`conclusion`、`dns-rpz/banner`、`card-ranking`、`card-dns-rpz` 與 O1–O7 已改用原始成功插畫作 reference 重新生成，降低亮度、飽和度與 3D icon 感，回到米紙顆粒、低彩度 gouache 與留白構圖。
+
+> 2026-06-20 Matty-v1 校正：官方 Matty 頭貼 reference 存於 `materials/references/matty-official-avatar.png`。`hero`、`detection`、`ranking`、`crowd`、`dns-rpz/banner`、`data`、`ncc`、`conclusion`、`card-ranking`、`card-dns-rpz`、`robot` 已重跑，把 Matty 的藍綠身體、彩虹頭帶、黃色耳朵與像素表情翻譯成同風格 gouache 陪伴型機器人。
+
+> 2026-06-20 Matty-v1 影片：A1c、A5c、A6c、A7c 已用新版 Matty 靜圖重跑，輸出同名 mp4/webm 到 `public/illustrations/anim/`。
 
 ### 靜態圖
 

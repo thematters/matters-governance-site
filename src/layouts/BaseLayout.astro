@@ -2,7 +2,6 @@
 import '@matters/design-system-tokens/tokens.css';
 import '../styles/global.css';
 import '../styles/ds.css';
-import AudienceToggle from '../components/AudienceToggle.astro';
 
 interface Props {
   title: string;
@@ -67,7 +66,6 @@ const navLinksHtml = sections
         <div class="nav-main">
           <ul class="nav-links" set:html={navLinksHtml}></ul>
           <a class="btn btn--ghost btn--sm nav-toc" href="start">全部主題</a>
-          <AudienceToggle />
           <a class="nav-en" href="en/">EN</a>
         </div>
       </nav>

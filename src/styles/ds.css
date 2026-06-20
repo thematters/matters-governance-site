@@ -117,7 +117,7 @@
 .banner__inner .kicker { color: rgba(255,255,255,.85); }
 .banner__inner h1 { color: #fff; font-size: clamp(30px, 5vw, 52px); margin: var(--space-sp8) 0 0;
   text-shadow: 0 2px 18px rgba(0,0,0,.35); }
-.banner--hero { min-height: 86vh; margin-top: -40px; }
+.banner--hero { min-height: 100svh; margin-top: -40px; }
 .banner--hero .banner__inner .sub { color: rgba(255,255,255,.92); font-size: 20px; margin-top: var(--space-sp10); max-width: 560px; }
 .banner--hero .banner__inner .scroll-cue { color: rgba(255,255,255,.85); margin-top: var(--space-sp20); }
 .banner--chapter { min-height: 52vh; margin-top: -40px; }

@@ -1,12 +1,12 @@
 ---
-// 招牌互動：排序 split-screen + Place Your Bets。
+// 招牌互動：排序 split-screen + Place Your Bets，卡片做成 Matters feed（ArticleCard）。
 // 演算法分數 = 0.3·讀 + 0.4·留言 + 0.3·賞（各訊號正規化）。留言權重最高 → 引發討論勝過高曝光。
 const posts = [
-  { id: 'A', title: '爆紅迷因整理', reads: 5000, comments: 2,  donations: 1 },
-  { id: 'B', title: '能源政策的公共討論', reads: 800, comments: 60, donations: 5 },
-  { id: 'C', title: '獨立記者的群眾募資', reads: 600, comments: 10, donations: 40 },
-  { id: 'D', title: '午後日常隨筆', reads: 300, comments: 8,  donations: 3 },
-  { id: 'E', title: '剛發佈的時事分析', reads: 2000, comments: 20, donations: 8 },
+  { id: 'A', title: '爆紅迷因整理：這週讓全網笑翻的 12 張圖', author: '迷因日報',   time: '3 分鐘前',  hue: 38,  reads: 5000, comments: 2,  donations: 1 },
+  { id: 'B', title: '能源政策的公共討論：核三延役該不該',       author: '政策觀察室', time: '1 小時前',  hue: 168, reads: 800,  comments: 60, donations: 5 },
+  { id: 'C', title: '獨立記者的群眾募資：我們想做的調查報導',     author: '林記者',     time: '2 小時前',  hue: 262, reads: 600,  comments: 10, donations: 40 },
+  { id: 'D', title: '午後日常隨筆：關於一杯咖啡的小事',           author: '日常',       time: '25 分鐘前', hue: 96,  reads: 300,  comments: 8,  donations: 3 },
+  { id: 'E', title: '剛發佈的時事分析：今天那場記者會的三個重點', author: '時事快評',   time: '剛剛',     hue: 4,   reads: 2000, comments: 20, donations: 8 },
 ];
 const maxR = Math.max(...posts.map((p) => p.reads));
 const maxC = Math.max(...posts.map((p) => p.comments));
@@ -18,14 +18,24 @@ const scored = posts.map((p) => ({
 const byAlgo = [...scored].sort((a, b) => b.score - a.score);
 const byTime = ['E', 'B', 'C', 'A', 'D'].map((id) => scored.find((p) => p.id === id));
 const algoTop = byAlgo[0].id;
+const short = (t) => (t.length > 16 ? t.slice(0, 15) + '…' : t);
 ---
 <div class="rk" id="rk-root" data-top={algoTop}>
-  <p class="rk-q" id="rk-q">先猜：下面哪一則，會被演算法排到<strong>首頁第一名</strong>？點一則。</p>
-  <div class="rk-cards">
+  <p class="rk-q" id="rk-q">先猜：這條 feed 裡，哪一則會被演算法排到<strong>首頁第一名</strong>？點一則。</p>
+
+  <div class="rk-cards" role="list">
     {scored.map((p) => (
-      <button type="button" class="rk-card" data-id={p.id}>
-        <span class="rk-title">{p.title}</span>
-        <span class="rk-stats">👁 {p.reads.toLocaleString()}　💬 {p.comments}　💰 {p.donations}</span>
+      <button type="button" class="rk-card" data-id={p.id} role="listitem">
+        <span class="fi-avatar" style={`background:hsl(${p.hue} 55% 55%)`}>{p.author.slice(0, 1)}</span>
+        <span class="fi-body">
+          <span class="fi-head"><span class="fi-author">{p.author}</span><span class="fi-time">· {p.time}</span></span>
+          <span class="rk-title fi-title">{p.title}</span>
+          <span class="fi-meta">
+            <span class="fi-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>{p.reads.toLocaleString()}</span>
+            <span class="fi-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5A8.5 8.5 0 0 1 12.5 20a8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>{p.comments}</span>
+            <span class="fi-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a2 2 0 0 1 0 4h-3.5"/></svg>{p.donations}</span>
+          </span>
+        </span>
       </button>
     ))}
   </div>
@@ -34,11 +44,11 @@ const algoTop = byAlgo[0].id;
     <div class="rk-cols">
       <div class="rk-col">
         <h4>時間序（最新在上）</h4>
-        <ol>{byTime.map((p) => (<li data-id={p.id}>{p.title}</li>))}</ol>
+        <ol>{byTime.map((p) => (<li data-id={p.id}>{short(p.title)}</li>))}</ol>
       </div>
       <div class="rk-col rk-col-algo">
         <h4>演算法序（首頁熱門）</h4>
-        <ol>{byAlgo.map((p) => (<li data-id={p.id}>{p.title} <span class="rk-score">{p.score.toFixed(2)}</span></li>))}</ol>
+        <ol>{byAlgo.map((p) => (<li data-id={p.id}>{short(p.title)} <span class="rk-score">{p.score.toFixed(2)}</span></li>))}</ol>
       </div>
     </div>
     <p class="rk-out" id="rk-out" aria-live="polite"></p>
@@ -49,21 +59,30 @@ const algoTop = byAlgo[0].id;
 <style>
   .rk { max-width: 720px; margin: 0 auto; }
   .rk-q { text-align: center; font-size: 17px; }
-  .rk-cards { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-  .rk-card { display: flex; flex-direction: column; gap: 4px; text-align: left; width: 200px;
-    border: 1.5px solid var(--line); border-radius: 12px; padding: 12px; background: var(--bg-paper);
-    cursor: pointer; font-family: var(--font-ui); transition: border-color .15s, transform .15s; }
-  .rk-card:hover { border-color: var(--accent, #7258FF); transform: translateY(-2px); }
-  .rk-card.guess { border-color: var(--accent, #7258FF); box-shadow: 0 0 0 2px var(--accent, #7258FF) inset; }
-  .rk-title { font-weight: 700; font-size: 15px; }
-  .rk-stats { font-size: 12px; color: var(--ink-soft); }
-  .rk-reveal { margin-top: 20px; }
+  /* feed：單欄 ArticleCard */
+  .rk-cards { display: flex; flex-direction: column; gap: var(--space-sp10); max-width: 480px; margin: 0 auto; }
+  .rk-card { display: flex; gap: var(--space-sp12); text-align: left; width: 100%;
+    border: 1px solid var(--line); border-radius: var(--radius-card); padding: var(--space-sp14);
+    background: #fff; cursor: pointer; font-family: var(--font-ui);
+    box-shadow: var(--shadow-shadow1, 0 1px 4px rgba(0,0,0,.04)); transition: border-color .15s, transform .14s, box-shadow .14s; }
+  .rk-card:hover { border-color: var(--c-brand, #7258FF); transform: translateY(-2px); box-shadow: var(--shadow-dropdown-new, 0 8px 22px rgba(0,0,0,.1)); }
+  .rk-card.guess { border-color: var(--c-brand, #7258FF); box-shadow: 0 0 0 2px var(--c-brand, #7258FF); }
+  .fi-avatar { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 999px; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; }
+  .fi-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .fi-head { display: flex; gap: 6px; align-items: baseline; font-size: 12.5px; color: var(--ink-soft); }
+  .fi-author { font-weight: 700; color: var(--ink); }
+  .fi-title { font-weight: 700; font-size: 15px; line-height: 1.45; color: var(--ink); }
+  .fi-meta { display: flex; gap: var(--space-sp14); margin-top: 2px; }
+  .fi-stat { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--ink-soft); }
+  .fi-stat svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .rk-reveal { margin-top: 22px; }
   .rk-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .rk-col { background: var(--bg-paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+  .rk-col { background: var(--bg-paper); border: 1px solid var(--line); border-radius: var(--radius-card); padding: 12px 16px; }
   .rk-col h4 { margin: 0 0 8px; font-family: var(--font-ui); font-size: 14px; }
-  .rk-col-algo { border-color: var(--accent, #7258FF); }
-  .rk-col ol { margin: 0; padding-left: 20px; font-family: var(--font-ui); font-size: 14px; line-height: 1.9; }
-  .rk-col li.top { font-weight: 800; color: var(--accent, #7258FF); }
+  .rk-col-algo { border-color: var(--c-brand, #7258FF); }
+  .rk-col ol { margin: 0; padding-left: 20px; font-family: var(--font-ui); font-size: 13.5px; line-height: 1.9; }
+  .rk-col li.top { font-weight: 800; color: var(--c-brand, #7258FF); }
   .rk-col li.you { text-decoration: underline dotted; }
   .rk-score { color: var(--ink-soft); font-size: 11px; }
   .rk-out { text-align: center; font-size: 16px; margin-top: 14px; }

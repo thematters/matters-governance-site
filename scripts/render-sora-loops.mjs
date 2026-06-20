@@ -206,6 +206,7 @@ async function encodeLoop(job, rawPath) {
   const mp4Path = jobOutputPath(job, 'mp4');
   const webmPath = jobOutputPath(job, 'webm');
   const duration = String(job.loopSeconds || manifest.defaults.loopSeconds);
+  const { width, height } = parseSize(jobSize(job));
 
   await runCommand('ffmpeg', [
     '-hide_banner',
@@ -218,7 +219,7 @@ async function encodeLoop(job, rawPath) {
     duration,
     '-an',
     '-vf',
-    'fps=24,scale=1280:720:flags=lanczos,format=yuv420p',
+    `fps=24,scale=${width}:${height}:flags=lanczos,format=yuv420p`,
     '-c:v',
     'libx264',
     '-preset',
@@ -241,7 +242,7 @@ async function encodeLoop(job, rawPath) {
     duration,
     '-an',
     '-vf',
-    'fps=24,scale=1280:720:flags=lanczos',
+    `fps=24,scale=${width}:${height}:flags=lanczos`,
     '-c:v',
     'libvpx-vp9',
     '-b:v',

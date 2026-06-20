@@ -108,11 +108,12 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
 
 <style>
   /* ── feed：自適應網格，22 張讀得順；卡片夠像貼文就維持像 Matters feed ── */
-  .fp-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 12px; margin-bottom: var(--space-sp24, 24px); }
+  .fp-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(224px, 1fr)); grid-auto-rows: 1fr;
+    gap: 10px; margin-bottom: var(--space-sp24, 24px); }
 
   /* ── 玻璃感 Matters 貼文卡（對齊 StickyScroller 的 .sg-card） ── */
-  .fp-card { position: relative; border-radius: 14px; overflow: hidden;
+  .fp-card { position: relative; border-radius: 14px; overflow: hidden; height: 100%;
+    display: flex; flex-direction: column;
     padding: 13px 14px; color: var(--ink); font-family: var(--font-ui);
     background: rgba(255,255,255,.62); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
     border: 1px solid rgba(255,255,255,.62); box-shadow: 0 4px 16px rgba(22,18,45,.1);
@@ -138,7 +139,7 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
   .fp-summary { display: flex; flex-direction: column; gap: 5px; margin-bottom: 11px; }
-  .fp-foot { display: flex; align-items: center; gap: 10px; }
+  .fp-foot { display: flex; align-items: center; gap: 10px; margin-top: auto; }
 
   /* ── 分數徽章：互動重點（分數 vs 門檻），紅高分／綠低分 ── */
   .fp-score { display: inline-flex; align-items: center; flex: 0 0 auto;

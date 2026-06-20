@@ -1,0 +1,29 @@
+---
+// 書本式章節導航：依中央章節順序算 prev/next，取代分頁底部裸 read-more
+interface Props { slug: string; }
+const { slug } = Astro.props;
+const order = [
+  { slug: 'detection',             label: '怎麼把垃圾找出來' },
+  { slug: 'false-positive',        label: '偽陽性與門檻的倫理' },
+  { slug: 'moderation',            label: '七種處置與小黑屋' },
+  { slug: 'crowd',                 label: '群眾協力' },
+  { slug: 'ranking',               label: '排序與末日爆滑' },
+  { slug: 'censorship-resistance', label: '抗審查與 IPFS' },
+  { slug: 'history',               label: '治理史：被 DNS-RPZ 誤封' },
+  { slug: 'ncc',                   label: 'NCC 法遵' },
+  { slug: 'data',                  label: '資料開源' },
+  { slug: 'conclusion',            label: '結論' },
+];
+const i = order.findIndex((o) => o.slug === slug);
+const total = order.length;
+const prev = i > 0 ? order[i - 1] : null;
+const next = i >= 0 && i < total - 1 ? order[i + 1] : null;
+---
+<nav class="chapter-nav">
+  {prev
+    ? <a class="prev" href={prev.slug}><span>← 上一章 · {i}/{total}</span>{prev.label}</a>
+    : <a class="prev" href="./"><span>← 回主敘事</span>首頁</a>}
+  {next
+    ? <a class="next" href={next.slug}><span>下一章 · {i + 2}/{total} →</span>{next.label}</a>
+    : <a class="next" href="start"><span>全部主題 →</span>14 個主題總覽</a>}
+</nav>

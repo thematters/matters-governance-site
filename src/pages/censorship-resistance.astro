@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import AddressingDemo from '../components/AddressingDemo.astro';
 import '../styles/story.css';
@@ -32,6 +33,5 @@ import '../styles/story.css';
     一邊是威權的防火牆，另一邊是民主社會的反詐基礎設施。兩者都可能——有意或無意——被用來關閉脆弱的公共空間。
   </blockquote>
 
-  <hr class="soft" />
-  <p><a class="read-more" href="./">← 回主敘事</a>　<a class="read-more" href="history">治理史</a>　<a class="read-more" href="ncc">NCC 合規</a></p>
+  <ChapterNav slug="censorship-resistance" />
 </BaseLayout>

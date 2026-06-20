@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="開源與資料集">
@@ -24,6 +25,5 @@ import '../styles/story.css';
   <h2>授權</h2>
   <p>程式碼 MIT/AGPL · 文件 CC BY 4.0 · 研究資料依敏感度授權並去識別化。每個互動旁也將附「文字版資料表」，同時當無障礙退化與開放資料。</p>
 
-  <hr class="soft" />
-  <p><a class="read-more" href="./">← 回主敘事</a>　<a class="read-more" href="detection">偵測技術</a>　<a class="read-more" href="about">關於</a></p>
+  <ChapterNav slug="data" />
 </BaseLayout>

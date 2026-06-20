@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import BeModerator from '../components/BeModerator.astro';
 import '../styles/story.css';
@@ -37,6 +38,5 @@ const d = [
   </p>
   <BeModerator />
 
-  <hr class="soft" />
-  <p><a class="read-more" href="./">← 回主敘事</a>　<a class="read-more" href="false-positive">偽陽性</a>　<a class="read-more" href="ranking">首頁排序</a></p>
+  <ChapterNav slug="moderation" />
 </BaseLayout>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import RankingSplitScreen from '../components/RankingSplitScreen.astro';
 import '../styles/story.css';
@@ -24,6 +25,5 @@ import '../styles/story.css';
     第 17 條尚未解決的前沿——降權算不算限制？「不推薦」要不要被解釋？這也是新首頁（2025.07）刻意「弱化首頁演算法」的背景。
   </p>
 
-  <hr class="soft" />
-  <p><a class="read-more" href="./">← 回主敘事</a>　<a class="read-more" href="crowd">群眾協力</a>　<a class="read-more" href="censorship-resistance">抗審查</a></p>
+  <ChapterNav slug="ranking" />
 </BaseLayout>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="NCC 合規">
@@ -23,6 +24,5 @@ import '../styles/story.css';
   <p>「透明開盒」若要徹底，平台不只要公開它如何治理使用者，<strong>也要公開它如何回應公權力</strong>——這對一個保護跨境敏感書寫者的抗審查平台，是需要謹慎拿捏的揭露邊界。</p>
   <p class="note">完整 41 項逐條判定見獨立報告《Matters.town NCC 自主合規檢測報告》。</p>
 
-  <hr class="soft" />
-  <p><a class="read-more" href="./">← 回主敘事</a>　<a class="read-more" href="censorship-resistance">抗審查</a>　<a class="read-more" href="conclusion">結論建言</a></p>
+  <ChapterNav slug="ncc" />
 </BaseLayout>

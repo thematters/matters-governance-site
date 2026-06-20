@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import Timeline from '../components/Timeline.astro';
 import '../styles/story.css';
@@ -12,6 +13,5 @@ import '../styles/story.css';
   </p>
   <hr class="soft" />
   <Timeline />
-  <hr class="soft" />
-  <p><a class="read-more" href="./">← 回主敘事</a>　<a class="read-more" href="censorship-resistance">DNS-RPZ 事件</a>　<a class="read-more" href="moderation">七種處置</a></p>
+  <ChapterNav slug="history" />
 </BaseLayout>

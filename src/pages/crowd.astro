@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import '../styles/story.css';
 ---
@@ -27,6 +28,5 @@ import '../styles/story.css';
     「讓社群決定社群的事，仍是珍貴的——只是要用什麼制度讓它延續。」
   </p>
 
-  <hr class="soft" />
-  <p><a class="read-more" href="./">← 回主敘事</a>　<a class="read-more" href="moderation">七種處置</a>　<a class="read-more" href="detection">偵測技術</a></p>
+  <ChapterNav slug="crowd" />
 </BaseLayout>

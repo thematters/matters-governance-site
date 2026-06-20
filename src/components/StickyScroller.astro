@@ -85,9 +85,9 @@ const steps = [
   .sg-red, .sg-ring { background: #f6e6e1; border-color: #c0584a; color: #6e2c23; }
   .sg-tag { position: absolute; bottom: 1px; right: 3px; font: 700 8px var(--font-ui); opacity: 0; pointer-events: none; }
   .sg-tag-kill { color: #c0584a; }
-  .sg-line { position: absolute; left: 0; right: 0; top: 50%; height: 2px; transform: scaleX(0); transform-origin: left center;
-    background: linear-gradient(90deg, transparent, var(--c-brand, #7258FF) 20%, var(--c-brand, #7258FF) 80%, transparent);
-    opacity: .85; border-radius: 2px; z-index: 2; }
+  .sg-line { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: scaleX(0); transform-origin: left center;
+    background: linear-gradient(90deg, transparent, #fff 7%, var(--c-brand, #7258FF) 28%, var(--c-brand, #7258FF) 72%, #fff 93%, transparent);
+    box-shadow: 0 0 14px 2px color-mix(in srgb, var(--c-brand, #7258FF) 65%, transparent); opacity: .95; border-radius: 3px; z-index: 2; }
   /* 集團聚攏的光暈與標籤（JS 定位到三卡形心） */
   .sg-ring-halo { position: absolute; width: 200px; height: 132px; transform: translate(-50%, -50%) scale(.55);
     z-index: 1; opacity: 0; pointer-events: none; border-radius: 50%;
@@ -177,9 +177,24 @@ const steps = [
     gsap.set(halo, { left: ctr.x, top: ctr.y });
     gsap.set(ringLabel, { left: ctr.x, top: ctr.y + 44 });
 
+    let lastCapText = '';
+    function setCaption(text) {
+      if (text === lastCapText) return;
+      lastCapText = text;
+      if (reduce) { cap.textContent = text; return; }
+      cap.textContent = '';
+      const spans = text.split('').map((ch) => {
+        const s = document.createElement('span');
+        s.textContent = ch === ' ' ? ' ' : ch;
+        s.style.display = 'inline-block';
+        cap.appendChild(s); return s;
+      });
+      gsap.fromTo(spans, { opacity: 0, yPercent: 60 },
+        { opacity: 1, yPercent: 0, duration: 0.45, stagger: 0.018, ease: 'power2.out', overwrite: true });
+    }
     function setActive(i) {
       steps.forEach((s, j) => s.classList.toggle('active', j === i));
-      if (caps[i]) cap.textContent = caps[i];
+      if (caps[i]) setCaption(caps[i]);
     }
 
     if (reduce) {
@@ -226,8 +241,8 @@ const steps = [
 
     // 3 誤殺（高潮，放慢）
     tl.addLabel('fp');
-    tl.to(border[0], { scale: 1.22, duration: 0.45, ease: 'power2.out' }, 'fp+=0.1');
-    tl.to(border[0], { scale: 1, duration: 0.35 }, 'fp+=0.7');
+    tl.to(border[0], { scale: 1.24, boxShadow: '0 14px 34px rgba(30,20,60,.35)', zIndex: 6, duration: 0.45, ease: 'power2.out' }, 'fp+=0.1');
+    tl.to(border[0], { scale: 1, boxShadow: '0 0px 0px rgba(30,20,60,0)', duration: 0.35 }, 'fp+=0.7');
     tl.to(border, { backgroundColor: '#e7e3d8', borderColor: '#c0584a', color: '#9a958a', duration: 0.6, stagger: 0.1 }, 'fp+=0.25');
     tl.to(killTags, { opacity: 1, duration: 0.3, stagger: 0.1 }, 'fp+=0.5');
     tl.to({}, { duration: 0.5 });

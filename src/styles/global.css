@@ -100,14 +100,22 @@ section.block { margin: 56px 0; }
 .nav-en:hover { color: var(--c-brand, #7258FF); }
 @media (max-width: 920px) {
   .nav-links { display: none; }
-  .nav-main { gap: 12px; }
+  .nav-main { gap: 10px; }
+}
+@media (max-width: 680px) {
+  .nav-main .nav-toc { display: none; }
+  .audience-toggle { font-size: 12px; }
+  .audience-toggle button { padding: 5px 9px; }
+}
+@media (max-width: 410px) {
+  .brand-sub { display: none; }
 }
 
 /* ---- 受眾切換（漸進揭露） ---- */
 .audience-toggle { display: inline-flex; border: 1px solid var(--line);
   border-radius: 999px; overflow: hidden; font-family: var(--font-ui); font-size: 13px; }
 .audience-toggle button { border: 0; background: transparent; color: var(--ink-soft);
-  padding: 5px 12px; cursor: pointer; }
+  padding: 5px 12px; cursor: pointer; white-space: nowrap; }
 .audience-toggle button.is-active { background: var(--accent); color: #fff; }
 
 /* 依受眾顯示/隱藏深度層 */

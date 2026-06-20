@@ -155,11 +155,15 @@ const steps = [
 
     // 三張集團卡「聚攏成疊放扇形」的位移（在任何 transform 之前算自然位置）
     function computeGather() {
+      // 模擬「紅卡已塌縮飛走」後的版面（＝集團 beat 時的真實版面）來量 ring 卡位置；
+      // 否則用初始版面（紅卡還在）量到的位置，reflow 後會跑掉（手機 4 欄尤其明顯）。
+      gsap.set(red, { width: 0, minWidth: 0, paddingLeft: 0, paddingRight: 0, marginLeft: -3.5, marginRight: -3.5, borderWidth: 0 });
       const fr = feed.getBoundingClientRect();
       const rc = ring.map((c) => {
         const r = c.getBoundingClientRect();
         return { cx: r.left - fr.left + r.width / 2, cy: r.top - fr.top + r.height / 2 };
       });
+      gsap.set(red, { clearProps: 'width,minWidth,paddingLeft,paddingRight,marginLeft,marginRight,borderWidth' });
       const ctr = {
         x: (rc[0].cx + rc[1].cx + rc[2].cx) / 3,
         y: (rc[0].cy + rc[1].cy + rc[2].cy) / 3,
@@ -171,7 +175,7 @@ const steps = [
     const { g: gather, ctr } = computeGather();
     // 光暈與標籤定位到三卡形心
     gsap.set(halo, { left: ctr.x, top: ctr.y });
-    gsap.set(ringLabel, { left: ctr.x, top: ctr.y + 52 });
+    gsap.set(ringLabel, { left: ctr.x, top: ctr.y + 44 });
 
     function setActive(i) {
       steps.forEach((s, j) => s.classList.toggle('active', j === i));

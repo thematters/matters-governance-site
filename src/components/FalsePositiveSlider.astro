@@ -2,22 +2,73 @@
 // 招牌互動：偽陽性分數線。綠＝正常、紅＝垃圾；拖門檻看誤殺與漏網的取捨。
 // 工藝級控制項：訂製 thumb／填色軌／跟手數值泡泡／刻度／<output>／focus 光環／ARIA／進場 demo。
 // 漸進增強：無 JS 時卡片仍可見、結論用 noscript；有 JS 才可拖曳。
+// 卡片視覺：對齊首頁招牌 feed 的玻璃感 Matters 貼文卡（見 StickyScroller 的 .sg-card）。
+//   .fp-text 當標題、分數做成徽章、可忽略欄位（時間/摘要/封面/次要 meta）用灰色骨架暫代。
 import data from '../data/cards.json';
 const cards = data.cards;
 const initial = 75;
+
+// 頭像底色：柔和色盤（與 StickyScroller 同款，穩定指派，不寫死語意色號）
+const avPalette = ['#7a7390', '#b07a4a', '#6f8f4e', '#5a8a93', '#a8597a', '#8a6db0'];
+
+// 作者／來源短名：由類別衍生一個合理的台灣正體短名（不誇大）。
+// 正常內容＝像真人作者；垃圾＝像會發那種內容的帳號名。集團三家用近似名（同模板的影子）。
+const authorByCat: Record<string, string> = {
+  '政治評論': '時評筆記',
+  '學術考據': '考據小室',
+  '日記': '日子手記',
+  '時事分析': '全球觀察',
+  '知識科普': '懂一點',
+  '書評': '讀冊誌',
+  '藝文': '城市散步',
+  '人權議題': '人權觀察筆記',
+  '帶性情節創作': '夜行短篇',
+  '防詐科普': '反詐小教室',
+  '金融知識': '理財一桌',
+  '博弈': '新百勝娛樂城',
+  '色情廣告': '在地約妹專線',
+  'SEO農場': 'SEO 快排工作室',
+  '賣藥': '草本養生堂',
+  '內容農場': '產業報告速遞',
+  '二次詐騙': '老師帶單群',
+  '加密MLM': 'USDT 套利團',
+  '翻譯社代辦（集團）': '宏達翻譯社',
+  '色情直播（集團）': 'live 視訊秀場',
+};
+const authorOf = (c: { cat: string }) => authorByCat[c.cat] || c.cat;
+const initials = (name: string) => name.slice(0, 1);
+// 分數徽章顯示成 Matters 風格的 0–1 兩位小數（資料是 0–100，僅顯示用；data-score 仍整數給 JS）
+const fmtScore = (s: number) => (s / 100).toFixed(2);
 ---
 <div class="fp" id="fp-root" data-initial={initial}>
   <div class="fp-feed" aria-label="一組正常（綠）與垃圾（紅）貼文，依模型分數被門檻過濾">
-    {cards.map((c) => (
-      <div
+    {cards.map((c, i) => (
+      <article
         class={`fp-card fp-${c.truth}${c.border ? ' fp-border' : ''}`}
         data-score={c.score}
         data-truth={c.truth}
       >
-        <span class="fp-cat">{c.cat}</span>
-        <span class="fp-text">{c.text}</span>
-        <span class="fp-score" aria-hidden="true">{c.score}</span>
-      </div>
+        <header class="fp-head">
+          <span class="fp-av" style={`background:${avPalette[i % avPalette.length]}`} aria-hidden="true">{initials(authorOf(c))}</span>
+          <span class="fp-author">{authorOf(c)}</span>
+          <span class="fp-dot" aria-hidden="true">·</span>
+          <span class="fp-cat">{c.cat}</span>
+          <span class="fp-dot" aria-hidden="true">·</span>
+          <span class="sk sk-time" aria-hidden="true"></span>
+          <span class="fp-more" aria-hidden="true">⋯</span>
+        </header>
+        <h3 class="fp-text">{c.text}</h3>
+        <div class="fp-summary" aria-hidden="true">
+          <span class="sk sk-line"></span>
+          <span class="sk sk-line sk-line--short"></span>
+        </div>
+        <footer class="fp-foot">
+          <span class={`fp-score fp-score--${c.score >= 50 ? 'hi' : 'lo'}`}>分數 {fmtScore(c.score)}</span>
+          <span class="sk sk-meta" aria-hidden="true"></span>
+          <span class="sk sk-meta sk-meta--wide" aria-hidden="true"></span>
+          <span class="fp-state" aria-hidden="true"></span>
+        </footer>
+      </article>
     ))}
   </div>
 
@@ -56,6 +107,85 @@ const initial = 75;
 </div>
 
 <style>
+  /* ── feed：自適應網格，22 張讀得順；卡片夠像貼文就維持像 Matters feed ── */
+  .fp-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px; margin-bottom: var(--space-sp24, 24px); }
+
+  /* ── 玻璃感 Matters 貼文卡（對齊 StickyScroller 的 .sg-card） ── */
+  .fp-card { position: relative; border-radius: 14px; overflow: hidden;
+    padding: 13px 14px; color: var(--ink); font-family: var(--font-ui);
+    background: rgba(255,255,255,.62); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+    border: 1px solid rgba(255,255,255,.62); box-shadow: 0 4px 16px rgba(22,18,45,.1);
+    transition: filter .25s, box-shadow .25s, border-color .25s, opacity .25s; }
+  /* 左側 accent 邊條：綠＝正常、紅＝垃圾（與 sticky feed 同語意） */
+  .fp-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .fp-legit::before { background: var(--c-pos, #5c9969); }
+  .fp-spam::before  { background: var(--c-neg, #c85c41); }
+
+  .fp-head { display: flex; align-items: center; gap: 7px; }
+  .fp-av { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; color: #fff;
+    font: 800 11px var(--font-ui); display: flex; align-items: center; justify-content: center; }
+  .fp-author { font: 700 12.5px var(--font-ui); color: var(--ink); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; max-width: 8em; flex: 0 1 auto; }
+  .fp-dot { color: var(--ink-soft); font-size: 12px; flex: 0 0 auto; }
+  .fp-cat { font: 600 11.5px var(--font-ui); color: var(--ink-soft); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; }
+  .fp-more { margin-left: auto; color: var(--ink-soft); font-weight: 700; letter-spacing: 1px;
+    flex: 0 0 auto; line-height: 1; }
+
+  /* 標題：用原 .fp-text 內容，粗、--ink、最多 2 行 */
+  .fp-text { margin: 7px 0 8px; font: 700 14.5px/1.45 var(--font-ui); color: var(--ink);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .fp-summary { display: flex; flex-direction: column; gap: 5px; margin-bottom: 11px; }
+  .fp-foot { display: flex; align-items: center; gap: 10px; }
+
+  /* ── 分數徽章：互動重點（分數 vs 門檻），紅高分／綠低分 ── */
+  .fp-score { display: inline-flex; align-items: center; flex: 0 0 auto;
+    font: 800 11.5px var(--font-ui); font-variant-numeric: tabular-nums;
+    padding: 3px 9px; border-radius: 999px; letter-spacing: .01em; }
+  .fp-score--hi { background: color-mix(in srgb, var(--c-neg, #c85c41) 16%, transparent); color: var(--c-neg, #c85c41); }
+  .fp-score--lo { background: color-mix(in srgb, var(--c-pos, #5c9969) 16%, transparent); color: var(--c-pos, #5c9969); }
+
+  /* footer 的狀態標（漏網／誤殺）：預設空，由狀態 class 點亮 */
+  .fp-state { margin-left: auto; font: 800 10px var(--font-ui); color: #fff;
+    padding: 2px 8px; border-radius: 999px; flex: 0 0 auto; opacity: 0; transform: scale(.9);
+    transition: opacity .2s, transform .2s; }
+
+  /* ── 灰色半透明骨架塊（可忽略欄位：時間／摘要／次要 meta；沿用 StickyScroller .sk） ── */
+  .sk { background: rgba(120,115,140,.18); border-radius: 5px; display: inline-block; }
+  .sk-time { width: 42px; height: 9px; }
+  .sk-line { height: 9px; width: 100%; }
+  .sk-line--short { width: 58%; }
+  .sk-meta { width: 30px; height: 9px; border-radius: 99px; }
+  .sk-meta--wide { width: 46px; }
+
+  /* ── 狀態：removed＝被門檻擋下，變灰壓暗、「已隱藏」感 ── */
+  .fp-removed { filter: grayscale(.85) brightness(.9); opacity: .72; }
+  .fp-removed .fp-text { color: var(--ink-soft); }
+
+  /* ── 狀態：is-fp＝誤殺正常內容，紅框 + footer「誤殺」標 ── */
+  .fp-is-fp { filter: none; opacity: 1;
+    border-color: var(--c-neg, #c85c41);
+    box-shadow: 0 0 0 1.5px var(--c-neg, #c85c41), 0 6px 18px rgba(160,60,40,.18); }
+  .fp-is-fp::before { background: var(--c-neg, #c85c41); width: 4px; }
+  .fp-is-fp .fp-text { color: var(--ink); }
+  .fp-is-fp .fp-state { opacity: 1; transform: none; background: var(--c-neg, #c85c41); }
+  .fp-is-fp .fp-state::before { content: '誤殺'; }
+
+  /* ── 狀態：is-leaked＝垃圾漏網，warn 標「漏網」 ── */
+  .fp-is-leaked .fp-state { opacity: 1; transform: none; background: var(--c-warn, #c8a020); }
+  .fp-is-leaked .fp-state::before { content: '漏網'; }
+
+  /* removed 但非誤殺（真垃圾被擋）：footer 標「已隱藏」 */
+  .fp-removed:not(.fp-is-fp) .fp-state { opacity: 1; transform: none;
+    background: rgba(90,86,110,.85); }
+  .fp-removed:not(.fp-is-fp) .fp-state::before { content: '已隱藏'; }
+
+  @media (max-width: 480px) {
+    .fp-feed { grid-template-columns: 1fr; }
+  }
+
   .fp-slider-wrap { position: relative; padding-top: 34px; }
   .fp-range { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 99px;
     background: linear-gradient(90deg, var(--c-brand, #7258FF) var(--val, 75%), var(--line) var(--val, 75%));

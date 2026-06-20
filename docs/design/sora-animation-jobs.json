@@ -33,8 +33,10 @@
       "source": "public/illustrations/hero.jpg",
       "poster": "public/illustrations/hero.jpg",
       "status": "ready",
-      "notes": "Matty-v1 hero。要求所有角色、Matty 機器人與工具都有明顯但不破壞構圖的動作。",
-      "prompt": "Create a lively four-second hand-painted gouache animation from this exact Matty companion robot hero illustration. Every visible character, Matty robot, human, and dark ink-blob creature must move. Keep the same composition, same camera, same paper texture, no cuts and no zoom. The Matty robots are friendly teal-blue companion helpers with muted rainbow headbands and yellow ear tabs; preserve this identity. In the garden, Matty tips the watering can and visible water pours onto plants, then blinks and nods. In the control room, Matty turns its head, raises one small arm, and the magnifying glass catches a glint. On the left, the mustard-coat person waves the butterfly net while black spam creatures bob, wobble, raise tiny arms, blink, and protest. Human readers turn pages, nod, lift hands, and subtly shift posture. People in the right crowd wave small arms and lean forward. Workers below sweep cards into the cart with clear broom strokes. A few content cards flutter downward. Leaves, flowers, and grass sway. Motion should be clearly visible at webpage hero size while preserving the gouache style, Matty face design, and no new text, no logos, no face morphing, no chaotic camera movement."
+      "notes": "Matty-v1 hero。要求所有角色、Matty 機器人與工具都有明顯但不破壞構圖的動作。 下一輪高解析重跑設定為 sora-2-pro / 1920x1080。",
+      "prompt": "Create a lively four-second hand-painted gouache animation from this exact Matty companion robot hero illustration. Every visible character, Matty robot, human, and dark ink-blob creature must move. Keep the same composition, same camera, same paper texture, no cuts and no zoom. The Matty robots are friendly teal-blue companion helpers with muted rainbow headbands and yellow ear tabs; preserve this identity. In the garden, Matty tips the watering can and visible water pours onto plants, then blinks and nods. In the control room, Matty turns its head, raises one small arm, and the magnifying glass catches a glint. On the left, the mustard-coat person waves the butterfly net while black spam creatures bob, wobble, raise tiny arms, blink, and protest. Human readers turn pages, nod, lift hands, and subtly shift posture. People in the right crowd wave small arms and lean forward. Workers below sweep cards into the cart with clear broom strokes. A few content cards flutter downward. Leaves, flowers, and grass sway. Motion should be clearly visible at webpage hero size while preserving the gouache style, Matty face design, and no new text, no logos, no face morphing, no chaotic camera movement.",
+      "model": "sora-2-pro",
+      "size": "1920x1080"
     },
     {
       "id": "A1d",
@@ -157,8 +159,10 @@
       "poster": "public/illustrations/detection.jpg",
       "status": "ready",
       "loopSeconds": 4,
-      "notes": "Matty-v1 detection。Matty 用放大鏡協助偵測，鬼怪明顯動作。",
-      "prompt": "Create a lively four-second hand-painted gouache animation from this exact detection illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. Matty companion robot, with teal-blue gouache body, muted rainbow headband, yellow ear tabs, small black eyes, and friendly open smile, slowly scans left and right with the magnifying glass, leans forward, blinks, and gives a small helpful nod. The lens flashes with a soft glint. The content card under inspection shivers slightly. The black spam creatures and dark shapes on the left bob, wobble, blink, and protest with tiny arm motions. Cards near the dark area flutter and rotate. Leaves and flowers sway. Preserve the gouache style and Matty identity. No new text, no logos, no face morphing, no chaotic camera movement."
+      "notes": "Matty-v1 detection。Matty 用放大鏡協助偵測，鬼怪明顯動作。 下一輪高解析重跑設定為 sora-2-pro / 1920x1080。",
+      "prompt": "Create a lively four-second hand-painted gouache animation from this exact detection illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. Matty companion robot, with teal-blue gouache body, muted rainbow headband, yellow ear tabs, small black eyes, and friendly open smile, slowly scans left and right with the magnifying glass, leans forward, blinks, and gives a small helpful nod. The lens flashes with a soft glint. The content card under inspection shivers slightly. The black spam creatures and dark shapes on the left bob, wobble, blink, and protest with tiny arm motions. Cards near the dark area flutter and rotate. Leaves and flowers sway. Preserve the gouache style and Matty identity. No new text, no logos, no face morphing, no chaotic camera movement.",
+      "model": "sora-2-pro",
+      "size": "1920x1080"
     },
     {
       "id": "A6c",
@@ -167,8 +171,10 @@
       "poster": "public/illustrations/crowd.jpg",
       "status": "ready",
       "loopSeconds": 4,
-      "notes": "Matty-v1 crowd。Matty 是群眾朋友，燈籠與人群動作明顯。",
-      "prompt": "Create a lively four-second hand-painted gouache animation from this exact crowd illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. Every visible human figure should make a clear gentle storybook motion: wave a small arm, lean forward, nod, turn a head, lift a lantern, or shift posture. Matty companion robot stands among the people as a friendly helper with teal-blue body, muted rainbow headband, yellow ear tabs, black eyes, and open smile; Matty blinks, nods, and gestures warmly toward the basket. Lantern flames flicker brightly and cast warm pulses of light onto faces, hands, plants, and Matty. Black spam creatures in and around the basket bob, wobble, blink, and protest. Small sparks and motes drift upward. Flags, leaves, flowers, and grass sway. Preserve the gouache illustration style and Matty identity. No new text, no logos, no face morphing, no chaotic camera movement."
+      "notes": "Matty-v1 crowd。Matty 是群眾朋友，燈籠與人群動作明顯。 下一輪高解析重跑設定為 sora-2-pro / 1920x1080。",
+      "prompt": "Create a lively four-second hand-painted gouache animation from this exact crowd illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. Every visible human figure should make a clear gentle storybook motion: wave a small arm, lean forward, nod, turn a head, lift a lantern, or shift posture. Matty companion robot stands among the people as a friendly helper with teal-blue body, muted rainbow headband, yellow ear tabs, black eyes, and open smile; Matty blinks, nods, and gestures warmly toward the basket. Lantern flames flicker brightly and cast warm pulses of light onto faces, hands, plants, and Matty. Black spam creatures in and around the basket bob, wobble, blink, and protest. Small sparks and motes drift upward. Flags, leaves, flowers, and grass sway. Preserve the gouache illustration style and Matty identity. No new text, no logos, no face morphing, no chaotic camera movement.",
+      "model": "sora-2-pro",
+      "size": "1920x1080"
     },
     {
       "id": "A7c",
@@ -177,8 +183,10 @@
       "poster": "public/illustrations/dns-rpz.jpg",
       "status": "ready",
       "loopSeconds": 4,
-      "notes": "Matty-v1 DNS。Matty 指向分散節點，閘門與節點亮起更明顯。",
-      "prompt": "Create a lively four-second hand-painted gouache animation from this exact DNS blocking illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. The large dark gate doors swing inward with a clear but gentle motion, shadow rolling across the warm garden path. Matty companion robot stands at the path edge as a friendly teal-blue helper with muted rainbow headband and yellow ear tabs; Matty blinks, nods, and gestures toward the glowing distributed network nodes below. Ghost-like dark shapes and rejected cards swirl near the closing gate. Several small distributed nodes light up one by one, then connect with glowing warm threads that pulse visibly. Tiny visitors turn slightly. Leaves and plants sway. The feeling should be block above, persistence below. Preserve gouache style and Matty identity. No new text, no logos, no face morphing, no chaotic camera movement."
+      "notes": "Matty-v1 DNS。Matty 指向分散節點，閘門與節點亮起更明顯。 下一輪高解析重跑設定為 sora-2-pro / 1920x1080。",
+      "prompt": "Create a lively four-second hand-painted gouache animation from this exact DNS blocking illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. The large dark gate doors swing inward with a clear but gentle motion, shadow rolling across the warm garden path. Matty companion robot stands at the path edge as a friendly teal-blue helper with muted rainbow headband and yellow ear tabs; Matty blinks, nods, and gestures toward the glowing distributed network nodes below. Ghost-like dark shapes and rejected cards swirl near the closing gate. Several small distributed nodes light up one by one, then connect with glowing warm threads that pulse visibly. Tiny visitors turn slightly. Leaves and plants sway. The feeling should be block above, persistence below. Preserve gouache style and Matty identity. No new text, no logos, no face morphing, no chaotic camera movement.",
+      "model": "sora-2-pro",
+      "size": "1920x1080"
     }
   ]
 }

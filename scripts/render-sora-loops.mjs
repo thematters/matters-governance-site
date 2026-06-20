@@ -40,8 +40,20 @@ function rel(...segments) {
   return path.join(root, ...segments);
 }
 
+function jobSize(job) {
+  return job.size || manifest.defaults.size;
+}
+
+function parseSize(size) {
+  const match = /^(\d+)x(\d+)$/.exec(size);
+  if (!match) {
+    throw new Error(`Invalid video size: ${size}`);
+  }
+  return { width: match[1], height: match[2] };
+}
+
 function jobReferencePath(job) {
-  return rel(manifest.defaults.referenceDir, `${job.id}-${job.slug}-${manifest.defaults.size}.jpg`);
+  return rel(manifest.defaults.referenceDir, `${job.id}-${job.slug}-${jobSize(job)}.jpg`);
 }
 
 function jobRawPath(job, videoId) {
@@ -96,6 +108,7 @@ async function prepareReference(job) {
 
   const reference = jobReferencePath(job);
   await mkdir(path.dirname(reference), { recursive: true });
+  const { width, height } = parseSize(jobSize(job));
 
   await runCommand('ffmpeg', [
     '-hide_banner',
@@ -105,7 +118,7 @@ async function prepareReference(job) {
     '-i',
     source,
     '-vf',
-    'scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1',
+    `scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},setsar=1`,
     '-frames:v',
     '1',
     '-q:v',
@@ -127,7 +140,7 @@ async function createVideo(job, referencePath) {
   const form = new FormData();
   form.set('model', job.model || manifest.defaults.model);
   form.set('prompt', job.prompt);
-  form.set('size', job.size || manifest.defaults.size);
+  form.set('size', jobSize(job));
   form.set('seconds', job.seconds || manifest.defaults.seconds);
   form.set('input_reference', image, path.basename(referencePath));
 

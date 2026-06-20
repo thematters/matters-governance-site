@@ -43,7 +43,8 @@ const steps = [
           <div class="sg-feed" id="sg-feed">
             {cards.map((c) => (
               <div class={`sg-card sg-${c.kind}`} data-kind={c.kind}>
-                <span>{c.label}</span>
+                <span class="sg-av">{c.label.slice(0, 1)}</span>
+                <span class="sg-tx">{c.label}</span>
                 {c.kind === 'border' && <i class="sg-tag sg-tag-kill" aria-hidden="true">誤殺</i>}
               </div>
             ))}
@@ -70,19 +71,31 @@ const steps = [
     background: radial-gradient(130% 82% at 50% 40%, #4b4570 0%, #221c44 52%, #0e0b22 100%); }
   .scrolly-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
   .scrolly-figwrap { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
-  .scrolly-fig { position: relative; width: 100%; background: var(--bg-paper); border: 1px solid var(--line); border-radius: 18px;
-    padding: 18px; box-shadow: 0 8px 30px rgba(40,36,30,.07); will-change: background-color; }
+  .scrolly-fig { position: relative; width: 100%; border-radius: 20px; padding: 18px;
+    background: rgba(255,255,255,.5); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.65); box-shadow: 0 14px 44px rgba(18,14,45,.18); }
+  /* 玻璃 app 框頂部小列（社群平台感） */
+  .sg-stage::before { content: ''; display: block; height: 8px; width: 54px; margin: -4px auto 14px;
+    border-radius: 99px; background: rgba(120,110,160,.28); }
   .sg-stage { position: relative; }
   /* feed 在暗場中的柔光（spotlight，暗時才亮） */
   .sg-glow { position: absolute; left: 50%; top: 50%; width: 116%; height: 128%; transform: translate(-50%, -50%);
     z-index: 0; opacity: 0; pointer-events: none; border-radius: 50%;
     background: radial-gradient(closest-side, rgba(255,251,242,.9), rgba(255,251,242,0)); filter: blur(8px); }
   .sg-feed { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; align-content: center; min-height: 320px; }
-  .sg-card { position: relative; width: 88px; height: 50px; border-radius: 9px; border: 1.5px solid; display: flex;
-    align-items: center; justify-content: center; font: 700 12px var(--font-ui); text-align: center; padding: 2px;
-    overflow: hidden; white-space: nowrap; will-change: transform, opacity; }
-  .sg-green, .sg-border { background: #eef2e3; border-color: #6f8f4e; color: #3f4a2c; }
-  .sg-red, .sg-ring { background: #f6e6e1; border-color: #c0584a; color: #6e2c23; }
+  .sg-card { position: relative; width: 118px; height: 46px; border-radius: 11px; display: flex; align-items: center; gap: 6px;
+    padding: 0 9px 0 12px; font: 700 11.5px var(--font-ui); color: var(--ink); overflow: hidden; white-space: nowrap;
+    background: rgba(255,255,255,.62); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+    border: 1px solid rgba(255,255,255,.62); box-shadow: 0 3px 13px rgba(22,18,45,.12);
+    will-change: transform, opacity; }
+  .sg-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 11px 0 0 11px; }
+  .sg-av { flex: 0 0 auto; width: 19px; height: 19px; border-radius: 50%; color: #fff; font: 800 10px var(--font-ui);
+    display: flex; align-items: center; justify-content: center; }
+  .sg-tx { overflow: hidden; text-overflow: ellipsis; }
+  .sg-green .sg-av, .sg-border .sg-av { background: #6f8f4e; }
+  .sg-red .sg-av, .sg-ring .sg-av { background: #c0584a; }
+  .sg-green::before, .sg-border::before { background: #6f8f4e; }
+  .sg-red::before, .sg-ring::before { background: #c0584a; }
   .sg-tag { position: absolute; bottom: 1px; right: 3px; font: 700 8px var(--font-ui); opacity: 0; pointer-events: none; }
   .sg-tag-kill { color: #c0584a; }
   .sg-line { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: scaleX(0); transform-origin: left center;
@@ -226,7 +239,6 @@ const steps = [
       opacity: 1, scale: 1, yPercent: 0, duration: 0.9,
       stagger: { each: 0.022, from: 'random' }, ease: 'back.out(1.5)',
     }, 'flood');
-    tl.to(fig, { backgroundColor: '#efe4dd', borderColor: '#d8c4bb', duration: 0.9 }, 'flood');
 
     // 2 過濾：分界線掃過、紅卡向上飛出並塌縮
     tl.addLabel('filter');
@@ -236,7 +248,6 @@ const steps = [
       width: 0, minWidth: 0, paddingLeft: 0, paddingRight: 0, marginLeft: -3.5, marginRight: -3.5, borderWidth: 0,
       duration: 0.8, stagger: 0.04, ease: 'power2.in',
     }, 'filter+=0.12');
-    tl.to(fig, { backgroundColor: '#f7f6f2', borderColor: '#e8e5de', duration: 0.7 }, 'filter+=0.2');
     tl.to(line, { opacity: 0, duration: 0.3 }, 'filter+=0.6');
 
     // 3 誤殺（高潮，放慢）

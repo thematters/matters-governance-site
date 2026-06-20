@@ -229,6 +229,8 @@ O7: a simple hand-drawn downward arrow / chevron, gouache brushstroke, inviting 
 
 > 2026-06-20 Matty-v1 影片：A1c、A5c、A6c、A7c 已用新版 Matty 靜圖重跑，輸出同名 mp4/webm 到 `public/illustrations/anim/`。
 
+> 2026-06-20 Matty-v2 校正：Matty 筆觸改成更粗獷的波隆那 gouache，要求粗乾筆、破邊、舊紙顆粒與不均勻上色；同時每張圖最多只出現一隻 Matty。`hero` 使用 `hero-matty-v2b`，其餘 Matty 場景使用 `matty-v2`。
+
 ### 靜態圖
 
 - F1: `public/illustrations/hero.jpg`，2400×1600

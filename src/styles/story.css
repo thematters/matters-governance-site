@@ -75,6 +75,11 @@ html.js .feed-flood.in-view .card-mini:nth-child(n) { transition-delay: calc(var
 }
 @keyframes scrollArrowBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
 
+/* ---- 內文插畫小圖（手繪示意圖，置中＋圖說） ---- */
+.il-figure { margin: 24px auto; max-width: 420px; text-align: center; }
+.il-figure img { width: 100%; height: auto; display: block; border-radius: 12px; }
+.il-figure figcaption { font: 500 14px var(--font-ui); color: var(--ink-soft); margin-top: 10px; line-height: 1.6; }
+
 /* ---- 偽陽性滑桿 ---- */
 .fp { max-width: 860px; margin: 0 auto; }
 /* 偽陽性卡片視覺已改用 FalsePositiveSlider.astro 內 scoped 玻璃 Matters 貼文卡；

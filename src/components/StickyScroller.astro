@@ -1,5 +1,7 @@
 ---
-// 招牌：sticky scrollytelling。固定釘住的綠紅 feed，隨捲動切換狀態（正常→淹沒→過濾→誤殺→集團）。
+// 招牌：sticky scrollytelling（GSAP ScrollTrigger 連續 timeline 版）。
+// 同一條 feed 從頭活到尾，捲動 scrub 驅動：正常→垃圾飛入淹沒→過濾飛出→誤殺(放慢推近)→集團連線→收束。
+// CSS sticky 負責釘住，GSAP 負責連續變形；no-JS / reduced-motion 退靜態可讀。
 const cards = [
   { kind: 'green',  label: '政治評論' },
   { kind: 'green',  label: '學術考據' },
@@ -23,29 +25,39 @@ const cards = [
   { kind: 'ring',   label: '翻譯社' },
 ];
 const steps = [
-  { state: 'green',  text: '假設完全沒有審查，你看得到所有內容。一開始，都是正常用戶寫的東西——綠色。' },
-  { state: 'flood',  text: '但垃圾也一起湧進來。色情、賭博、詐騙、內容農場……每 5 篇就有 4 篇是這種紅色。沒有審查，公共首頁會被淹沒到無法閱讀。' },
-  { state: 'filter', text: '模型給每篇打一個垃圾分數，分數高的被擋下——紅色被抽走，首頁恢復乾淨。注意：不是刪除，只是不再被看見。' },
-  { state: 'fp',     text: '但有些正常內容分數也很高：人權議題、文學創作、防詐科普。它們被一起誤殺了（變灰）——這就是偽陽性，被誤殺的往往正是最該保護的表達。' },
-  { state: 'ring',   text: '還有一種垃圾分數很低、漏了網——但它們是同一模板、大量帳號的「集團」。靠行為（不靠字句）一網打盡。' },
-  { state: 'settle', text: '這就是審查在做的事，以及它為什麼難：在擋垃圾與不誤殺之間，反覆校準同一條分數線。' },
+  { text: '假設完全沒有審查，你看得到所有內容。一開始，都是正常用戶寫的東西——綠色。' },
+  { text: '但垃圾也一起湧進來。色情、賭博、詐騙、內容農場……每 5 篇就有 4 篇是這種紅色。沒有審查，公共首頁會被淹沒到無法閱讀。' },
+  { text: '模型給每篇打一個垃圾分數，分數高的被擋下——紅色被抽走，首頁恢復乾淨。注意：不是刪除，只是不再被看見。' },
+  { text: '但有些正常內容分數也很高：人權議題、文學創作、防詐科普。它們被一起誤殺了——這就是偽陽性，被誤殺的往往正是最該保護的表達。' },
+  { text: '還有一種垃圾分數很低、漏了網——但它們是同一模板、大量帳號的「集團」。靠行為（不靠字句）一網打盡。' },
+  { text: '這就是審查在做的事，以及它為什麼難：在擋垃圾與不誤殺之間，反覆校準同一條分數線。' },
 ];
 ---
 <div class="scrolly" id="scrolly">
   <div class="scrolly-grid">
     <div class="scrolly-figwrap">
       <div class="scrolly-fig" id="sg" data-state="green">
-        <div class="sg-feed">
-          {cards.map((c) => (
-            <div class={`sg-card sg-${c.kind}`} data-kind={c.kind}><span>{c.label}</span></div>
-          ))}
+        <div class="sg-stage" id="sg-stage">
+          <div class="sg-feed" id="sg-feed">
+            {cards.map((c) => (
+              <div class={`sg-card sg-${c.kind}`} data-kind={c.kind}>
+                <span>{c.label}</span>
+                {c.kind === 'border' && <i class="sg-tag sg-tag-kill" aria-hidden="true">誤殺</i>}
+                {c.kind === 'ring' && <i class="sg-tag sg-tag-ring" aria-hidden="true">集團</i>}
+              </div>
+            ))}
+          </div>
+          <div class="sg-line" id="sg-line" aria-hidden="true"></div>
+          <svg class="sg-ring-svg" id="sg-ring-svg" aria-hidden="true" preserveAspectRatio="none">
+            <line></line><line></line><line></line>
+          </svg>
         </div>
         <p class="sg-cap" id="sg-cap">正常用戶的內容</p>
       </div>
     </div>
     <div class="scrolly-steps">
-      {steps.map((s) => (
-        <div class="scrolly-step" data-state={s.state}><p>{s.text}</p></div>
+      {steps.map((s, i) => (
+        <div class="scrolly-step" data-i={i}><p>{s.text}</p></div>
       ))}
     </div>
   </div>
@@ -56,82 +68,192 @@ const steps = [
   .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
   .scrolly-figwrap { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
   .scrolly-fig { width: 100%; background: var(--bg-paper); border: 1px solid var(--line); border-radius: 18px;
-    padding: 18px; box-shadow: 0 8px 30px rgba(40,36,30,.07); }
+    padding: 18px; box-shadow: 0 8px 30px rgba(40,36,30,.07); will-change: background-color; }
+  .sg-stage { position: relative; }
   .sg-feed { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; align-content: center; min-height: 320px; }
-  .sg-card { width: 88px; height: 50px; border-radius: 9px; border: 1.5px solid; display: flex; align-items: center;
-    justify-content: center; font: 700 12px var(--font-ui); text-align: center; padding: 2px;
-    transition: opacity .55s ease, transform .55s ease, filter .55s ease, background .55s ease, border-color .55s ease; }
-  .sg-green, .sg-border { background: var(--c-legit-bg, #eef2e3); border-color: var(--c-legit, #6f8f4e); color: #3f4a2c; }
-  .sg-red, .sg-ring { background: var(--c-spam-bg, #f6e6e1); border-color: var(--c-spam, #c0584a); color: #6e2c23; }
-  .sg-card.hide { opacity: 0; transform: scale(.5); }
-  .sg-card.show { opacity: 1; transform: none; }
-  .sg-card.removed { opacity: .18; filter: grayscale(1); transform: scale(.8); }
-  .sg-card.killed { opacity: .9; filter: grayscale(1); background: #e7e3d8; border-color: var(--c-spam, #c0584a);
-    border-style: dashed; position: relative; }
-  .sg-card.killed::after { content: '誤殺'; position: absolute; bottom: -2px; right: 3px; font-size: 8px; color: var(--c-spam, #c0584a); }
-  .sg-card.caught { opacity: .7; box-shadow: 0 0 0 2px var(--accent, #7258FF) inset; position: relative; }
-  .sg-card.caught::after { content: '集團'; position: absolute; bottom: -2px; right: 3px; font-size: 8px; color: var(--accent, #7258FF); }
-  .sg-cap { text-align: center; font: 700 15px var(--font-ui); margin: 14px 0 0; color: var(--ink); min-height: 1.4em; }
+  .sg-card { position: relative; width: 88px; height: 50px; border-radius: 9px; border: 1.5px solid; display: flex;
+    align-items: center; justify-content: center; font: 700 12px var(--font-ui); text-align: center; padding: 2px;
+    overflow: hidden; white-space: nowrap; will-change: transform, opacity; }
+  .sg-green, .sg-border { background: #eef2e3; border-color: #6f8f4e; color: #3f4a2c; }
+  .sg-red, .sg-ring { background: #f6e6e1; border-color: #c0584a; color: #6e2c23; }
+  .sg-tag { position: absolute; bottom: 1px; right: 3px; font: 700 8px var(--font-ui); opacity: 0; pointer-events: none; }
+  .sg-tag-kill { color: #c0584a; }
+  .sg-tag-ring { color: var(--c-brand, #7258FF); }
+  .sg-line { position: absolute; left: 0; right: 0; top: 50%; height: 2px; transform: scaleX(0); transform-origin: left center;
+    background: linear-gradient(90deg, transparent, var(--c-brand, #7258FF) 20%, var(--c-brand, #7258FF) 80%, transparent);
+    opacity: .85; border-radius: 2px; }
+  .sg-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .sg-ring-svg line { stroke: var(--c-brand, #7258FF); stroke-width: 1.6; stroke-linecap: round; opacity: .9; }
+  .sg-cap { text-align: center; font: 700 15px var(--font-ui); margin: 16px 0 0; color: var(--ink); min-height: 1.4em; }
 
-  .scrolly-step { min-height: 88vh; display: flex; align-items: center; }
+  .scrolly-step { min-height: 90vh; display: flex; align-items: center; }
   .scrolly-step:first-child { min-height: 55vh; }
+  .scrolly-step[data-i="3"] { min-height: 140vh; } /* 誤殺高潮：拉長、放慢 */
+  .scrolly-step:last-child { min-height: 80vh; }
   .scrolly-step p { font-size: 20px; line-height: 1.9; background: #fff; border: 1px solid var(--line);
-    padding: 16px 20px; border-radius: 14px; box-shadow: 0 4px 18px rgba(40,36,30,.06); opacity: .55; transition: opacity .4s; }
-  html.js .scrolly-step p { opacity: .4; }
-  html.js .scrolly-step.active p { opacity: 1; }
+    padding: 16px 20px; border-radius: 14px; box-shadow: 0 4px 18px rgba(40,36,30,.06); opacity: .55;
+    transition: opacity .4s, transform .4s, border-color .4s; }
+  html.js .scrolly-step p { opacity: .35; transform: translateY(6px); }
+  html.js .scrolly-step.active p { opacity: 1; transform: none; border-color: color-mix(in srgb, var(--c-brand, #7258FF) 35%, var(--line)); }
 
   @media (max-width: 720px) {
     .scrolly { width: 100%; margin-left: 0; transform: none; }
     .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
-    .scrolly-figwrap { height: 46vh; top: 56px; }
+    .scrolly-figwrap { height: 48vh; top: 54px; }
     .sg-feed { min-height: 0; }
     .sg-card { width: 72px; height: 42px; font-size: 11px; }
-    .scrolly-step { min-height: 66vh; }
+    .scrolly-step { min-height: 70vh; }
+    .scrolly-step[data-i="3"] { min-height: 100vh; }
     .scrolly-step p { font-size: 18px; }
   }
-  @media (prefers-reduced-motion: reduce) { .sg-card { transition: none; } }
+
+  /* no-JS：靜態可讀（顯示一個有垃圾的 feed，文字全亮） */
+  .scrolly-step p { /* 預設半透明，JS 進來才接管；no-JS 下用下方規則蓋回 */ }
+  html:not(.js) .scrolly-step p { opacity: 1; }
 </style>
 
-<script is:inline>
-  (function () {
-    var sg = document.getElementById('sg');
-    if (!sg) return;
-    var cap = document.getElementById('sg-cap');
-    var cards = [].slice.call(sg.querySelectorAll('.sg-card'));
-    var steps = [].slice.call(document.querySelectorAll('#scrolly .scrolly-step'));
-    var map = {
-      green:  { green: 'show', red: 'hide',    border: 'hide',   ring: 'hide' },
-      flood:  { green: 'show', red: 'show',    border: 'show',   ring: 'show' },
-      filter: { green: 'show', red: 'removed', border: 'show',   ring: 'show' },
-      fp:     { green: 'show', red: 'removed', border: 'killed', ring: 'show' },
-      ring:   { green: 'show', red: 'removed', border: 'killed', ring: 'caught' },
-      settle: { green: 'show', red: 'removed', border: 'killed', ring: 'caught' },
-    };
-    var caps = {
-      green: '正常用戶的內容', flood: '垃圾湧入，淹沒首頁', filter: '模型把高分的擋下',
-      fp: '但高分的正常內容也被誤殺', ring: '低分集團，靠行為一網打盡', settle: '一條分數線，反覆校準',
-    };
-    var STATES = ['hide', 'show', 'removed', 'killed', 'caught'];
-    function setState(s) {
-      var m = map[s]; if (!m) return;
-      cards.forEach(function (c) {
-        var k = c.getAttribute('data-kind');
-        STATES.forEach(function (x) { c.classList.remove(x); });
-        c.classList.add(m[k]);
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initScrolly() {
+    const sg = document.getElementById('sg');
+    if (!sg || sg.dataset.inited) return;
+    sg.dataset.inited = '1';
+
+    const fig = sg;
+    const feed = document.getElementById('sg-feed');
+    const cap = document.getElementById('sg-cap');
+    const line = document.getElementById('sg-line');
+    const ringSvg = document.getElementById('sg-ring-svg');
+    const steps = Array.prototype.slice.call(document.querySelectorAll('#scrolly .scrolly-step'));
+    const all = Array.prototype.slice.call(feed.querySelectorAll('.sg-card'));
+    const pick = (k) => all.filter((c) => c.getAttribute('data-kind') === k);
+    const green = pick('green'), red = pick('red'), border = pick('border'), ring = pick('ring');
+    const killTags = Array.prototype.slice.call(feed.querySelectorAll('.sg-tag-kill'));
+    const ringTags = Array.prototype.slice.call(feed.querySelectorAll('.sg-tag-ring'));
+    const caps = [
+      '正常用戶的內容', '垃圾湧入，淹沒首頁', '模型把高分的擋下',
+      '但高分的正常內容也被誤殺', '低分集團，靠行為一網打盡', '一條分數線，反覆校準',
+    ];
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 連 ring 三卡的線（畫面中央橫帶定位，依實際位置）
+    function layoutRingLines() {
+      const fr = feed.getBoundingClientRect();
+      ringSvg.setAttribute('viewBox', `0 0 ${fr.width} ${fr.height}`);
+      const pts = ring.map((c) => {
+        const r = c.getBoundingClientRect();
+        return { x: r.left - fr.left + r.width / 2, y: r.top - fr.top + r.height / 2 };
       });
-      cap.textContent = caps[s] || '';
-      sg.setAttribute('data-state', s);
+      const lines = ringSvg.querySelectorAll('line');
+      const pairs = [[0, 1], [1, 2], [2, 0]];
+      lines.forEach((ln, i) => {
+        const a = pts[pairs[i][0]], b = pts[pairs[i][1]];
+        ln.setAttribute('x1', a.x); ln.setAttribute('y1', a.y);
+        ln.setAttribute('x2', b.x); ln.setAttribute('y2', b.y);
+        const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+        ln.style.strokeDasharray = len;
+        ln.style.strokeDashoffset = reduce ? 0 : len;
+      });
     }
-    setState('green');
-    if (!('IntersectionObserver' in window)) { setState('settle'); return; }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          steps.forEach(function (s) { s.classList.toggle('active', s === en.target); });
-          setState(en.target.getAttribute('data-state'));
-        }
+    layoutRingLines();
+
+    function setActive(i) {
+      steps.forEach((s, j) => s.classList.toggle('active', j === i));
+      if (caps[i]) cap.textContent = caps[i];
+    }
+
+    // reduced-motion：直接給「過濾後 + 誤殺 + 集團」的靜態收束態，文字全亮
+    if (reduce) {
+      gsap.set(red, { opacity: 0.16, filter: 'grayscale(1)', scale: 0.85 });
+      gsap.set(border, { backgroundColor: '#e7e3d8', borderColor: '#c0584a', color: '#9a958a' });
+      gsap.set(killTags, { opacity: 1 });
+      gsap.set(ring, { boxShadow: '0 0 0 2px #7258FF inset' });
+      gsap.set(ringTags, { opacity: 1 });
+      steps.forEach((s) => s.classList.add('active'));
+      return;
+    }
+
+    // 初始：非綠卡先藏在下方
+    gsap.set([...red, ...border, ...ring], { opacity: 0, scale: 0.4, yPercent: 45 });
+    gsap.set(green, { opacity: 1, scale: 1, yPercent: 0 });
+
+    const tl = gsap.timeline({
+      defaults: { ease: 'power2.out' },
+      scrollTrigger: { trigger: '#scrolly', start: 'top top', end: 'bottom bottom', scrub: 1 },
+    });
+
+    // 0 綠色（保持）
+    tl.to({}, { duration: 0.55 });
+
+    // 1 淹沒：紅/邊界/集團卡由下飛入；底色轉「垃圾」暖暗
+    tl.addLabel('flood');
+    tl.to([...red, ...border, ...ring], {
+      opacity: 1, scale: 1, yPercent: 0, duration: 0.9,
+      stagger: { each: 0.022, from: 'random' }, ease: 'back.out(1.5)',
+    }, 'flood');
+    tl.to(fig, { backgroundColor: '#efe4dd', borderColor: '#d8c4bb', duration: 0.9 }, 'flood');
+    tl.to(feed, { scale: 1, duration: 0.9 }, 'flood');
+
+    // 2 過濾：分界線掃過、紅卡向上飛出；底色恢復乾淨
+    tl.addLabel('filter', '+=0.0');
+    tl.fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: 'power1.inOut' }, 'filter');
+    tl.to(red, {
+      yPercent: -120, opacity: 0, rotation: () => gsap.utils.random(-14, 14),
+      width: 0, minWidth: 0, paddingLeft: 0, paddingRight: 0, marginLeft: -3.5, marginRight: -3.5, borderWidth: 0,
+      duration: 0.8, stagger: 0.04, ease: 'power2.in',
+    }, 'filter+=0.12');
+    tl.to(fig, { backgroundColor: '#f7f6f2', borderColor: '#e8e5de', duration: 0.7 }, 'filter+=0.2');
+    tl.to(line, { opacity: 0, duration: 0.3 }, 'filter+=0.6');
+
+    // 3 誤殺（高潮，放慢）：推近一張邊界卡，再連同變灰＋「誤殺」標
+    tl.addLabel('fp');
+    tl.to(border[0], { scale: 1.22, duration: 0.45, ease: 'power2.out' }, 'fp+=0.1');
+    tl.to(border[0], { scale: 1, duration: 0.35 }, 'fp+=0.7');
+    tl.to(border, {
+      backgroundColor: '#e7e3d8', borderColor: '#c0584a', color: '#9a958a',
+      duration: 0.6, stagger: 0.1,
+    }, 'fp+=0.25');
+    tl.to(killTags, { opacity: 1, duration: 0.3, stagger: 0.1 }, 'fp+=0.5');
+    tl.to({}, { duration: 0.5 }); // 高潮後留白、放慢節奏
+
+    // 4 集團：ring 卡亮起品牌紫框、連線畫出、「集團」標
+    tl.addLabel('ring');
+    tl.to(ring, { boxShadow: '0 0 0 2px #7258FF inset', scale: 1.04, duration: 0.4 }, 'ring');
+    tl.to(ringSvg.querySelectorAll('line'), { strokeDashoffset: 0, duration: 0.6, stagger: 0.08, ease: 'power1.inOut' }, 'ring+=0.1');
+    tl.to(ringTags, { opacity: 1, duration: 0.3, stagger: 0.08 }, 'ring+=0.3');
+
+    // 5 收束：整體微縮、靜下來
+    tl.addLabel('settle');
+    tl.to(feed, { scale: 0.97, duration: 0.5, ease: 'power1.inOut' }, 'settle');
+
+    // 文字高亮 + caption：每個 step 各自的 trigger（與 scrub 同步）
+    steps.forEach((step, i) => {
+      ScrollTrigger.create({
+        trigger: step, start: 'top 55%', end: 'bottom 55%',
+        onToggle: (self) => { if (self.isActive) setActive(i); },
       });
-    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
-    steps.forEach(function (s) { io.observe(s); });
-  })();
+    });
+    setActive(0);
+
+    // resize：重算連線並刷新
+    let rt;
+    window.addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => { layoutRingLines(); ScrollTrigger.refresh(); }, 200);
+    });
+  }
+
+  // 字體載入後位置才準；DOMContentLoaded + 保險
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrolly);
+  } else {
+    initScrolly();
+  }
+  // Astro view transitions / 重新導覽時重綁
+  document.addEventListener('astro:page-load', initScrolly);
 </script>

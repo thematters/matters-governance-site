@@ -23,7 +23,7 @@
   --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
 
   --font-ui:   "Huninn", "Noto Sans TC", system-ui, -apple-system, sans-serif;
-  --font-read: var(--font-family-reading, "Noto Serif TC", serif);
+  --font-read: "Huninn", "Noto Sans TC", system-ui, sans-serif;
 
   --maxw: 780px;
   --radius: 14px;

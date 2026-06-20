@@ -28,6 +28,25 @@
       "prompt": "Two-second seamless animated loop from this gouache illustration. Make the characters visibly but gently move while preserving the same composition and painted style. The girl in the mustard coat swings the butterfly net a small arc toward the dark spam blobs. The watering robot tips the watering can and a clear thin stream of droplets falls onto the flowers. The robot in the control room turns its head slightly and blinks once. One content card falls downward by about 60 pixels. The dark ink-blob spam creatures bob and pulse in place. People in the garden make tiny reading and head-turning motions. Leaves and grass sway softly. Camera locked, no cuts, no zoom, no morphing faces, no new text, no logos."
     },
     {
+      "id": "A1c",
+      "slug": "hero-everyone-moves-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 1.png",
+      "poster": "public/illustrations/hero.jpg",
+      "status": "ready",
+      "notes": "A1 再強化版。要求所有角色與工具都有明顯但不破壞構圖的動作。",
+      "prompt": "Create a lively two-second hand-painted gouache animation from this exact illustration. Every visible character and creature must move. No living character should remain frozen. Keep the same composition, same camera, same painted paper texture, no cuts and no zoom. On the left, the girl in the mustard coat clearly waves the butterfly net in a smooth arc and takes a tiny step as if catching the black ghost-like spam creatures. The black ghost creatures protest and react: they bob, wobble, raise little arms, blink, and drift around the net while staying in the same left-side area. The white robot in the garden tips the watering can, water visibly pours onto the plants, and the robot blinks and nods. The robot in the control room turns its head, raises one small arm, and the magnifying glass catches a glint. Human readers in the garden turn pages, nod, lift hands, and subtly shift posture. People in the crowd on the right wave small arms and lean forward. In the lower floor, workers sweep cards into the cart with visible broom strokes. A few content cards flutter downward. Leaves, flowers, and grass sway. Motion should be clearly visible at webpage hero size, like a gentle storybook animation, while preserving the illustration and avoiding new text, logos, face morphing, or chaotic camera movement."
+    },
+    {
+      "id": "A1d",
+      "slug": "hero-ghosts-only-left-4s",
+      "source": "materials/插畫視覺風格/產生的圖片 1.png",
+      "poster": "public/illustrations/hero.jpg",
+      "status": "ready",
+      "loopSeconds": 4,
+      "notes": "A1c 方向延伸。保留 4 秒，左側暗區只要鬼怪與卡片，不要新增或凸顯人類。",
+      "prompt": "Create a lively four-second hand-painted gouache animation from this exact illustration. Keep the same composition, same camera, same paper texture, no cuts and no zoom. The left dark spam area should contain only black ghost-like spam creatures and fluttering content cards. Do not add any new human figures, human faces, or large people on the left side. Do not make the mustard-coat person on the left prominent; visually de-emphasize that figure and keep attention on the ghost creatures. The black ghost creatures should be the main action on the left: they bob, wobble, blink, raise tiny arms, protest, drift around each other, and react as a lively swarm while staying in the dark area. Across the rest of the scene, every existing robot and human should make clear gentle storybook motions. The white garden robot tips the watering can and visible water droplets fall onto plants. The control-room robot turns its head, raises a small arm, and the magnifying glass glints. Human readers turn pages, nod, lift hands, and subtly shift posture. People in the right crowd wave small arms and lean forward. Workers in the lower floor sweep cards into the cart with visible broom strokes. A few content cards flutter downward. Leaves, flowers, and grass sway. Motion should be clearly visible at webpage hero size, charming and animated, while preserving the illustration style and avoiding new text, logos, face morphing, or chaotic camera movement."
+    },
+    {
       "id": "A3",
       "slug": "light-emergence-loop",
       "source": "materials/插畫視覺風格/產生的圖片 3.png",

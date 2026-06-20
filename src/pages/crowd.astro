@@ -15,11 +15,39 @@ import '../styles/story.css';
     這些公開移除紀錄，本身就是模型的訓練真相——形成「群眾標註 → 模型」的閉環。
   </p>
 
+  <div class="stat-row">
+    <div class="stat board">
+      <div class="stat__num">339</div>
+      <div class="stat__label">一週打掉的垃圾留言<span class="stat__delta">色情廣告 219＋濫用廣告 20</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num stat__num--pos">近九成</div>
+      <div class="stat__label">一位「打掃超人」獨力包辦<span class="stat__delta">一人就掃了 304 則</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num stat__num--pos">0</div>
+      <div class="stat__label">被打掃帳號的申訴數<span class="stat__delta">其中 70% 來自四個機器帳號</span></div>
+    </div>
+  </div>
+
+  <div class="callout">透明紀錄的目的不是擴大懲罰，而是讓刪除、申訴與覆核之間，形成一個可查核的社群自治循環。</div>
+
   <h2>海巡 bot：機器當隊員，但綁上煞車</h2>
   <p>
     自動巡邏、重用留言模型偵測。兩級處置（檢舉≥0.55／移除≥0.80，後者預設關閉），加上一道<strong>反轉率煞車</strong>：
     若守望隊近期「被推翻率」超過 10%，bot 直接罷工——把人類複核變成自動化的即時安全閥。
   </p>
+
+  <div class="stat-row">
+    <div class="stat board">
+      <div class="stat__num">≥ 0.55</div>
+      <div class="stat__label">送檢舉的門檻<span class="stat__delta">≥ 0.80 才移除，且預設關閉</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num stat__num--neg">&gt; 10%</div>
+      <div class="stat__label">被推翻率一超標，bot 立刻罷工<span class="stat__delta">人類複核＝自動化的安全閥</span></div>
+    </div>
+  </div>
 
   <h2>歷史的失敗：把裁決下放普通人，為什麼難</h2>
   <p>
@@ -27,6 +55,8 @@ import '../styles/story.css';
     建築師之間也站隊形成派系——「站方最花時間的，不是訴訟案，而是陪審團內部的爭吵與調停」。但團隊保留了價值：
     「讓社群決定社群的事，仍是珍貴的——只是要用什麼制度讓它延續。」
   </p>
+
+  <blockquote class="callout callout--quote">「站方最花時間的，不是訴訟案本身，而是陪審團內部的爭吵與調停。」</blockquote>
 
   <ChapterNav slug="crowd" />
 </BaseLayout>

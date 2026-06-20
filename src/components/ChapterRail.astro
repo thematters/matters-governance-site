@@ -1,0 +1,85 @@
+---
+// 右側章節 rail：序幕＋三章＋附錄。scrollspy 高亮當前章、點擊平滑跳章。
+// 平時只顯示圓點章號，hover 或當前章展開章名（slick、不擾讀）。
+// 漸進增強：無 JS 就是一排錨點連結；reduced-motion 用瞬間跳；≤1180px 隱藏（改用 header 全部主題）。
+const chapters = [
+  { id: 'ch-prologue', num: '序', name: '看不見的清道夫' },
+  { id: 'ch-1', num: '一', name: '魔高一尺' },
+  { id: 'ch-2', num: '二', name: '道高一尺' },
+  { id: 'ch-3', num: '三', name: '自己的帳號自己救' },
+  { id: 'ch-appendix', num: '附', name: '源碼・政策模組' },
+];
+---
+<nav class="crail" aria-label="章節導引">
+  <ol>
+    {chapters.map((c) => (
+      <li>
+        <a href={`#${c.id}`} class="crail-item" data-target={c.id}>
+          <span class="crail-name">{c.name}</span>
+          <span class="crail-num" aria-hidden="true">{c.num}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .crail { position: fixed; top: 50%; right: 18px; transform: translateY(-50%); z-index: 40; }
+  .crail ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+  .crail-item { display: flex; align-items: center; justify-content: flex-end; gap: 9px;
+    text-decoration: none; padding: 4px 6px; border-radius: 999px; transition: background .2s; }
+  .crail-item:hover { background: rgba(255,255,255,.55); }
+  .crail-name { font: 700 12.5px var(--font-ui); color: var(--ink-soft); white-space: nowrap;
+    max-width: 0; opacity: 0; overflow: hidden; transition: max-width .26s ease, opacity .2s ease; }
+  .crail:hover .crail-name, .crail-item.is-active .crail-name { max-width: 12em; opacity: 1; }
+  .crail-item.is-active .crail-name { color: var(--ink); }
+  .crail-num { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+    border: 1.6px solid var(--line); background: var(--bg-paper); color: var(--ink-soft);
+    font: 800 12px var(--font-ui); display: flex; align-items: center; justify-content: center;
+    transition: background .2s, border-color .2s, color .2s, transform .2s; }
+  .crail-item:hover .crail-num { border-color: var(--c-brand, #7258FF); color: var(--c-brand, #7258FF); }
+  .crail-item.is-active .crail-num { background: var(--c-brand, #7258FF); border-color: var(--c-brand, #7258FF);
+    color: #fff; transform: scale(1.08); }
+  @media (max-width: 1180px) { .crail { display: none; } }
+</style>
+
+<script is:inline>
+  (function () {
+    // 此 script 在頁面頂端 inline 執行，下方章節錨點尚未解析 → 必須等 DOM 完成再抓 targets。
+    function init() {
+    var rail = document.querySelector('.crail');
+    if (!rail) return;
+    var items = [].slice.call(rail.querySelectorAll('.crail-item'));
+    var targets = items.map(function (i) { return document.getElementById(i.getAttribute('data-target')); });
+
+    function onScroll() {
+      var y = window.scrollY + window.innerHeight * 0.42;
+      var activeId = null;
+      for (var n = 0; n < targets.length; n++) {
+        var t = targets[n];
+        if (t && t.offsetTop <= y) activeId = t.id;
+      }
+      if (!activeId && targets[0]) activeId = targets[0].id;
+      items.forEach(function (i) {
+        i.classList.toggle('is-active', i.getAttribute('data-target') === activeId);
+      });
+    }
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    items.forEach(function (i) {
+      i.addEventListener('click', function (e) {
+        var t = document.getElementById(i.getAttribute('data-target'));
+        if (!t) return;
+        e.preventDefault();
+        t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      });
+    });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
+    }
+    if (document.readyState !== 'loading') init();
+    else document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>

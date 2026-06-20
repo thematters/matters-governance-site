@@ -1,36 +1,43 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterRail from '../components/ChapterRail.astro';
 import StickyScroller from '../components/StickyScroller.astro';
 import FalsePositiveSlider from '../components/FalsePositiveSlider.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="主敘事">
-  <!-- Scene 0 — HERO（滿版電影感 banner） -->
-  <section class="full-bleed banner banner--hero">
+  <ChapterRail />
+
+  <!-- 序幕 — HERO（滿版電影感 banner） -->
+  <section class="full-bleed banner banner--hero" id="ch-prologue">
     <video class="banner-media" muted loop playsinline preload="auto" poster="illustrations/hero.jpg" aria-hidden="true" data-autoplay>
       <source src="illustrations/anim/hero-everyone-moves-loop.webm" type="video/webm" />
       <source src="illustrations/anim/hero-everyone-moves-loop.mp4" type="video/mp4" />
     </video>
     <div class="banner__inner">
-      <p class="kicker">透明開盒 · 一般平台不會開源的審查演算法</p>
-      <h1>審查，還是抗審查？</h1>
-      <p class="sub">往下捲動，親手走一遍：在完全沒有審查的首頁，會發生什麼事。</p>
-      <p class="scroll-cue">往下捲</p>
+      <p class="kicker">技術文件 · 經典案例 · 開放原始碼大公開</p>
+      <h1>看不見的平台清道夫</h1>
+      <p class="sub">社群平台的垃圾打掃方法大揭秘</p>
+      <p class="scroll-cue">往下捲，親手走一遍 ↓</p>
     </div>
   </section>
+
+  <!-- ───────── 第一章·魔高一尺 ───────── -->
+  <div class="chapter-rest" id="ch-1">
+    <p class="chapter-rest__num">第一章</p>
+    <h2 class="chapter-rest__name">魔高一尺</h2>
+    <p class="chapter-rest__desc">為什麼要審查、為什麼非機器不可</p>
+  </div>
 
   <!-- 核心 sticky scrollytelling：綠紅 feed 隨捲動變狀態 -->
   <StickyScroller />
 
-  <!-- 換你親手試 · 偽陽性滑桿（招牌互動） -->
-  <section class="scene scene-wide reveal">
-    <p class="kicker">換你親手試 · 招牌互動</p>
-    <h2>那條門檻，你會設在哪？</h2>
-    <p>剛剛是看的，現在換你拖。往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）——尤其是看起來像垃圾的政治評論、學術考據、防詐科普。</p>
-    <FalsePositiveSlider />
-    <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
-    <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
-  </section>
+  <!-- ───────── 第二章·道高一尺 ───────── -->
+  <div class="chapter-rest" id="ch-2">
+    <p class="chapter-rest__num">第二章</p>
+    <h2 class="chapter-rest__name">道高一尺</h2>
+    <p class="chapter-rest__desc">不同的打掃方法，加上守望相助</p>
+  </div>
 
   <!-- 模型之外的工具箱 -->
   <section class="scene reveal">
@@ -57,12 +64,29 @@ import '../styles/story.css';
     <a class="read-more" href="moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="crowd">深入：群眾協力</a>
   </section>
 
-  <!-- Ring -->
+  <!-- Ring 集團偵測 -->
   <section class="scene reveal">
     <p class="kicker">集團偵測 Ring</p>
     <h2>剛剛那群低分卻被一起抓的，是怎麼回事？</h2>
     <p>單篇分數只有 <strong>0.09</strong> 的「翻譯社」幾乎漏網——但它是<strong>一整群幾乎一樣的卡片、來自很多帳號</strong>。集團偵測抓的是這個「行為樣態」，不是字句：同一模板、大量帳號、短時間，一網打盡。可以親手玩玩看。</p>
     <a class="read-more" href="detection#ring">玩玩看：集團掃描 Ring</a>
+  </section>
+
+  <!-- ───────── 第三章·自己的帳號自己救 ───────── -->
+  <div class="chapter-rest" id="ch-3">
+    <p class="chapter-rest__num">第三章</p>
+    <h2 class="chapter-rest__name">自己的帳號自己救</h2>
+    <p class="chapter-rest__desc">方法再好，一定有誤刪受害者——那怎樣會更好？</p>
+  </div>
+
+  <!-- 換你親手試 · 偽陽性滑桿（招牌互動） -->
+  <section class="scene scene-wide reveal">
+    <p class="kicker">換你親手試 · 招牌互動</p>
+    <h2>那條門檻，你會設在哪？</h2>
+    <p>方法再多，總會誤判。換你站到審查者那一側，親手拖那條線——往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）：尤其是看起來像垃圾的政治評論、學術考據、防詐科普。</p>
+    <FalsePositiveSlider />
+    <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
+    <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
   </section>
 
   <!-- 更大的問題（抵達光明：暗→光弧線的 resolution，暖金花園光暈） -->
@@ -84,7 +108,32 @@ import '../styles/story.css';
         <p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p>
       </a>
     </div>
-    <p style="text-align:center;margin-top:24px"><a class="read-more" href="start">看全部 14 個主題 →</a></p>
+  </section>
+
+  <!-- ───────── 附錄·源碼與政策模組 ───────── -->
+  <section class="scene reveal" id="ch-appendix">
+    <p class="kicker">附錄</p>
+    <h2>可參考、可使用的源碼模組與政策模組</h2>
+    <p>這個站本身就是「透明開盒」：偵測模型、處置流程、垃圾資料集與合規對照都開放可取用——歡迎別的平台拿去打掃。</p>
+    <div class="bigq">
+      <a class="board board--hover" href="data" style="--bigq-c:#5a8a93">
+        <h3>開源與資料集 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>分層揭露、垃圾資料庫公開——可直接接的源碼模組。</p>
+      </a>
+      <a class="board board--hover" href="ncc" style="--bigq-c:#8a6db0">
+        <h3>NCC 合規自評 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>兩份指引 41 項對照——可參考的政策模組。</p>
+      </a>
+      <a class="board board--hover" href="conclusion" style="--bigq-c:#c8a020">
+        <h3>結論與建言 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>三悖論、給平台與主管機關的政策建言。</p>
+      </a>
+    </div>
+    <p style="text-align:center;margin-top:22px">
+      <a class="read-more" href="history">治理史編年 2018–2025</a>
+      <a class="read-more" href="about">關於・方法・授權</a>
+      <a class="read-more" href="start">看全部 14 個主題 →</a>
+    </p>
   </section>
 </BaseLayout>
 

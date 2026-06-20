@@ -157,26 +157,40 @@ async function createVideo(job, referencePath) {
   return response.json();
 }
 
-async function retrieveVideo(videoId) {
-  const response = await fetch(`https://api.openai.com/v1/videos/${videoId}`, {
-    headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-  });
+async function fetchWithRetry(url, options = {}, label = 'request') {
+  let lastErrorText = '';
+  for (let attempt = 1; attempt <= 6; attempt += 1) {
+    const response = await fetch(url, options);
+    if (response.ok) return response;
 
-  if (!response.ok) {
-    throw new Error(`Retrieve video failed: ${response.status} ${await response.text()}`);
+    lastErrorText = await response.text();
+    if (response.status < 500 || attempt === 6) {
+      throw new Error(`${label} failed: ${response.status} ${lastErrorText}`);
+    }
+
+    console.log(`${label} transient failure ${response.status}; retrying attempt ${attempt + 1}`);
+    await new Promise((resolve) => setTimeout(resolve, 5000 * attempt));
   }
+
+  throw new Error(`${label} failed: ${lastErrorText}`);
+}
+
+async function retrieveVideo(videoId) {
+  const response = await fetchWithRetry(
+    `https://api.openai.com/v1/videos/${videoId}`,
+    { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } },
+    'Retrieve video',
+  );
 
   return response.json();
 }
 
 async function downloadVideo(job, videoId) {
-  const response = await fetch(`https://api.openai.com/v1/videos/${videoId}/content`, {
-    headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Download video failed: ${response.status} ${await response.text()}`);
-  }
+  const response = await fetchWithRetry(
+    `https://api.openai.com/v1/videos/${videoId}/content`,
+    { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } },
+    'Download video',
+  );
 
   const rawPath = jobRawPath(job, videoId);
   await mkdir(path.dirname(rawPath), { recursive: true });

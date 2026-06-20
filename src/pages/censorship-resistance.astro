@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InteractionSlot from '../components/InteractionSlot.astro';
+import AddressingDemo from '../components/AddressingDemo.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="抗審查">
@@ -14,7 +14,7 @@ import '../styles/story.css';
     HTTP 是位置定址：內容綁在 IP／網域，刪檔或改 DNS 就失效。IPFS 改用<strong>內容定址</strong>：內容有一個唯一指紋（CID），
     只要還有節點持有就讀得到，傳統封鎖失效。三件技術：IPFS（2018）→ IPNS 固定地址（2022）→ ENS 好記名（2022）。
   </p>
-  <InteractionSlot title="刪得掉嗎？關掉中心伺服器，IPFS 版本還在" reference="location vs content addressing 對照" />
+  <AddressingDemo />
 
   <h2>三層內容韌性</h2>
   <p>

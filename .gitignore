@@ -15,3 +15,6 @@ node_modules/
 # 原始材料：含內部訪談等敏感資料，不進版控。
 # 需要共用時改成白名單（個別檔案 git add -f）。
 materials/
+
+# agent skills（gsap-skills，可用 npx skills add 重裝，不進 repo）
+.agents/

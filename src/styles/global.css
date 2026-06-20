@@ -22,7 +22,7 @@
   --accent: var(--color-brand-new-purple, #7258FF);
   --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
 
-  --font-ui:   "Noto Sans TC", system-ui, -apple-system, sans-serif;
+  --font-ui:   "Huninn", "Noto Sans TC", system-ui, -apple-system, sans-serif;
   --font-read: var(--font-family-reading, "Noto Serif TC", serif);
 
   --maxw: 780px;
@@ -73,16 +73,26 @@ section.block { margin: 56px 0; }
   backdrop-filter: saturate(1.2) blur(8px);
   border-bottom: 1px solid var(--line);
 }
-.nav { display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-  padding: 10px 20px; max-width: 1080px; margin: 0 auto; }
-.brand { font-family: var(--font-ui); font-weight: 800; color: var(--ink);
-  text-decoration: none; font-size: 16px; }
-.brand small { font-weight: 500; color: var(--ink-soft); }
-.nav-links { display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--font-ui);
-  font-size: 14px; }
-.nav-links a { color: var(--ink-soft); text-decoration: none; }
-.nav-links a:hover { color: var(--accent); }
-.nav-spacer { flex: 1 1 auto; }
+.nav { display: flex; align-items: center; gap: 16px;
+  padding: 11px 20px; max-width: 1120px; margin: 0 auto; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink);
+  text-decoration: none; flex: 0 0 auto; }
+.brand-logo { height: 18px; width: auto; display: block; }
+.brand-sub { font-family: var(--font-ui); font-weight: 700; font-size: 16px; color: var(--ink);
+  line-height: 1; padding-left: 10px; border-left: 1.5px solid var(--line); }
+.nav-main { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.nav-links { display: flex; gap: 16px; font-family: var(--font-ui); font-size: 14.5px;
+  list-style: none; margin: 0; padding: 0; }
+.nav-links a { color: var(--ink-soft); text-decoration: none; padding: 4px 0; }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a[aria-current="page"] { color: var(--c-brand, #7258FF); font-weight: 700; }
+.nav-toc { white-space: nowrap; }
+.nav-en { font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); text-decoration: none; }
+.nav-en:hover { color: var(--c-brand, #7258FF); }
+@media (max-width: 920px) {
+  .nav-links { display: none; }
+  .nav-main { gap: 12px; }
+}
 
 /* ---- 受眾切換（漸進揭露） ---- */
 .audience-toggle { display: inline-flex; border: 1px solid var(--line);

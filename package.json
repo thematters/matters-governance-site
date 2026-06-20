@@ -7,10 +7,13 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "sora:plan": "node scripts/render-sora-loops.mjs --plan",
+    "sora:prepare": "node scripts/render-sora-loops.mjs --prepare"
   },
   "dependencies": {
     "@matters/design-system-tokens": "^0.3.0",
-    "astro": "^5.6.0"
+    "astro": "^5.6.0",
+    "gsap": "^3.15.0"
   }
 }

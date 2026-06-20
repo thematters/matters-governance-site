@@ -1,0 +1,85 @@
+{
+  "defaults": {
+    "model": "sora-2",
+    "size": "1280x720",
+    "seconds": "4",
+    "loopSeconds": 2,
+    "referenceDir": "materials/sora-inputs",
+    "rawDir": "materials/sora-renders/raw",
+    "outputDir": "public/illustrations/anim"
+  },
+  "jobs": [
+    {
+      "id": "A1",
+      "slug": "hero-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 1.png",
+      "poster": "public/illustrations/hero.jpg",
+      "status": "ready",
+      "notes": "Hero 微呼吸。使用新版 1536x1024 hero 作為首格。",
+      "prompt": "Subtle 2-second seamless loop. Garden leaves and grass sway almost imperceptibly, the small watering robot releases a few tiny sparkling droplets, dark ink-blob spam creatures on the left slowly float and pulse, one content card drifts gently downward, and the robot blinks once. Camera locked, no cuts, no zoom; the gouache painting gently breathes; everything else stays perfectly still."
+    },
+    {
+      "id": "A1b",
+      "slug": "hero-character-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 1.png",
+      "poster": "public/illustrations/hero.jpg",
+      "status": "ready",
+      "notes": "A1 強化版。明確要求角色與物件可見但溫和的動作。",
+      "prompt": "Two-second seamless animated loop from this gouache illustration. Make the characters visibly but gently move while preserving the same composition and painted style. The girl in the mustard coat swings the butterfly net a small arc toward the dark spam blobs. The watering robot tips the watering can and a clear thin stream of droplets falls onto the flowers. The robot in the control room turns its head slightly and blinks once. One content card falls downward by about 60 pixels. The dark ink-blob spam creatures bob and pulse in place. People in the garden make tiny reading and head-turning motions. Leaves and grass sway softly. Camera locked, no cuts, no zoom, no morphing faces, no new text, no logos."
+    },
+    {
+      "id": "A3",
+      "slug": "light-emergence-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 3.png",
+      "poster": "materials/插畫視覺風格/產生的圖片 3.png",
+      "status": "candidate",
+      "notes": "N2 尚未有完全對應的重見光明背景，先用明亮花園候選圖。",
+      "prompt": "Subtle 2-second seamless loop. Warm daylight slowly blooms from the top of the frame, the overall exposure gently lifts toward a soft white glow, small flowers and leaves open by a few millimeters, and tiny motes of light drift upward. Camera locked, no cuts, no zoom; the gouache painting gently breathes; everything else stays perfectly still."
+    },
+    {
+      "id": "A4",
+      "slug": "spam-blob-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 16.png",
+      "poster": "materials/插畫視覺風格/產生的圖片 16.png",
+      "status": "ready",
+      "notes": "垃圾怪 spot。方圖會裁成 16:9 reference，適合用於小型點綴後再裁剪或 CSS object-fit。",
+      "prompt": "Subtle 2-second seamless loop. The small dark spam blob creature gently wobbles in place, briefly splits into one tiny duplicate made of the same ink, then the tiny duplicate softly merges back into the main body. The eyes blink once. Camera locked, no cuts, no zoom; the gouache painting gently breathes; everything else stays perfectly still."
+    },
+    {
+      "id": "A5",
+      "slug": "detection-robot-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 9.png",
+      "poster": "public/illustrations/detection.jpg",
+      "status": "ready",
+      "notes": "Detection robot。使用新版 1536x1024 場景。",
+      "prompt": "Subtle 2-second seamless loop. The small robot holding a magnifying glass slowly scans left and right by a few degrees, the lens catches a soft glint of light, and the robot blinks once. The dark spam shapes at the edge pulse faintly without moving position. Camera locked, no cuts, no zoom; the gouache painting gently breathes; everything else stays perfectly still."
+    },
+    {
+      "id": "A6",
+      "slug": "crowd-lantern-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 6.png",
+      "poster": "public/illustrations/crowd.jpg",
+      "status": "ready",
+      "notes": "Crowd 燈籠微動。使用新版 1536x1024 場景。",
+      "prompt": "Subtle 2-second seamless loop. Lantern flames in the crowd flicker softly and brighten then dim, casting a gentle warm breathing glow on nearby faces and hands. A few tiny sparks drift upward and fade. Camera locked, no cuts, no zoom; the gouache painting gently breathes; everything else stays perfectly still."
+    },
+    {
+      "id": "A7",
+      "slug": "dns-rpz-loop",
+      "source": "materials/插畫視覺風格/產生的圖片 7.png",
+      "poster": "public/illustrations/dns-rpz.jpg",
+      "status": "ready",
+      "notes": "DNS-RPZ 高潮候選。使用新版閘門圖。",
+      "prompt": "Subtle 2-second seamless loop. A shadowy gate on both sides closes by a small amount over the glowing website path, darkening the upper scene, then several tiny distributed nodes below the ground glow to life and connect with faint warm threads. The motion is restrained and loopable, implying block and persistence. Camera locked, no cuts, no zoom; the gouache painting gently breathes; everything else stays perfectly still."
+    },
+    {
+      "id": "A2",
+      "slug": "dark-flood-loop",
+      "source": null,
+      "poster": null,
+      "status": "needs-source",
+      "notes": "需要先生成 N1 下潛暗幕背景，再送 Sora。",
+      "prompt": "Subtle 2-second seamless loop. Dark ink-blob spam creatures slowly rise from the bottom edge like a soft black tide, gently covering the lower part of the frame. A few grey content cards drift downward in the background. Camera locked, no cuts, no zoom; the gouache painting gently breathes; everything else stays perfectly still."
+    }
+  ]
+}

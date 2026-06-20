@@ -13,5 +13,65 @@ import '../styles/story.css';
   </p>
   <hr class="soft" />
   <Timeline />
+
+  <hr class="soft" />
+  <h2>2025 春節：當平台第一次成為被治理者</h2>
+  <p>
+    農曆春節期間，部分台灣使用者突然連不上 matters.town，畫面是「這是仿冒網站／仿冒網址」的黑屏警告。站方研判：TWNIC 收到檢舉後，
+    以<strong>攔截並改寫 DNS 查詢（DNS-RPZ 機制）</strong>的方式，阻止台灣使用者訪問——一個平常在封鎖別人的平台，第一次嘗到被封鎖、卻求救無門的滋味。
+  </p>
+
+  <div class="escalation" role="list" aria-label="從一篇詐騙文放大成整站封鎖的連坐鏈">
+    <div class="esc-step" role="listitem"><b>一篇二次詐騙文</b><span>內容層的個別違規</span></div>
+    <div class="esc-arrow" aria-hidden="true">→</div>
+    <div class="esc-step" role="listitem"><b>民眾向數位產業署檢舉</b><span>觸發政府自動反詐</span></div>
+    <div class="esc-arrow" aria-hidden="true">→</div>
+    <div class="esc-step" role="listitem"><b>TWNIC 改寫 DNS（RPZ）</b><span>跳到基礎設施層</span></div>
+    <div class="esc-arrow" aria-hidden="true">→</div>
+    <div class="esc-step esc-block" role="listitem"><b>整個 matters.town 被封 3 天</b><span>連坐：全站一起斷</span></div>
+  </div>
+  <p class="esc-note">個別內容的違規，是否該導致<strong>整站在基礎設施層被封</strong>？這就是事件留下的第一個拷問——比例原則。</p>
+
+  <div class="stat-row">
+    <div class="stat board">
+      <div class="stat__num stat__num--neg">3 天</div>
+      <div class="stat__label">網站被誤封時長<span class="stat__delta">無預警、過年期間</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">0</div>
+      <div class="stat__label">事前通知<span class="stat__delta">程序應「先通知再封鎖」，卻從未收到</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num stat__num--pos">數小時</div>
+      <div class="stat__label">真正解封所需<span class="stat__delta">一旦靠私人關係接上對的人</span></div>
+    </div>
+  </div>
+
+  <blockquote class="callout callout--quote">
+    「Matters 過去都是封鎖別人的那一個……我們過去想的都是怎麼判斷哪些帳號有問題……那有沒有相對應的救濟機制呢？這就是我們一次很好的反思。」
+  </blockquote>
+
+  <p>
+    諷刺的是：救濟電話「不了了之」，最後是靠一位曾任職數位發展部的計畫主持人，直接聯繫上 TWNIC 執行長，才數小時內恢復。那篇文章的本體其實
+    還寫在 <strong>IPFS</strong> 上、沒被消滅——但多數使用者「沒人看得到」，因為真正被切斷的，是日常入口（網域）。<strong>「網域被刪，內容指紋還在」</strong>從一句技術主張，變成一次真實的逃生，也暴露了它的殘酷限制。
+  </p>
+
+  <style>
+    .escalation { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 24px 0 10px; }
+    .esc-step { flex: 1 1 160px; background: var(--bg-paper); border: 1px solid var(--line); border-radius: 12px;
+      padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+    .esc-step b { font: 800 15px var(--font-ui); color: var(--ink); }
+    .esc-step span { font: 600 12px var(--font-ui); color: var(--ink-soft); }
+    .esc-step.esc-block { background: color-mix(in srgb, var(--c-neg, #c0584a) 12%, var(--bg-paper));
+      border-color: var(--c-neg, #c0584a); }
+    .esc-step.esc-block b { color: var(--c-neg, #c0584a); }
+    .esc-arrow { align-self: center; color: var(--ink-soft); font-weight: 700; }
+    .esc-note { font-size: 16px; color: var(--ink); margin: 6px 0 0; }
+    @media (max-width: 620px) {
+      .escalation { flex-direction: column; }
+      .esc-arrow { transform: rotate(90deg); }
+    }
+  </style>
+
   <ChapterNav slug="history" />
 </BaseLayout>

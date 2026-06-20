@@ -105,5 +105,16 @@ const navLinksHtml = sections
         onScroll();
       })();
     </script>
+    <script is:inline>
+      (function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var play = function () {
+          Array.prototype.forEach.call(document.querySelectorAll('video[data-autoplay]'), function (v) {
+            var p = v.play(); if (p && p.catch) p.catch(function () {});
+          });
+        };
+        if (document.readyState !== 'loading') play(); else document.addEventListener('DOMContentLoaded', play);
+      })();
+    </script>
   </body>
 </html>

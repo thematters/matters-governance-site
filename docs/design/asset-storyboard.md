@@ -213,3 +213,48 @@ O7: a simple hand-drawn downward arrow / chevron, gouache brushstroke, inviting 
 - A4 → Ring 集團；A5 → detection；A6 → crowd；A7 → history 高潮
 
 > 動畫一律：`<video muted autoplay loop playsinline poster=靜圖>` + `@media (prefers-reduced-motion: reduce)` 只顯示 poster。檔案放 `public/illustrations/anim/`，mp4 為主、webm 備援、單支建議 < 1.5MB。
+
+---
+
+## §7 2026-06-20 產出清單
+
+> 2026-06-20 style-v2 校正：`light-emergence`、`ncc`、`data`、`conclusion`、`dns-rpz/banner`、`card-ranking`、`card-dns-rpz` 與 O1–O7 已改用原始成功插畫作 reference 重新生成，降低亮度、飽和度與 3D icon 感，回到米紙顆粒、低彩度 gouache 與留白構圖。
+
+### 靜態圖
+
+- F1: `public/illustrations/hero.jpg`，2400×1600
+- F2: `public/illustrations/moderation.jpg`，1536×1024
+- F3: `public/illustrations/detection.jpg`，1536×1024
+- F4: `public/illustrations/false-positive.jpg`，1536×1024
+- F5: `public/illustrations/ranking.jpg`，1536×1024
+- F6: `public/illustrations/censorship-resistance.jpg`，1536×1024
+- F7: `public/illustrations/crowd.jpg`，1536×1024
+- F8: `public/illustrations/dns-rpz.jpg` 與 `public/illustrations/banner.jpg`，1536×1024
+- F9: `public/illustrations/og.jpg`，1200×630
+- N1: `public/illustrations/dark-flood.jpg`，1536×1024
+- N2: `public/illustrations/light-emergence.jpg`，1536×1024
+- N3: `public/illustrations/ncc.jpg`，1536×1024
+- N4: `public/illustrations/data.jpg`，1536×1024
+- N5: `public/illustrations/conclusion.jpg`，1536×1024
+- N6: `public/illustrations/spam-card-red.jpg` 與 `public/illustrations/false-positive-card-grey.jpg`，1024×1024
+- N7: `public/illustrations/card-censorship-resistance.jpg`、`public/illustrations/card-ranking.jpg`、`public/illustrations/card-dns-rpz.jpg`，1024×1024
+
+### 小物件
+
+- O1: `public/illustrations/objects/broom-quiet-room.png`
+- O2: `public/illustrations/objects/label-hand-card.png`
+- O3: `public/illustrations/objects/polished-model-gear.png`
+- O4: `public/illustrations/objects/paper-lantern.png`
+- O5: `public/illustrations/objects/friendly-green-card-creature.png`
+- O6: `public/illustrations/objects/glowing-ipfs-nodes.png`
+- O7: `public/illustrations/objects/down-arrow.png`
+
+### 動畫
+
+- A1c: `public/illustrations/anim/hero-everyone-moves-loop.mp4` 與 `.webm`
+- A2c: `public/illustrations/anim/dark-flood-high-motion-4s.mp4` 與 `.webm`
+- A3c: `public/illustrations/anim/light-emergence-high-motion-4s.mp4` 與 `.webm`
+- A4c: `public/illustrations/anim/spam-blob-high-motion-4s.mp4` 與 `.webm`
+- A5c: `public/illustrations/anim/detection-robot-high-motion-4s.mp4` 與 `.webm`
+- A6c: `public/illustrations/anim/crowd-lantern-high-motion-4s.mp4` 與 `.webm`
+- A7c: `public/illustrations/anim/dns-rpz-high-motion-4s.mp4` 與 `.webm`

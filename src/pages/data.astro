@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterNav from '../components/ChapterNav.astro';
+import ChapterHero from '../components/ChapterHero.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="開源與資料集">
-  <p class="kicker">延伸 · 開源與資料集公開</p>
-  <h1>透明開盒是一道光譜，不是開關</h1>
+  <ChapterHero kicker="延伸 · 開源與資料集公開" title="透明開盒是一道光譜，不是開關" img="illustrations/data.jpg" alt="一個打開的木盤裝著分格的種子，有人把發光的種子分送出去，部分格子蓋著布" />
 
   <h2>開源 ≠ 透明 ≠ 共創</h2>
   <p>把程式碼丟出來<strong>不等於透明</strong>（一般人讀不懂，還需要文件、案例、說明、申訴管道——這正是本網站的理由）；開放 API 也<strong>不等於共創</strong>（資深用戶 Denken：「開源最終沒有促成共創，到最後常常只發現只有我」）。</p>

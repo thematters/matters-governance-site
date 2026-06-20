@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterNav from '../components/ChapterNav.astro';
+import ChapterHero from '../components/ChapterHero.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="NCC 合規">
-  <p class="kicker">延伸 · NCC 合規自評</p>
-  <h1>用兩份指引照一次鏡子</h1>
+  <ChapterHero kicker="延伸 · NCC 合規自評" title="用兩份指引照一次鏡子" img="illustrations/ncc.jpg" alt="一座天秤，一端是垃圾墨團、一端是自由表達的幼苗，旁邊放著一本規則手冊" />
   <p class="lead">2025 年底 NCC 公布《透明度報告指引》與《申訴及救濟機制指引》。因為 Matters 全開源，主持人「手癢」全餵進去比對——「結果幾乎都合規，大概只剩一到兩成要再做」。</p>
 
   <div class="stat-row">

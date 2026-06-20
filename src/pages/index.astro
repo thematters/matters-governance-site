@@ -7,7 +7,10 @@ import '../styles/story.css';
 <BaseLayout title="主敘事">
   <!-- Scene 0 — HERO（滿版電影感 banner） -->
   <section class="full-bleed banner banner--hero">
-    <img src="illustrations/hero.jpg" alt="一座剖面的內容世界：有人在花園裡寫作閱讀，機器人在過濾垃圾，左側是垃圾湧入的暗處" />
+    <video class="banner-media" muted loop playsinline preload="auto" poster="illustrations/hero.jpg" aria-hidden="true" data-autoplay>
+      <source src="illustrations/anim/hero-everyone-moves-loop.webm" type="video/webm" />
+      <source src="illustrations/anim/hero-everyone-moves-loop.mp4" type="video/mp4" />
+    </video>
     <div class="banner__inner">
       <p class="kicker">透明開盒 · 一般平台不會開源的審查演算法</p>
       <h1>審查，還是抗審查？</h1>

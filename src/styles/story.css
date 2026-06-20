@@ -62,6 +62,17 @@ html.js .feed-flood.in-view .card-mini:nth-child(n) { transition-delay: calc(var
   color: var(--ink); margin: 0 0 12px; letter-spacing: .03em; }
 .chapter-rest__desc { font: 500 clamp(15px, 2.2vw, 17px) var(--font-ui); color: var(--ink-soft); margin: 0; }
 
+/* 章節休息點落在「明亮的 hero 影片」上時（如第一章·魔高一尺，在 scrollytelling 變暗之前）：
+   深色字會糊在花園插畫上看不清 → 改白字＋陰影＋柔和暗 scrim，當「進入暗章」的電影感標題。 */
+.chapter-rest--on-media { position: relative; }
+.chapter-rest--on-media::before { content: ''; position: absolute; inset: -34px -6% -14px; z-index: -1;
+  background: radial-gradient(ellipse 62% 72% at center, rgba(18, 14, 28, .52), transparent 72%); pointer-events: none; }
+.chapter-rest--on-media .chapter-rest__num { color: #fff; }
+.chapter-rest--on-media .chapter-rest__num::before,
+.chapter-rest--on-media .chapter-rest__num::after { background: rgba(255, 255, 255, .65); }
+.chapter-rest--on-media .chapter-rest__name { color: #fff; text-shadow: 0 2px 20px rgba(0, 0, 0, .55), 0 1px 4px rgba(0, 0, 0, .5); }
+.chapter-rest--on-media .chapter-rest__desc { color: rgba(255, 255, 255, .92); text-shadow: 0 1px 10px rgba(0, 0, 0, .55); }
+
 /* ---- bigq 卡片縮圖（手繪章節封面）＋ hero 向下箭頭 ---- */
 .bigq-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
 .bigq-thumb { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block;

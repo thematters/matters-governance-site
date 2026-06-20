@@ -6,6 +6,8 @@ import { defineConfig } from 'astro/config';
 //   並把站內連結改用 import.meta.env.BASE_URL 前綴。
 // - 自有網域 / IPFS 部署則 base 留空（預設）。
 export default defineConfig({
+  site: 'https://thematters.github.io',
+  base: '/matters-governance-site',
   i18n: {
     defaultLocale: 'zh-Hant',
     locales: ['zh-Hant', 'en'],

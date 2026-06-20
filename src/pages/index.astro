@@ -30,7 +30,7 @@ const flood = [
   <!-- Scene 0 — HERO -->
   <section class="story-hero">
     <p class="kicker">透明開盒 · 一般平台不會開源的審查演算法</p>
-    <img class="hero-illust" src="/illustrations/hero.png" alt="一座剖面的內容世界：有人在花園裡寫作閱讀，機器人在過濾垃圾，左側是垃圾湧入的暗處" />
+    <img class="hero-illust" src="illustrations/hero.png" alt="一座剖面的內容世界：有人在花園裡寫作閱讀，機器人在過濾垃圾，左側是垃圾湧入的暗處" />
     <h1>審查，還是抗審查？</h1>
     <p class="sub">往下捲動，親手走一遍：在完全沒有審查的首頁，會發生什麼事。</p>
     <p class="scroll-cue">往下捲</p>
@@ -66,7 +66,7 @@ const flood = [
     <p class="kicker">Scene 3 · 模型怎麼學會分辨</p>
     <h2>用大量真實案例，教模型打分</h2>
     <p>運營每天人工標記真實的正常／垃圾內容——累積了約四萬篇——餵給語言模型。模型學會替每一篇打一個「垃圾分數」：越高，越可能是垃圾。</p>
-    <a class="read-more" href="/detection">看模型怎麼訓練（偵測技術）</a>
+    <a class="read-more" href="detection">看模型怎麼訓練（偵測技術）</a>
   </section>
 
   <!-- Scene 4 — 過濾 -->
@@ -83,7 +83,7 @@ const flood = [
     <p>門檻該設多少？這不是技術問題，是價值問題。<strong>拖拖看</strong>下面的門檻：往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）——尤其是那些「看起來像垃圾」的政治評論、學術考據、防詐科普。</p>
     <FalsePositiveSlider />
     <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
-    <p style="text-align:center"><a class="read-more" href="/false-positive">深入：偽陽性與門檻的倫理</a></p>
+    <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
   </section>
 
   <!-- Scene 6 — 模型之外的工具箱 -->
@@ -96,7 +96,7 @@ const flood = [
       <div class="tool"><h3>重新訓練</h3><p>模型會「自我中毒」誤判，用大模型重新校正，偽陽性降十倍。</p></div>
       <div class="tool"><h3>群眾守望</h3><p>守望相助隊一起把垃圾收走，公開可稽核。</p></div>
     </div>
-    <a class="read-more" href="/moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="/crowd">深入：群眾協力</a>
+    <a class="read-more" href="moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="crowd">深入：群眾協力</a>
   </section>
 
   <!-- Scene 7 — Ring -->
@@ -104,7 +104,7 @@ const flood = [
     <p class="kicker">Scene 7 · 集團偵測 Ring</p>
     <h2>有一種垃圾，單篇分數很低</h2>
     <p>一張紅卡分數只有 <strong>0.09</strong>，幾乎漏網——但拉遠看，它是<strong>一整群幾乎一樣的卡片、來自很多帳號</strong>。集團偵測抓的是這個「行為樣態」，不是字句：同一模板、大量帳號、短時間，一網打盡。這跟剛剛的審查模型不一樣。</p>
-    <a class="read-more" href="/detection#ring">深入：集團掃描 Ring</a>
+    <a class="read-more" href="detection#ring">深入：集團掃描 Ring</a>
   </section>
 
   <!-- Scene 8 — 一輪走完 -->
@@ -119,11 +119,11 @@ const flood = [
     <p class="kicker">Scene 9 · 更大的問題</p>
     <h2>審查與抗審查，是同一件事的兩面</h2>
     <div class="bigq">
-      <a href="/censorship-resistance"><h3>抗審查</h3><p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p></a>
-      <a href="/ranking"><h3>排序與末日爆滑</h3><p>就算沒被刪，你看到的順序也被決定了——「決定誰被看見」才是真正的權力。</p></a>
-      <a href="/history"><h3>當整個網域被封</h3><p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p></a>
+      <a href="censorship-resistance"><h3>抗審查</h3><p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p></a>
+      <a href="ranking"><h3>排序與末日爆滑</h3><p>就算沒被刪，你看到的順序也被決定了——「決定誰被看見」才是真正的權力。</p></a>
+      <a href="history"><h3>當整個網域被封</h3><p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p></a>
     </div>
-    <p style="text-align:center;margin-top:24px"><a class="read-more" href="/start">看全部 14 個主題 →</a></p>
+    <p style="text-align:center;margin-top:24px"><a class="read-more" href="start">看全部 14 個主題 →</a></p>
   </section>
 </BaseLayout>
 

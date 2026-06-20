@@ -47,6 +47,15 @@ body {
 a { color: var(--accent); text-underline-offset: 3px; }
 
 h1, h2, h3 { font-family: var(--font-ui); line-height: 1.35; }
+/* 分頁閱讀節奏（首頁 .scene/.banner 有各自覆寫，不受影響） */
+h2 { font-size: 25px; margin: 2.3rem 0 .7rem; }
+h3 { font-size: 19px; margin: 1.6rem 0 .5rem; }
+main p { margin: 0 0 1.1rem; }
+code { font-family: var(--font-mono, ui-monospace, monospace); font-size: .88em;
+  background: var(--color-primary-0, #f1eeff); color: var(--c-brand-press, #4b3acc);
+  padding: 1px 6px; border-radius: 5px; }
+blockquote { margin: 1.5rem 0; padding: 12px 18px; border-left: 4px solid var(--c-warn, #c8a020);
+  background: color-mix(in srgb, var(--c-warn, #c8a020) 8%, transparent); border-radius: 0 8px 8px 0; color: var(--ink); }
 
 /* ---- 版面 ---- */
 .container { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }

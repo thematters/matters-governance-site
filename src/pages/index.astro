@@ -1,30 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import StickyScroller from '../components/StickyScroller.astro';
 import FalsePositiveSlider from '../components/FalsePositiveSlider.astro';
 import '../styles/story.css';
-
-const green = [
-  { cat: '生活', text: '今天爬象山，雲很厚還是看到盆地。' },
-  { cat: '書評', text: '讀完《房思琪》，寫一點心得。' },
-  { cat: '創作', text: '貼一首自己寫的詩：〈雨季〉。' },
-  { cat: '藝文', text: '整理了一份台北獨立書店地圖。' },
-  { cat: '時事', text: '談能源政策常忽略基載問題。' },
-  { cat: '音樂', text: '學三個月烏克麗麗，錄一段練習。' },
-];
-const flood = [
-  { t: 'legit', cat: '生活', text: '週末燉了一鍋馬鈴薯燉肉。' },
-  { t: 'spam', cat: '色情廣告', text: '【加賴】專業外送茶，可指定。' },
-  { t: 'spam', cat: '賭博', text: '百家樂破解，首儲送1000。' },
-  { t: 'legit', cat: '書評', text: '讀完《房思琪》的心得。' },
-  { t: 'spam', cat: '賣藥', text: '失眠救星！加微信免費試。' },
-  { t: 'spam', cat: 'MLM', text: '在家月入十萬，點連結。' },
-  { t: 'spam', cat: '二次詐騙', text: '被詐騙30萬幫你追回，私訊。' },
-  { t: 'spam', cat: 'SEO農場', text: '窗簾批發最低價，大量外鏈→' },
-  { t: 'legit', cat: '創作', text: '一首詩：〈雨季〉。' },
-  { t: 'spam', cat: '內容農場', text: '震驚！這方法治百病。' },
-  { t: 'spam', cat: '違法代辦', text: '代辦各國證件，加TG。' },
-  { t: 'spam', cat: '色情廣告', text: '全套服務可指定，加賴。' },
-];
 ---
 <BaseLayout title="主敘事">
   <!-- Scene 0 — HERO -->
@@ -36,59 +14,22 @@ const flood = [
     <p class="scroll-cue">往下捲</p>
   </section>
 
-  <!-- Scene 1 — 沒有審查的首頁 -->
-  <section class="scene reveal">
-    <p class="kicker">Scene 1 · 沒有審查的首頁</p>
-    <h2>假設完全沒有審查，你看得到所有內容</h2>
-    <p>這是一個公共首頁。一開始，都是正常用戶寫的東西——<span style="color:var(--c-legit);font-weight:700">綠色</span>。</p>
-    <div class="feed feed-flood">
-      {green.map((c) => (
-        <div class="card-mini card-legit"><span class="tag">{c.cat}</span><div>{c.text}</div></div>
-      ))}
-    </div>
-  </section>
+  <!-- 核心 sticky scrollytelling：綠紅 feed 隨捲動變狀態 -->
+  <StickyScroller />
 
-  <!-- Scene 2 — 紅色淹沒 -->
-  <section class="scene reveal">
-    <p class="kicker">Scene 2 · 紅色淹沒</p>
-    <h2>但垃圾也一起湧進來</h2>
-    <p>色情廣告、賣藥、賭博、詐騙……<span style="color:var(--c-spam);font-weight:700">紅色</span>越來越多。在真實的 Matters，每 5 篇就有 4 篇是這種。沒有審查，公共首頁會被淹沒到無法閱讀。</p>
-    <div class="feed feed-flood">
-      {flood.map((c) => (
-        <div class={`card-mini card-${c.t === 'spam' ? 'spam' : 'legit'}`}><span class="tag">{c.cat}</span><div>{c.text}</div></div>
-      ))}
-    </div>
-    <p>所以要維持一個公共首頁，就得把紅色排除掉——我們需要某種演算法去過濾。</p>
-  </section>
-
-  <!-- Scene 3 — 模型怎麼學 -->
-  <section class="scene reveal">
-    <p class="kicker">Scene 3 · 模型怎麼學會分辨</p>
-    <h2>用大量真實案例，教模型打分</h2>
-    <p>運營每天人工標記真實的正常／垃圾內容——累積了約四萬篇——餵給語言模型。模型學會替每一篇打一個「垃圾分數」：越高，越可能是垃圾。</p>
-    <a class="read-more" href="detection">看模型怎麼訓練（偵測技術）</a>
-  </section>
-
-  <!-- Scene 4 — 過濾 -->
-  <section class="scene reveal">
-    <p class="kicker">Scene 4 · 過濾</p>
-    <h2>分數過線，就排除</h2>
-    <p>設一條門檻：分數高於它，就當成垃圾、不出現在公共首頁。紅色被抽走，首頁恢復乾淨。<strong>注意：垃圾不是被刪除，而是不再被看見。</strong></p>
-  </section>
-
-  <!-- Scene 5 — 偽陽性滑桿（招牌） -->
+  <!-- 換你親手試 · 偽陽性滑桿（招牌互動） -->
   <section class="scene scene-wide reveal">
-    <p class="kicker">Scene 5 · 偽陽性 — 招牌互動</p>
-    <h2>但抓得越嚴，誤殺越多</h2>
-    <p>門檻該設多少？這不是技術問題，是價值問題。<strong>拖拖看</strong>下面的門檻：往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）——尤其是那些「看起來像垃圾」的政治評論、學術考據、防詐科普。</p>
+    <p class="kicker">換你親手試 · 招牌互動</p>
+    <h2>那條門檻，你會設在哪？</h2>
+    <p>剛剛是看的，現在換你拖。往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）——尤其是看起來像垃圾的政治評論、學術考據、防詐科普。</p>
     <FalsePositiveSlider />
     <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
     <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
   </section>
 
-  <!-- Scene 6 — 模型之外的工具箱 -->
+  <!-- 模型之外的工具箱 -->
   <section class="scene reveal">
-    <p class="kicker">Scene 6 · 模型之外</p>
+    <p class="kicker">模型之外</p>
     <h2>光靠模型不夠</h2>
     <div class="toolkit">
       <div class="tool"><h3>打掃・小黑屋</h3><p>不刪除，只是把帳號/文章移出公共視野——可逆。</p></div>
@@ -99,24 +40,17 @@ const flood = [
     <a class="read-more" href="moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="crowd">深入：群眾協力</a>
   </section>
 
-  <!-- Scene 7 — Ring -->
+  <!-- Ring -->
   <section class="scene reveal">
-    <p class="kicker">Scene 7 · 集團偵測 Ring</p>
-    <h2>有一種垃圾，單篇分數很低</h2>
-    <p>一張紅卡分數只有 <strong>0.09</strong>，幾乎漏網——但拉遠看，它是<strong>一整群幾乎一樣的卡片、來自很多帳號</strong>。集團偵測抓的是這個「行為樣態」，不是字句：同一模板、大量帳號、短時間，一網打盡。這跟剛剛的審查模型不一樣。</p>
-    <a class="read-more" href="detection#ring">深入：集團掃描 Ring</a>
+    <p class="kicker">集團偵測 Ring</p>
+    <h2>剛剛那群低分卻被一起抓的，是怎麼回事？</h2>
+    <p>單篇分數只有 <strong>0.09</strong> 的「翻譯社」幾乎漏網——但它是<strong>一整群幾乎一樣的卡片、來自很多帳號</strong>。集團偵測抓的是這個「行為樣態」，不是字句：同一模板、大量帳號、短時間，一網打盡。可以親手玩玩看。</p>
+    <a class="read-more" href="detection#ring">玩玩看：集團掃描 Ring</a>
   </section>
 
-  <!-- Scene 8 — 一輪走完 -->
+  <!-- 更大的問題 -->
   <section class="scene reveal">
-    <p class="kicker">Scene 8 · 一輪走完</p>
-    <h2>這就是審查在做的事，以及它為什麼難</h2>
-    <p>過濾 → 偽陽性 → 工具箱 → 集團。首頁回到乾淨可讀，但每一步都在「擋垃圾」與「不誤殺表達」之間反覆校準同一條分數線。</p>
-  </section>
-
-  <!-- Scene 9 — 更大的問題 -->
-  <section class="scene reveal">
-    <p class="kicker">Scene 9 · 更大的問題</p>
+    <p class="kicker">更大的問題</p>
     <h2>審查與抗審查，是同一件事的兩面</h2>
     <div class="bigq">
       <a href="censorship-resistance"><h3>抗審查</h3><p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p></a>
@@ -129,14 +63,11 @@ const flood = [
 
 <script is:inline>
   (function () {
-    var nodes = document.querySelectorAll('.reveal, .feed-flood');
+    var nodes = document.querySelectorAll('.reveal');
     if (!('IntersectionObserver' in window)) {
       [].forEach.call(nodes, function (e) { e.classList.add('in-view'); });
       return;
     }
-    [].forEach.call(document.querySelectorAll('.feed-flood'), function (f) {
-      [].forEach.call(f.querySelectorAll('.card-mini'), function (c, i) { c.style.setProperty('--i', i); });
-    });
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); }

@@ -1,0 +1,137 @@
+---
+// 招牌：sticky scrollytelling。固定釘住的綠紅 feed，隨捲動切換狀態（正常→淹沒→過濾→誤殺→集團）。
+const cards = [
+  { kind: 'green',  label: '政治評論' },
+  { kind: 'green',  label: '學術考據' },
+  { kind: 'green',  label: '日記' },
+  { kind: 'green',  label: '時事' },
+  { kind: 'green',  label: '知識科普' },
+  { kind: 'green',  label: '書評' },
+  { kind: 'green',  label: '藝文' },
+  { kind: 'green',  label: '一首詩' },
+  { kind: 'red',    label: '賭場' },
+  { kind: 'red',    label: '外送茶' },
+  { kind: 'red',    label: 'SEO 農場' },
+  { kind: 'red',    label: '賣藥' },
+  { kind: 'red',    label: '二次詐騙' },
+  { kind: 'red',    label: 'MLM' },
+  { kind: 'border', label: '人權議題' },
+  { kind: 'border', label: '文學創作' },
+  { kind: 'border', label: '防詐科普' },
+  { kind: 'ring',   label: '翻譯社' },
+  { kind: 'ring',   label: '翻譯社' },
+  { kind: 'ring',   label: '翻譯社' },
+];
+const steps = [
+  { state: 'green',  text: '假設完全沒有審查，你看得到所有內容。一開始，都是正常用戶寫的東西——綠色。' },
+  { state: 'flood',  text: '但垃圾也一起湧進來。色情、賭博、詐騙、內容農場……每 5 篇就有 4 篇是這種紅色。沒有審查，公共首頁會被淹沒到無法閱讀。' },
+  { state: 'filter', text: '模型給每篇打一個垃圾分數，分數高的被擋下——紅色被抽走，首頁恢復乾淨。注意：不是刪除，只是不再被看見。' },
+  { state: 'fp',     text: '但有些正常內容分數也很高：人權議題、文學創作、防詐科普。它們被一起誤殺了（變灰）——這就是偽陽性，被誤殺的往往正是最該保護的表達。' },
+  { state: 'ring',   text: '還有一種垃圾分數很低、漏了網——但它們是同一模板、大量帳號的「集團」。靠行為（不靠字句）一網打盡。' },
+  { state: 'settle', text: '這就是審查在做的事，以及它為什麼難：在擋垃圾與不誤殺之間，反覆校準同一條分數線。' },
+];
+---
+<div class="scrolly" id="scrolly">
+  <div class="scrolly-grid">
+    <div class="scrolly-figwrap">
+      <div class="scrolly-fig" id="sg" data-state="green">
+        <div class="sg-feed">
+          {cards.map((c) => (
+            <div class={`sg-card sg-${c.kind}`} data-kind={c.kind}><span>{c.label}</span></div>
+          ))}
+        </div>
+        <p class="sg-cap" id="sg-cap">正常用戶的內容</p>
+      </div>
+    </div>
+    <div class="scrolly-steps">
+      {steps.map((s) => (
+        <div class="scrolly-step" data-state={s.state}><p>{s.text}</p></div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .scrolly { position: relative; width: min(1080px, 96vw); margin-left: 50%; transform: translateX(-50%); }
+  .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .scrolly-figwrap { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
+  .scrolly-fig { width: 100%; background: var(--bg-paper); border: 1px solid var(--line); border-radius: 18px;
+    padding: 18px; box-shadow: 0 8px 30px rgba(40,36,30,.07); }
+  .sg-feed { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; align-content: center; min-height: 320px; }
+  .sg-card { width: 88px; height: 50px; border-radius: 9px; border: 1.5px solid; display: flex; align-items: center;
+    justify-content: center; font: 700 12px var(--font-ui); text-align: center; padding: 2px;
+    transition: opacity .55s ease, transform .55s ease, filter .55s ease, background .55s ease, border-color .55s ease; }
+  .sg-green, .sg-border { background: var(--c-legit-bg, #eef2e3); border-color: var(--c-legit, #6f8f4e); color: #3f4a2c; }
+  .sg-red, .sg-ring { background: var(--c-spam-bg, #f6e6e1); border-color: var(--c-spam, #c0584a); color: #6e2c23; }
+  .sg-card.hide { opacity: 0; transform: scale(.5); }
+  .sg-card.show { opacity: 1; transform: none; }
+  .sg-card.removed { opacity: .18; filter: grayscale(1); transform: scale(.8); }
+  .sg-card.killed { opacity: .9; filter: grayscale(1); background: #e7e3d8; border-color: var(--c-spam, #c0584a);
+    border-style: dashed; position: relative; }
+  .sg-card.killed::after { content: '誤殺'; position: absolute; bottom: -2px; right: 3px; font-size: 8px; color: var(--c-spam, #c0584a); }
+  .sg-card.caught { opacity: .7; box-shadow: 0 0 0 2px var(--accent, #7258FF) inset; position: relative; }
+  .sg-card.caught::after { content: '集團'; position: absolute; bottom: -2px; right: 3px; font-size: 8px; color: var(--accent, #7258FF); }
+  .sg-cap { text-align: center; font: 700 15px var(--font-ui); margin: 14px 0 0; color: var(--ink); min-height: 1.4em; }
+
+  .scrolly-step { min-height: 88vh; display: flex; align-items: center; }
+  .scrolly-step:first-child { min-height: 55vh; }
+  .scrolly-step p { font-size: 20px; line-height: 1.9; background: #fff; border: 1px solid var(--line);
+    padding: 16px 20px; border-radius: 14px; box-shadow: 0 4px 18px rgba(40,36,30,.06); opacity: .55; transition: opacity .4s; }
+  html.js .scrolly-step p { opacity: .4; }
+  html.js .scrolly-step.active p { opacity: 1; }
+
+  @media (max-width: 720px) {
+    .scrolly { width: 100%; margin-left: 0; transform: none; }
+    .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
+    .scrolly-figwrap { height: 46vh; top: 56px; }
+    .sg-feed { min-height: 0; }
+    .sg-card { width: 72px; height: 42px; font-size: 11px; }
+    .scrolly-step { min-height: 66vh; }
+    .scrolly-step p { font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .sg-card { transition: none; } }
+</style>
+
+<script is:inline>
+  (function () {
+    var sg = document.getElementById('sg');
+    if (!sg) return;
+    var cap = document.getElementById('sg-cap');
+    var cards = [].slice.call(sg.querySelectorAll('.sg-card'));
+    var steps = [].slice.call(document.querySelectorAll('#scrolly .scrolly-step'));
+    var map = {
+      green:  { green: 'show', red: 'hide',    border: 'hide',   ring: 'hide' },
+      flood:  { green: 'show', red: 'show',    border: 'show',   ring: 'show' },
+      filter: { green: 'show', red: 'removed', border: 'show',   ring: 'show' },
+      fp:     { green: 'show', red: 'removed', border: 'killed', ring: 'show' },
+      ring:   { green: 'show', red: 'removed', border: 'killed', ring: 'caught' },
+      settle: { green: 'show', red: 'removed', border: 'killed', ring: 'caught' },
+    };
+    var caps = {
+      green: '正常用戶的內容', flood: '垃圾湧入，淹沒首頁', filter: '模型把高分的擋下',
+      fp: '但高分的正常內容也被誤殺', ring: '低分集團，靠行為一網打盡', settle: '一條分數線，反覆校準',
+    };
+    var STATES = ['hide', 'show', 'removed', 'killed', 'caught'];
+    function setState(s) {
+      var m = map[s]; if (!m) return;
+      cards.forEach(function (c) {
+        var k = c.getAttribute('data-kind');
+        STATES.forEach(function (x) { c.classList.remove(x); });
+        c.classList.add(m[k]);
+      });
+      cap.textContent = caps[s] || '';
+      sg.setAttribute('data-state', s);
+    }
+    setState('green');
+    if (!('IntersectionObserver' in window)) { setState('settle'); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          steps.forEach(function (s) { s.classList.toggle('active', s === en.target); });
+          setState(en.target.getAttribute('data-state'));
+        }
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    steps.forEach(function (s) { io.observe(s); });
+  })();
+</script>

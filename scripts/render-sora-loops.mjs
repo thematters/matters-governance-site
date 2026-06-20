@@ -28,7 +28,7 @@ const actions = {
 };
 
 const selectedJobs = manifest.jobs.filter((job) => {
-  if (!selectedIds.length) return job.status !== 'needs-source';
+  if (!selectedIds.length) return job.status !== 'needs-source' && job.status !== 'archived';
   return selectedIds.includes(job.id);
 });
 

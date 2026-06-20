@@ -225,11 +225,13 @@ O7: a simple hand-drawn downward arrow / chevron, gouache brushstroke, inviting 
 
 > 2026-06-20 style-v2 校正：`light-emergence`、`ncc`、`data`、`conclusion`、`dns-rpz/banner`、`card-ranking`、`card-dns-rpz` 與 O1–O7 已改用原始成功插畫作 reference 重新生成，降低亮度、飽和度與 3D icon 感，回到米紙顆粒、低彩度 gouache 與留白構圖。
 
-> 2026-06-20 Matty-v1 校正：官方 Matty 頭貼 reference 存於 `materials/references/matty-official-avatar.png`。`hero`、`detection`、`ranking`、`crowd`、`dns-rpz/banner`、`data`、`ncc`、`conclusion`、`card-ranking`、`card-dns-rpz`、`robot` 已重跑，把 Matty 的藍綠身體、彩虹頭帶、黃色耳朵與像素表情翻譯成同風格 gouache 陪伴型機器人。
+> 2026-06-20 Matty-v1 校正：官方 Matty 頭貼 reference 存於 `materials/visual/references/matty/matty-official-avatar.png`。`hero`、`detection`、`ranking`、`crowd`、`dns-rpz/banner`、`data`、`ncc`、`conclusion`、`card-ranking`、`card-dns-rpz`、`robot` 已重跑，把 Matty 的藍綠身體、彩虹頭帶、黃色耳朵與像素表情翻譯成同風格 gouache 陪伴型機器人。
 
 > 2026-06-20 Matty-v1 影片：A1c、A5c、A6c、A7c 已用新版 Matty 靜圖重跑，輸出同名 mp4/webm 到 `public/illustrations/anim/`。
 
 > 2026-06-20 Matty-v2 校正：Matty 筆觸改成更粗獷的波隆那 gouache，要求粗乾筆、破邊、舊紙顆粒與不均勻上色；同時每張圖最多只出現一隻 Matty。`hero` 使用 `hero-matty-v2b`，其餘 Matty 場景使用 `matty-v2`。
+
+> 2026-06-20 素材庫整理：正式 public 檔名保留在 `public/illustrations/`；當前生成源檔移到 `materials/visual/current/generated/matty-v2/`；舊生成批次、舊 hero 試片、舊 Sora reference 與 raw render 已移到 `materials/archive/`。
 
 ### 靜態圖
 

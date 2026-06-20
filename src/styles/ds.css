@@ -119,6 +119,8 @@
 .banner--hero { min-height: 86vh; margin-top: -40px; }
 .banner--hero .banner__inner .sub { color: rgba(255,255,255,.92); font-size: 20px; margin-top: var(--space-sp10); max-width: 560px; }
 .banner--hero .banner__inner .scroll-cue { color: rgba(255,255,255,.85); margin-top: var(--space-sp20); }
+.banner--chapter { min-height: 52vh; margin-top: -40px; }
+.banner--chapter .banner__inner { padding-top: var(--space-sp32); padding-bottom: var(--space-sp24); }
 
 @media (prefers-reduced-motion: reduce) {
   .btn, .board--hover { transition: none; }

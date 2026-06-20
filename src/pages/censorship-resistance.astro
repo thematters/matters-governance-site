@@ -1,12 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterHero from '../components/ChapterHero.astro';
 import AddressingDemo from '../components/AddressingDemo.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="抗審查">
-  <p class="kicker">主題 · 抗審查（原理）＋ DNS-RPZ（案例）</p>
-  <h1>就算被下架，內容仍在你手上</h1>
-  <img class="page-illust" src="illustrations/censorship-resistance.jpg" alt="用發光的根彼此相連的漂浮花園島嶼，內容在節點間流動" />
+  <ChapterHero kicker="主題 · 抗審查（原理）＋ DNS-RPZ（案例）" title="就算被下架，內容仍在你手上" img="illustrations/censorship-resistance.jpg" alt="用發光的根彼此相連的漂浮花園島嶼，內容在節點間流動" />
   <p class="lead">「有些記者在上面發文，即使記者不見了，文章可能會比記者活得久一點。」</p>
 
   <h2>內容定址 vs 位置定址</h2>

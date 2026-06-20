@@ -1,0 +1,17 @@
+---
+// 分頁統一章節 hero：滿版底圖 + scrim + 疊字（取代 ≤680px 的 .page-illust 框圖）
+interface Props {
+  kicker: string;
+  title: string;
+  img: string;   // 相對路徑，如 illustrations/detection.jpg（吃 <base href>）
+  alt: string;
+}
+const { kicker, title, img, alt } = Astro.props;
+---
+<section class="full-bleed banner banner--chapter">
+  <img src={img} alt={alt} />
+  <div class="banner__inner">
+    <p class="kicker">{kicker}</p>
+    <h1 set:html={title} />
+  </div>
+</section>

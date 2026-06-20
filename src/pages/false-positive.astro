@@ -1,12 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ChapterHero from '../components/ChapterHero.astro';
 import FalsePositiveSlider from '../components/FalsePositiveSlider.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="偽陽性">
-  <p class="kicker">旗艦主題 · 偽陽性與門檻的倫理</p>
-  <h1>一條分數線，兩種代價</h1>
-  <img class="page-illust" src="illustrations/false-positive.jpg" alt="捕蟲網網住黑色垃圾，卻也網住兩隻發光的蝴蝶——誤殺的無辜" />
+  <ChapterHero kicker="旗艦主題 · 偽陽性與門檻的倫理" title="一條分數線，兩種代價" img="illustrations/false-positive.jpg" alt="捕蟲網網住黑色垃圾，卻也網住兩隻發光的蝴蝶——誤殺的無辜" />
   <p class="lead">
     任何「分數加門檻」的系統，都在同一條線上同時決定兩件事：擋掉多少垃圾，與誤殺多少表達。
     它們不可能同時為零——這是數學事實，不是工程疏失。

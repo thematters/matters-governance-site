@@ -8,6 +8,13 @@
 // kind: green=正常 / red=垃圾 / border=邊界好內容(被誤刪) / ring=集團(翻譯社同模板)
 // 順序＝DOM 順序＝feed 由上往下；三張 ring 必須連續（集團才框得起來）。
 const posts = [
+  // ── 開場：良善的小天地（一批綠色好文先進入；像真 Matters 文章、中性不說教）──
+  { kind: 'green',  author: '黃柏勳', title: '清晨六點的傳統市場：一份關於攤販叫賣聲的田野筆記', time: '2 小時前', reads: '1.5k', comments: 39, appr: 162 },
+  { kind: 'green',  author: '蘇怡安', title: '為什麼咖啡冷掉之後會變酸？從萃取曲線聊起', time: '4 小時前', reads: '2.3k', comments: 58, appr: 244 },
+  { kind: 'green',  author: '鄭家瑋', title: '重看《一一》：原來楊德昌拍的是我們每個人的客廳', time: '7 小時前', reads: '3.1k', comments: 91, appr: 338 },
+  { kind: 'green',  author: '張哲睿', title: '台南老屋改建札記（三）：那道捨不得拆的磨石子樓梯', time: '9 小時前', reads: '1.1k', comments: 27, appr: 118 },
+  { kind: 'green',  author: '李宛庭', title: '我的書架很亂，但每一格都記得：談個人藏書的整理哲學', time: '昨天', reads: '986', comments: 33, appr: 142 },
+  { kind: 'green',  author: '王思博', title: '海邊撿來的玻璃：一場關於潮汐、時間與耐心的小科普', time: '昨天', reads: '1.7k', comments: 44, appr: 201 },
   { kind: 'green',  author: '何明軒', title: '當「公共討論」變成情緒勞動：談演算法時代的對話倫理', time: '3 小時前', reads: '1.2k', comments: 48, appr: 132 },
   { kind: 'green',  author: '林書宇', title: '考據：日治時期台北城內的書店地圖（上）', time: '5 小時前', reads: '864', comments: 21, appr: 97 },
   { kind: 'red',    author: '財神娛樂城', title: '【註冊送888】今晚不睡也要贏！老虎機爆分實測，出金秒到帳', time: '1 分鐘前', reads: '12', comments: 0, appr: 1 },
@@ -30,6 +37,8 @@ const initials = (name: string) => name.slice(0, 1);
 
 // 敘事步驟文字（與 caps/timeline label 對應）
 const steps = [
+  { text: '社群平台剛起步時，首頁通常是一片良善的小天地——綠色 accent 的貼文一篇篇進來，是生活觀察、地方紀錄、影評書評，正常用戶寫給彼此看的東西。' },
+  { text: '但隨著人變多，垃圾內容也開始湧入。賭場、賣藥、詐騙、內容農場——紅色貼文混進綠色之間，目的只有一個：騙人，或騙流量。' },
   { text: '假設完全沒有審查，你看得到所有內容。一開始，都是正常用戶寫的東西——綠色 accent 的貼文。' },
   { text: '但垃圾也一起湧進來。賭場、賣藥、詐騙、內容農場……沒有審查，公共首頁會被「註冊送888」「純天然根治」淹沒到無法閱讀。' },
   { text: '模型給每篇打一個垃圾分數，分數高的被擋下——紅色貼文被蓋上「已隱藏」。注意：不是刪除，只是不再被看見。' },
@@ -183,8 +192,10 @@ const steps = [
 
   .scrolly-step { min-height: 90vh; display: flex; align-items: center; }
   .scrolly-step:first-child { min-height: 55vh; }
-  .scrolly-step[data-i="3"] { min-height: 140vh; } /* 誤刪高潮：拉長、放慢 */
-  .scrolly-step[data-i="4"] { min-height: 110vh; } /* 集團：給框住動畫空間 */
+  .scrolly-step[data-i="0"] { min-height: 70vh; } /* 良善小天地：開場，給綠好文進場空間 */
+  .scrolly-step[data-i="1"] { min-height: 80vh; } /* 垃圾湧入：紅貼文淡入 */
+  .scrolly-step[data-i="5"] { min-height: 140vh; } /* 誤刪高潮：拉長、放慢 */
+  .scrolly-step[data-i="6"] { min-height: 110vh; } /* 集團：給框住動畫空間 */
   .scrolly-step:last-child { min-height: 80vh; }
   .scrolly-step p { font-size: 20px; line-height: 1.9; background: #fff; border: 1px solid var(--line);
     padding: 16px 20px; border-radius: 14px; box-shadow: 0 4px 18px rgba(40,36,30,.06); opacity: .55;
@@ -199,7 +210,7 @@ const steps = [
     .sg-viewport { height: 46vh; }
     .sg-card { width: 100%; }
     .scrolly-step { min-height: 70vh; }
-    .scrolly-step[data-i="3"] { min-height: 100vh; }
+    .scrolly-step[data-i="5"] { min-height: 100vh; }
     .scrolly-step p { font-size: 18px; }
   }
 
@@ -236,6 +247,7 @@ const steps = [
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const caps = [
+      '良善的小天地', '垃圾開始湧入',
       '正常用戶的內容', '垃圾湧入，淹沒首頁', '模型把高分的擋下',
       '但高分的正常內容也被誤刪', '低分集團：同一模板、大量帳號', '一條分數線，反覆校準',
     ];
@@ -284,7 +296,10 @@ const steps = [
     }
 
     // ── reduced-motion：直接顯示最終狀態，feed 捲到能看見集團，靜態可讀 ──
+    // 開場「綠多→紅進來」的意思在靜態下也成立：綠好文在頂、紅垃圾全可見並被壓暗，
+    // 集團紫框與誤刪標都落定，整條 feed 一眼讀完。
     if (reduce) {
+      gsap.set([...red, ...ring], { opacity: 1 }); // 垃圾（含漏網集團）全部現身
       gsap.set(red, { filter: 'grayscale(1) brightness(.9)' });
       gsap.set(hiddenOverlays(red), { opacity: 1 });
       gsap.set(border, { boxShadow: '0 0 0 2px var(--c-neg, #c85c41)' });
@@ -296,23 +311,41 @@ const steps = [
       return;
     }
 
-    // 初始：feed 在頂、暗幕/光暈關閉
+    // 初始：feed 在頂、暗幕/光暈關閉；垃圾（紅）與漏網集團（ring）先隱形，
+    // 開場只見綠好文與邊界好內容（border 屬於良善小天地，從頭就在）。
     gsap.set(feed, { y: 0 });
     gsap.set(atmos, { opacity: 0 });
     gsap.set(glow, { opacity: 0 });
+    gsap.set([...red, ...ring], { opacity: 0 });
 
     const tl = gsap.timeline({
       defaults: { ease: 'power2.out' },
       scrollTrigger: { trigger: '#scrolly', start: 'top top', end: 'bottom bottom', scrub: 1 },
     });
 
-    // 整條 feed 隨捲動往上跑（貫穿全程，像滑社群）——比敘事更線性
-    tl.fromTo(feed, { y: 0 }, { y: () => -feedTravel(), duration: 6, ease: 'none' }, 0);
+    // ── 開場序曲（PRE 秒）：在既有 flood 之前插入兩個 beat。──
+    // PRE 把既有的 flood/filter/fp/ring/settle 整段往後平移同樣秒數，
+    // 既有相對節奏與 feed「捲到底再停住」的關係完全保留（feed 於 PRE+6 抵達底部，
+    // 恰在 filter 之前，與原本 6 之於 6.55 同構）。
+    const PRE = 2.0;
 
-    tl.to({}, { duration: 0.55 }); // 0 綠色保持
+    // 整條 feed 隨捲動往上跑（貫穿序曲＋原本行程，像滑社群）——比敘事更線性
+    tl.fromTo(feed, { y: 0 }, { y: () => -feedTravel(), duration: PRE + 6, ease: 'none' }, 0);
+
+    // beat 0 良善小天地：只見綠好文（與 border 好內容）進入，atmos 維持很亮（≈0）。
+    tl.addLabel('welcome', 0);
+    tl.to({}, { duration: 0.9 }, 'welcome'); // 純保持：讓綠好文先捲一段
+
+    // beat 1 垃圾湧入：紅色垃圾（與漏網集團 ring）開始淡入混進來，atmos 輕微上升。
+    tl.addLabel('influx', 0.95);
+    tl.to(red, { opacity: 1, duration: 0.75, stagger: { each: 0.07, from: 'start' } }, 'influx');
+    tl.to(ring, { opacity: 1, duration: 0.75, stagger: { each: 0.07, from: 'start' } }, 'influx+=0.2');
+    tl.to(atmos, { opacity: 0.14, duration: 0.9, ease: 'power1.inOut' }, 'influx');
+
+    tl.to({}, { duration: 0.55 }); // 收束序曲（與既有節奏對齊）
 
     // 1 淹沒：垃圾貼文（紅）滑到偵測時被標「已隱藏」覆蓋層淡入、卡片變暗壓扁一點
-    tl.addLabel('flood', 0.55);
+    tl.addLabel('flood', PRE + 0.55);
     tl.to(hiddenOverlays(red), { opacity: 1, duration: 0.7, stagger: { each: 0.05, from: 'random' } }, 'flood');
     tl.to(red, { filter: 'grayscale(.6) brightness(.94)', duration: 0.7, stagger: { each: 0.05, from: 'random' } }, 'flood');
 

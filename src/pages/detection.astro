@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import RingDetector from '../components/RingDetector.astro';
+import DecisionBoundary from '../components/DecisionBoundary.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="偵測技術">
@@ -31,6 +32,11 @@ import '../styles/story.css';
       <div class="stat__num">0.33%</div>
       <div class="stat__label">留言偽陽性<span class="stat__delta">e5-small 小模型</span></div>
     </div>
+  </div>
+
+  <div class="figure">
+    <div class="figure__head"><span class="figure__title">模型怎麼畫那條線：為什麼一定有誤殺</span><span class="figure__hint">拖分界線</span></div>
+    <DecisionBoundary />
   </div>
 
   <h2>模型會「自我中毒」</h2>

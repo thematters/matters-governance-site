@@ -1,0 +1,137 @@
+---
+// 互動：決策邊界（R2D3 式）。2D 特徵空間裡綠（正常）聚左下、紅（垃圾）聚右上、中間重疊；
+// 拖分界線（x+y=k 的斜線）看誤殺／漏網即時變化。洞見：綠紅有重疊區，任何一條線都會犯錯。
+// 漸進增強：無 JS 顯示散點 + 一條靜態線 + noscript 說明。
+const dots = [
+  { x: 18, y: 22, t: 'g' }, { x: 28, y: 15, t: 'g' }, { x: 15, y: 38, t: 'g' }, { x: 35, y: 30, t: 'g' },
+  { x: 22, y: 48, t: 'g' }, { x: 42, y: 20, t: 'g' }, { x: 30, y: 44, t: 'g' }, { x: 48, y: 33, t: 'g' },
+  { x: 62, y: 41, t: 'g' }, { x: 57, y: 53, t: 'g' }, { x: 68, y: 30, t: 'g' },
+  { x: 78, y: 75, t: 'r' }, { x: 85, y: 62, t: 'r' }, { x: 70, y: 82, t: 'r' }, { x: 88, y: 80, t: 'r' },
+  { x: 75, y: 67, t: 'r' }, { x: 82, y: 88, t: 'r' }, { x: 90, y: 71, t: 'r' },
+  { x: 55, y: 58, t: 'r' }, { x: 47, y: 63, t: 'r' }, { x: 61, y: 48, t: 'r' },
+];
+const initK = 100;
+---
+<div class="db" id="db-root" data-k={initK}>
+  <svg class="db-svg" id="db-svg" viewBox="0 0 100 100" role="img"
+    aria-label="二維特徵空間：橫軸是看起來像垃圾的程度、縱軸是行為可疑度，綠點為正常、紅點為垃圾，可拖曳分界線">
+    <!-- 軸 -->
+    <line class="db-axis" x1="0" y1="100" x2="100" y2="100"></line>
+    <line class="db-axis" x1="0" y1="0" x2="0" y2="100"></line>
+    <!-- 分界線（x+y=k）：JS 更新 -->
+    <line class="db-line" id="db-line" x1="0" y1="100" x2="100" y2="0"></line>
+    <!-- 點 -->
+    {dots.map((d, i) => (
+      <circle class={`db-dot db-${d.t}`} data-x={d.x} data-y={d.y} data-t={d.t}
+        cx={d.x} cy={100 - d.y} r="3.2" data-i={i}></circle>
+    ))}
+    <!-- 拖曳把手 -->
+    <circle class="db-handle" id="db-handle" cx="50" cy="50" r="6" tabindex="0"
+      role="slider" aria-label="分界線位置" aria-valmin="20" aria-valmax="180" aria-valuenow={initK}></circle>
+  </svg>
+  <div class="db-axis-labels"><span>不像垃圾 → 像垃圾（內容分數）</span></div>
+
+  <div class="db-readout" aria-live="polite">
+    <div class="db-stat"><b id="db-block">0</b><span>正確擋下</span></div>
+    <div class="db-stat db-stat-fp"><b id="db-fp">0</b><span>誤殺正常</span></div>
+    <div class="db-stat db-stat-leak"><b id="db-leak">0</b><span>漏網垃圾</span></div>
+    <div class="db-stat"><b id="db-safe">0</b><span>正確保留</span></div>
+  </div>
+  <p class="db-note" id="db-note"></p>
+  <noscript><p class="db-note">這是可拖曳的互動：拖動分界線，會看到中間的重疊區——有些「正常」內容看起來很像垃圾、有些垃圾很隱蔽。<strong>任何一條直線都會同時誤殺一些正常內容、放過一些垃圾</strong>，這就是偽陽性無法歸零的幾何原因。請開啟 JavaScript 操作。</p></noscript>
+</div>
+
+<style>
+  .db { max-width: 440px; margin: 8px auto 0; }
+  .db-svg { width: 100%; height: auto; aspect-ratio: 1; display: block; touch-action: none;
+    background: linear-gradient(135deg, color-mix(in srgb, #6f8f4e 7%, transparent), color-mix(in srgb, #c0584a 8%, transparent));
+    border: 1px solid var(--line); border-radius: 12px; overflow: visible; }
+  .db-axis { stroke: var(--line); stroke-width: 0.6; }
+  .db-line { stroke: var(--c-brand, #7258FF); stroke-width: 1.4; stroke-dasharray: 3 2; }
+  .db-dot { stroke: #fff; stroke-width: 0.8; transition: r .12s; }
+  .db-g { fill: #6f8f4e; } .db-r { fill: #c0584a; }
+  .db-dot.db-wrong { stroke: var(--c-brand, #7258FF); stroke-width: 1.6; }
+  .db-handle { fill: var(--c-brand, #7258FF); stroke: #fff; stroke-width: 2; cursor: grab; }
+  .db-handle:active { cursor: grabbing; }
+  .db-handle:focus-visible { outline: none; stroke-width: 3; filter: drop-shadow(0 0 3px var(--c-brand, #7258FF)); }
+  .db-axis-labels { display: flex; justify-content: center; font: 700 11px var(--font-ui); color: var(--ink-soft); margin: 6px 0 0; }
+  .db-readout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0 0; text-align: center; }
+  .db-stat b { display: block; font: 800 22px var(--font-ui); color: var(--ink); }
+  .db-stat span { font: 600 11px var(--font-ui); color: var(--ink-soft); }
+  .db-stat-fp b { color: #c0584a; } .db-stat-leak b { color: #c8a020; }
+  .db-note { text-align: center; font-size: 15px; margin: 12px 0 0; min-height: 2.6em; }
+</style>
+
+<script is:inline>
+  (function () {
+    var root = document.getElementById('db-root');
+    if (!root) return;
+    var svg = document.getElementById('db-svg');
+    var line = document.getElementById('db-line');
+    var handle = document.getElementById('db-handle');
+    var dots = [].slice.call(root.querySelectorAll('.db-dot'));
+    var elB = document.getElementById('db-block'), elF = document.getElementById('db-fp'),
+        elL = document.getElementById('db-leak'), elS = document.getElementById('db-safe'),
+        elN = document.getElementById('db-note');
+    var k = +root.getAttribute('data-k');
+
+    function lineEndpoints(k) {
+      // x+y=k 在 [0,100] 方框內的兩端點（注意 SVG y 向下，資料 y 向上 → 螢幕 cy=100-y）
+      var p1, p2;
+      if (k <= 100) { p1 = { x: 0, y: k }; p2 = { x: k, y: 0 }; }
+      else { p1 = { x: k - 100, y: 100 }; p2 = { x: 100, y: k - 100 }; }
+      return [{ x: p1.x, sy: 100 - p1.y }, { x: p2.x, sy: 100 - p2.y }];
+    }
+    function render() {
+      var e = lineEndpoints(k);
+      line.setAttribute('x1', e[0].x); line.setAttribute('y1', e[0].sy);
+      line.setAttribute('x2', e[1].x); line.setAttribute('y2', e[1].sy);
+      var block = 0, fp = 0, leak = 0, safe = 0;
+      dots.forEach(function (d) {
+        var x = +d.getAttribute('data-x'), y = +d.getAttribute('data-y');
+        var spam = d.getAttribute('data-t') === 'r';
+        var removed = (x + y) > k; // 右上側＝被判垃圾
+        var wrong = (removed && !spam) || (!removed && spam);
+        d.classList.toggle('db-wrong', wrong);
+        if (spam) { removed ? block++ : leak++; } else { removed ? fp++ : safe++; }
+      });
+      elB.textContent = block; elF.textContent = fp; elL.textContent = leak; elS.textContent = safe;
+      handle.setAttribute('aria-valuenow', Math.round(k));
+      var msg;
+      if (fp > 0 && leak > 0) msg = '看到沒？同一條線同時誤殺了 ' + fp + ' 篇正常、又放過 ' + leak + ' 篇垃圾——中間重疊區讓兩種錯一起發生。';
+      else if (fp > 0) msg = '為了把垃圾擋乾淨，誤殺了 ' + fp + ' 篇正常內容。往右上拖鬆一點？垃圾就會開始漏網。';
+      else if (leak > 0) msg = '沒有誤殺，但放過了 ' + leak + ' 篇垃圾。往左下拖嚴一點？正常內容就開始被誤殺。';
+      else msg = '剛好全分對——但真實內容的重疊遠比這 21 點嚴重，這種完美幾乎不存在。';
+      elN.textContent = msg;
+    }
+
+    function ptToData(evt) {
+      var r = svg.getBoundingClientRect();
+      var cx = (evt.clientX - r.left) / r.width * 100;
+      var cy = (evt.clientY - r.top) / r.height * 100;
+      return { x: Math.max(2, Math.min(98, cx)), y: Math.max(2, Math.min(98, 100 - cy)) };
+    }
+    function setFromPoint(p) {
+      handle.setAttribute('cx', p.x); handle.setAttribute('cy', 100 - p.y);
+      k = p.x + p.y; render();
+    }
+    var dragging = false;
+    function down(e) { dragging = true; handle.setPointerCapture && e.pointerId != null && handle.setPointerCapture(e.pointerId); e.preventDefault(); }
+    function move(e) { if (!dragging) return; setFromPoint(ptToData(e)); }
+    function up() { dragging = false; }
+    handle.addEventListener('pointerdown', down);
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    // 點 SVG 任一處也可移動分界
+    svg.addEventListener('pointerdown', function (e) { if (e.target !== handle) { setFromPoint(ptToData(e)); } });
+    // 鍵盤
+    handle.addEventListener('keydown', function (e) {
+      var step = 4, hx = +handle.getAttribute('cx'), hy = 100 - +handle.getAttribute('cy');
+      if (e.key === 'ArrowLeft') hx -= step; else if (e.key === 'ArrowRight') hx += step;
+      else if (e.key === 'ArrowUp') hy += step; else if (e.key === 'ArrowDown') hy -= step; else return;
+      e.preventDefault();
+      setFromPoint({ x: Math.max(2, Math.min(98, hx)), y: Math.max(2, Math.min(98, hy)) });
+    });
+    render();
+  })();
+</script>

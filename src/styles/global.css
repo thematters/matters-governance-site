@@ -6,8 +6,8 @@
 
 :root {
   /* 白底 + 土系強調色（內容語意）；DS 品牌紫為互動信號 */
-  --bg:         #FFFFFF; /* 白底 */
-  --bg-paper:   #F7F6F2; /* 微暖卡片底 */
+  --bg:         #F3EEE3; /* 暖米紙感底（取代純白，呼應波隆納插畫的紙張底色） */
+  --bg-paper:   #FBFAF7; /* 近白卡片底，浮在米色頁面上才有層次 */
   --ink:        #2A2823; /* 炭墨 */
   --ink-soft:   #5C574C;
   --line:       #E8E5DE;
@@ -36,7 +36,9 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--bg);
+  /* 極淡紙紋（SVG fractal noise，~4%）：紙感、消除純白的突兀，不搶讀 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   color: var(--ink);
   font-family: var(--font-read);
   font-size: 18px;

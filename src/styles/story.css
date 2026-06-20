@@ -22,13 +22,14 @@
 html.js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
 html.js .reveal.in-view { opacity: 1; transform: none; }
 
-/* ---- 主頁 hero ---- */
-.story-hero { min-height: 86vh; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; text-align: center; padding: 40px 20px; position: relative; }
-.story-hero .hero-illust { width: min(680px, 92vw); border: none; background: none;
-  min-height: 0; display: block; border-radius: var(--radius); box-shadow: 0 8px 30px rgba(40,36,30,.10); }
-.story-hero h1 { font-size: clamp(34px, 6vw, 56px); margin: 18px 0 8px; }
-.story-hero .sub { font-size: 20px; color: var(--ink-soft); max-width: 560px; }
+/* 舊 .story-hero 已移除（hero 改用 ds.css 的 .banner--hero 滿版）；.scroll-cue 仍用於 hero */
+/* 抵達光明：resolution 段的暖金花園光暈（暗→光弧線收束） */
+.scene--light { position: relative; }
+.scene--light > :not(.scene-glow) { position: relative; z-index: 1; }
+.scene-glow { position: absolute; top: -10%; bottom: -10%; left: 50%; transform: translateX(-50%); width: 100vw;
+  z-index: 0; pointer-events: none;
+  background: radial-gradient(55% 52% at 50% 44%, color-mix(in srgb, #d9b24a 15%, transparent), transparent 72%); }
+
 .scroll-cue { margin-top: 36px; font-family: var(--font-ui); font-size: 14px; color: var(--accent); }
 .scroll-cue::after { content: "↓"; display: block; font-size: 22px; animation: bob 1.6s ease-in-out infinite; }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }

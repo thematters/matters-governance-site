@@ -62,8 +62,7 @@ blockquote { margin: 1.5rem 0; padding: 12px 18px; border-left: 4px solid var(--
 main { padding: 40px 0 96px; }
 section.block { margin: 56px 0; }
 .lead { font-size: 21px; color: var(--ink-soft); }
-.page-illust { display: block; width: 100%; max-width: 680px; margin: 6px auto 28px;
-  border-radius: 14px; box-shadow: 0 8px 30px rgba(40, 36, 30, .10); }
+/* .page-illust 已移除（分頁頂圖改用 ChapterHero 滿版 banner） */
 .kicker {
   font-family: var(--font-ui); font-size: 13px; letter-spacing: .12em;
   text-transform: uppercase; color: var(--olive); font-weight: 700;

@@ -2,36 +2,121 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/story.css';
 
+// 每個主題配一張既有插圖縮圖（history→dns-rpz、about→seed 為近義替代）＋分流色。
 const topics = [
-  { href: './', label: '主敘事', desc: '綠紅卡片捲動走完審查的意義（從這裡開始）', lane: '一般' },
-  { href: 'detection', label: '偵測技術 + 集團掃描', desc: '模型怎麼抓垃圾、Ring 怎麼抓集團', lane: '開發者' },
-  { href: 'false-positive', label: '偽陽性 ★', desc: '拖門檻看誤殺——一條分數線兩種代價', lane: '一般' },
-  { href: 'moderation', label: '七種處置', desc: '從打掃到註銷的光譜、小黑屋的設計史', lane: '一般' },
-  { href: 'ranking', label: '首頁排序', desc: '降權 ≠ 刪除、決定誰被看見', lane: '開發者' },
-  { href: 'crowd', label: '群眾協力', desc: '守望相助隊、海巡 bot、陪審團的失敗', lane: '一般' },
-  { href: 'censorship-resistance', label: '抗審查 + DNS-RPZ', desc: 'IPFS 三層韌性、2025 春節誤封事件', lane: '政策' },
-  { href: 'history', label: '治理史編年', desc: '2018–2025，工具如何被事件逼出來', lane: '政策' },
-  { href: 'ncc', label: 'NCC 合規自評', desc: '兩份指引 41 項對照', lane: '政策' },
-  { href: 'data', label: '開源與資料集', desc: '分層揭露、垃圾資料庫公開', lane: '開發者' },
-  { href: 'conclusion', label: '結論與建言', desc: '三悖論、政策建言', lane: '政策' },
-  { href: 'about', label: '關於・方法', desc: '計畫、資料來源、授權', lane: '全部' },
+  { href: './', label: '主敘事', desc: '綠紅卡片捲動走完審查的意義，從這裡開始親手走一遍。', lane: '一般', img: 'hero.jpg', feature: true },
+  { href: 'false-positive', label: '偽陽性', star: true, desc: '拖門檻看誤殺——一條分數線，兩種代價。', lane: '一般', img: 'false-positive.jpg' },
+  { href: 'detection', label: '偵測技術 + 集團掃描', desc: '模型怎麼抓垃圾、Ring 怎麼抓一整群集團帳號。', lane: '開發者', img: 'detection.jpg' },
+  { href: 'moderation', label: '七種處置', desc: '從打掃到註銷的光譜、小黑屋的設計史。', lane: '一般', img: 'moderation.jpg' },
+  { href: 'ranking', label: '首頁排序', desc: '降權 ≠ 刪除——決定誰被看見，才是真正的權力。', lane: '開發者', img: 'ranking.jpg' },
+  { href: 'crowd', label: '群眾協力', desc: '守望相助隊、海巡 bot、陪審團為何失敗。', lane: '一般', img: 'crowd.jpg' },
+  { href: 'censorship-resistance', label: '抗審查 + DNS-RPZ', desc: 'IPFS 三層韌性、2025 春節整個網域被誤封。', lane: '政策', img: 'censorship-resistance.jpg' },
+  { href: 'history', label: '治理史編年', desc: '2018–2025，每一個工具如何被事件逼出來。', lane: '政策', img: 'dns-rpz.jpg' },
+  { href: 'ncc', label: 'NCC 合規自評', desc: '兩份指引、41 項逐條對照的政策模組。', lane: '政策', img: 'ncc.jpg' },
+  { href: 'data', label: '開源與資料集', desc: '分層揭露、垃圾資料庫公開——直接接的源碼模組。', lane: '開發者', img: 'data.jpg' },
+  { href: 'conclusion', label: '結論與建言', desc: '三悖論，給平台與主管機關的政策建言。', lane: '政策', img: 'conclusion.jpg' },
+  { href: 'about', label: '關於・方法', desc: '計畫緣起、資料來源與授權。', lane: '全部', img: 'seed.jpg' },
 ];
+const laneClass = (l: string) => ({ '一般': 'lane-a', '開發者': 'lane-d', '政策': 'lane-p', '全部': 'lane-x' }[l] || 'lane-x');
 ---
 <BaseLayout title="全部主題">
-  <section class="full-bleed banner banner--chapter" aria-label="全部主題">
-    <img src="illustrations/detection-matty-v2.jpg" alt="平台清道夫巡查內容的全景：偵測、處置、排序與抗審查" />
-    <div class="banner__inner">
+  <!-- 固定滿版底圖 + 暗幕：玻璃主題卡浮在上面 -->
+  <div class="topics-bg" aria-hidden="true">
+    <img src="illustrations/detection-matty-v2.jpg" alt="" />
+  </div>
+  <div class="topics-scrim" aria-hidden="true"></div>
+
+  <div class="topics-page">
+    <header class="topics-hero">
       <p class="kicker">全章節索引</p>
       <h1>全部主題</h1>
+      <p class="topics-lead">想跳著讀？這裡是全部 14 個主題。一般人建議從<a href="./">主敘事</a>開始；政策與開發者可直接挑章。</p>
+    </header>
+
+    <div class="full-bleed topics-gridwrap">
+      <div class="topic-grid">
+        {topics.map((t) => (
+          <a class={`topic-card${t.feature ? ' topic-card--feature' : ''}`} href={t.href}>
+            <span class="topic-card__media">
+              <img src={`illustrations/${t.img}`} alt="" loading="lazy" />
+            </span>
+            <span class="topic-card__body">
+              <span class={`topic-card__lane ${laneClass(t.lane)}`}>{t.lane}</span>
+              <h3 class="topic-card__title">{t.label}{t.star && <span class="topic-card__star" aria-hidden="true">★</span>}</h3>
+              <p class="topic-card__desc">{t.desc}</p>
+              <span class="topic-card__go">看這篇 <span aria-hidden="true">→</span></span>
+            </span>
+          </a>
+        ))}
+      </div>
     </div>
-  </section>
-  <p class="lead" style="margin-top:24px">想跳著讀？這裡是全部主題。一般人建議從<a href="./">主敘事</a>開始；政策與開發者可直接挑章。</p>
-  <div class="pillars" style="margin-top:24px">
-    {topics.map((t) => (
-      <a class="pillar" href={t.href}>
-        <h3>{t.label} <small style="font-weight:500;color:var(--ink-soft);font-size:12px">· {t.lane}</small></h3>
-        <p>{t.desc}</p>
-      </a>
-    ))}
   </div>
 </BaseLayout>
+
+<style>
+  /* 固定滿版底圖 + 暗幕（玻璃卡浮在上面） */
+  .topics-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: #0e0b22; }
+  .topics-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .topics-scrim { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(8,7,14,.55) 0%, rgba(8,7,14,.62) 46%, rgba(8,7,14,.82) 100%); }
+
+  .topics-page { position: relative; z-index: 1; }
+
+  /* Hero：滿版第一屏，白字置中 */
+  .topics-hero { min-height: 62vh; display: flex; flex-direction: column; justify-content: center; text-align: center;
+    padding: 14vh 0 4vh; color: #fff; }
+  .topics-hero .kicker { color: rgba(255,255,255,.78); }
+  .topics-hero h1 { color: #fff; font-size: clamp(38px, 6vw, 60px); margin: 8px 0 0;
+    text-shadow: 0 2px 26px rgba(0,0,0,.55); }
+  .topics-lead { font: 500 clamp(15px,2.2vw,18px)/1.7 var(--font-ui); color: rgba(255,255,255,.86);
+    max-width: 36em; margin: 16px auto 0; text-shadow: 0 1px 12px rgba(0,0,0,.5); }
+  .topics-lead a { color: #c3b6ff; }
+
+  /* 卡片格：比 780 容器更寬 */
+  .topics-gridwrap { padding: 0 20px 12vh; }
+  .topic-grid { max-width: 1140px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+  /* 玻璃主題卡：縮圖 + 內文，hover 浮起＋縮圖微放大 */
+  .topic-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; text-decoration: none;
+    background: rgba(255,255,255,.09); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,.22); box-shadow: 0 12px 38px rgba(0,0,0,.34);
+    transition: transform .22s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease; }
+  .topic-card:hover { transform: translateY(-6px); background: rgba(255,255,255,.15);
+    border-color: rgba(195,182,255,.55); box-shadow: 0 22px 56px rgba(0,0,0,.46); }
+  .topic-card__media { aspect-ratio: 16 / 10; overflow: hidden; }
+  .topic-card__media img { width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform .45s ease; }
+  .topic-card:hover .topic-card__media img { transform: scale(1.06); }
+  .topic-card__body { padding: 13px 16px 16px; display: flex; flex-direction: column; gap: 7px; flex: 1 1 auto; }
+  .topic-card__lane { align-self: flex-start; font: 700 10.5px var(--font-ui); letter-spacing: .12em;
+    padding: 3px 9px; border-radius: 999px; }
+  .lane-a { color: #cfe3b6; background: rgba(111,143,78,.32); }
+  .lane-d { color: #bfe0e6; background: rgba(90,138,147,.32); }
+  .lane-p { color: #e6c9b6; background: rgba(192,88,74,.3); }
+  .lane-x { color: #d8cdf3; background: rgba(114,88,255,.3); }
+  .topic-card__title { font: 800 18px/1.3 var(--font-read); color: #fff; margin: 0; display: flex; align-items: center; gap: 6px; }
+  .topic-card__star { color: #ffd27a; font-size: 14px; }
+  .topic-card__desc { font: 500 13.5px/1.65 var(--font-ui); color: rgba(255,255,255,.82); margin: 0; }
+  .topic-card__go { margin-top: auto; padding-top: 4px; font: 700 13px var(--font-ui); color: #fff; opacity: .9; }
+  .topic-card__go span { display: inline-block; transition: transform .18s ease; }
+  .topic-card:hover .topic-card__go span { transform: translateX(4px); }
+
+  /* 主敘事：橫跨整列的精選卡（縮圖在左、內文在右） */
+  .topic-card--feature { grid-column: 1 / -1; flex-direction: row;
+    background: rgba(114,88,255,.16); border-color: rgba(195,182,255,.4); }
+  .topic-card--feature .topic-card__media { flex: 0 0 42%; aspect-ratio: auto; }
+  .topic-card--feature .topic-card__body { justify-content: center; padding: 22px 26px; gap: 9px; }
+  .topic-card--feature .topic-card__title { font-size: 24px; }
+  .topic-card--feature .topic-card__desc { font-size: 15px; }
+
+  @media (max-width: 860px) { .topic-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) {
+    .topic-grid { grid-template-columns: 1fr; }
+    .topic-card--feature { flex-direction: column; }
+    .topic-card--feature .topic-card__media { flex: none; aspect-ratio: 16 / 10; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .topic-card, .topic-card__media img, .topic-card__go span { transition: none; }
+  }
+</style>

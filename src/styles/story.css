@@ -124,7 +124,8 @@ html.js .feed-flood.in-view .card-mini:nth-child(n) { transition-delay: calc(var
 .read-more:hover { text-decoration: underline; }
 
 /* ---- 工具箱小卡（場景 6） ---- */
-.toolkit { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 22px 0; }
+.toolkit { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 22px 0; }
+@media (max-width: 680px) { .toolkit { grid-template-columns: repeat(2, 1fr); } }
 .toolkit .tool { display: flex; flex-direction: column; gap: 9px; }
 .tool-ic { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; }
 .tool-ic img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(40,30,20,.12)); }
@@ -133,7 +134,10 @@ html.js .feed-flood.in-view .card-mini:nth-child(n) { transition-delay: calc(var
 .toolkit .tool p { font-size: 14px; margin: 0; color: var(--ink-soft); line-height: 1.7; }
 
 /* ---- 更大的問題（場景 9）：章節入口卡 ---- */
-.bigq { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 22px 0; }
+.bigq { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0; }
+/* 附錄改一欄（單欄堆疊、置中收窄）；更大的問題維持同一列 3 欄 */
+#ch-appendix .bigq { grid-template-columns: 1fr; max-width: 640px; margin-left: auto; margin-right: auto; }
+@media (max-width: 680px) { .bigq { grid-template-columns: 1fr; } }
 .bigq a { display: block; text-decoration: none; color: var(--ink); border-top: 3px solid var(--bigq-c, var(--c-brand, #7258FF)); }
 .bigq h3 { margin: 0 0 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 18px; }
 .bigq .bigq-arr { color: var(--bigq-c, var(--c-brand, #7258FF)); transition: transform .16s; font-weight: 700; }

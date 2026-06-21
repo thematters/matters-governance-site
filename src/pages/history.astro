@@ -3,13 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import Timeline from '../components/Timeline.astro';
+import Term from '../components/Term.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="治理史">
   <ChapterHero kicker="主題 · 治理史編年 2018–2025" title="每個治理工具，都是被一個真實事件逼出來的" img="illustrations/dns-rpz.jpg" alt="一道暗影閘門在網域前合攏，地下的 IPFS 節點仍亮著" video="dns-rpz-high-motion-4s" />
   <p class="lead">
-    Matters 的治理工具，幾乎沒有一個是「設計出來的」，而是被某個事件逼出來的：色情廣告氾濫 → 註銷 → 小黑屋 →
-    模型把關。紅點是治理事件、藍點是服務升級。這條線最終收束在 2025 春節的 DNS-RPZ 誤封。
+    Matters 的治理工具，幾乎沒有一個是憑空「設計」出來的，多半是被真實事件逼出來的：色情廣告氾濫，才有了註銷；註銷太重，才有了小黑屋；洗版擋不完，才上了模型把關。
+    底下時間軸的紅點是治理事件、藍點是服務升級，這條線最後收束在 2025 年春節那場改寫網域查詢（DNS-RPZ）的誤封。
   </p>
   <hr class="soft" />
   <Timeline />
@@ -17,8 +18,8 @@ import '../styles/story.css';
   <hr class="soft" />
   <h2>2025 春節：當平台第一次成為被治理者</h2>
   <p>
-    農曆春節期間，部分台灣使用者突然連不上 matters.town，畫面是「這是仿冒網站／仿冒網址」的黑屏警告。站方研判：TWNIC 收到檢舉後，
-    以<strong>攔截並改寫 DNS 查詢（DNS-RPZ 機制）</strong>的方式，阻止台灣使用者訪問——一個平常在封鎖別人的平台，第一次嘗到被封鎖、卻求救無門的滋味。
+    農曆春節期間，部分台灣使用者突然連不上 matters.town，畫面跳出「這是仿冒網站／仿冒網址」的黑底警告。站方研判：台灣網路資訊中心（TWNIC）收到檢舉後，
+    用 <Term zh="攔截並改寫網域查詢" en="DNS-RPZ">在「網路電話簿」那一層動手腳，把某個網址的查詢結果改掉或擋掉，使用者就連不到原網站。</Term> 的方式，擋住台灣使用者連入。一個平常在封鎖別人的平台，第一次嘗到被封鎖、卻求救無門的滋味。
   </p>
 
   <div class="escalation" role="list" aria-label="從一篇詐騙文放大成整站封鎖的連坐鏈">
@@ -26,11 +27,11 @@ import '../styles/story.css';
     <div class="esc-arrow" aria-hidden="true">→</div>
     <div class="esc-step" role="listitem"><b>民眾向數位產業署檢舉</b><span>觸發政府自動反詐</span></div>
     <div class="esc-arrow" aria-hidden="true">→</div>
-    <div class="esc-step" role="listitem"><b>TWNIC 改寫 DNS（RPZ）</b><span>跳到基礎設施層</span></div>
+    <div class="esc-step" role="listitem"><b>TWNIC 改寫網域查詢（DNS-RPZ）</b><span>跳到基礎設施層</span></div>
     <div class="esc-arrow" aria-hidden="true">→</div>
     <div class="esc-step esc-block" role="listitem"><b>整個 matters.town 被封 3 天</b><span>連坐：全站一起斷</span></div>
   </div>
-  <p class="esc-note">個別內容的違規，是否該導致<strong>整站在基礎設施層被封</strong>？這就是事件留下的第一個拷問——比例原則。</p>
+  <p class="esc-note">一篇內容違規，是否就該讓<strong>整個網站在基礎設施層被封</strong>？這是事件留下的第一個叩問，也就是「比例原則」。</p>
 
   <div class="stat-row">
     <div class="stat board">
@@ -52,8 +53,8 @@ import '../styles/story.css';
   </blockquote>
 
   <p>
-    諷刺的是：救濟電話「不了了之」，最後是靠一位曾任職數位發展部的計畫主持人，直接聯繫上 TWNIC 執行長，才數小時內恢復。那篇文章的本體其實
-    還寫在 <strong>IPFS</strong> 上、沒被消滅——但多數使用者「沒人看得到」，因為真正被切斷的，是日常入口（網域）。<strong>「網域被刪，內容指紋還在」</strong>從一句技術主張，變成一次真實的逃生，也暴露了它的殘酷限制。
+    諷刺的是，救濟電話打了「不了了之」，最後是靠一位曾在數位發展部任職的計畫主持人，直接聯繫上 TWNIC 執行長，才在數小時內恢復。那篇文章的本體其實
+    還存在分散式儲存（IPFS）上、沒有被消滅，但多數使用者就是「看不到」，因為真正被切斷的是日常的入口（網域）。<strong>「網域被刪，內容指紋還在」</strong>從一句技術主張，變成一次真實的逃生，同時也暴露了它殘酷的限制。
   </p>
 
   <style>

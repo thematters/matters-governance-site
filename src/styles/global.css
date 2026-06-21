@@ -150,6 +150,28 @@ section.block { margin: 56px 0; }
 .cite-body q { display: block; color: var(--ink); margin: 4px 0; }
 .cite-body a { font-size: 13px; }
 
+/* ---- 名詞彈註：中文（英文）＋ 滑過/點一下展開的浮層解釋 ---- */
+.term { position: relative; cursor: help; outline: none; }
+.term-label { border-bottom: 1px dashed var(--accent); text-underline-offset: 3px; }
+.term:hover .term-label,
+.term:focus-visible .term-label { background: var(--accent-soft); border-radius: 3px 3px 0 0; }
+.term:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.term-en { font-style: normal; color: var(--ink-soft); }
+.term-pop { position: absolute; left: 0; top: 100%; z-index: 50;
+  width: max-content; max-width: min(300px, 84vw); margin-top: 7px; padding: 11px 15px;
+  background: var(--bg-paper); border: 1px solid var(--line); border-radius: 11px;
+  box-shadow: 0 10px 30px rgba(22,18,45,.16);
+  font: 400 14px/1.65 var(--font-ui); color: var(--ink-soft); text-align: left;
+  white-space: normal; opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: opacity .14s ease, transform .14s ease, visibility .14s; pointer-events: none; }
+.term-pop strong { color: var(--ink); }
+.term:hover .term-pop,
+.term:focus .term-pop,
+.term:focus-within .term-pop { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+/* 靠右側出現的名詞，浮層改向右對齊，避免被視窗切掉 */
+.term.term--right .term-pop { left: auto; right: 0; }
+@media (prefers-reduced-motion: reduce) { .term-pop { transition: none; } }
+
 /* ---- 互動佔位 ---- */
 .interaction-slot {
   border: 2px dashed var(--accent); border-radius: var(--radius);

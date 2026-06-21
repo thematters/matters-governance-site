@@ -6,7 +6,7 @@ const { items, limit } = Astro.props;
 const all = (items ?? (data as Item[]));
 const list = limit ? all.slice(0, limit) : all;
 const klass: Record<string, string> = {
-  '治理事件': 'event', '服務升級': 'upgrade', 'Legal': 'legal', '背景': 'bg',
+  '治理事件': 'event', '服務升級': 'upgrade', '法律事件': 'legal', '背景': 'bg',
 };
 ---
 <ol class="timeline">

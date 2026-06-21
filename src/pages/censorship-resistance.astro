@@ -2,45 +2,283 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
-import AddressingDemo from '../components/AddressingDemo.astro';
+import Term from '../components/Term.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="抗審查">
-  <ChapterHero kicker="主題 · 抗審查（原理）＋ DNS-RPZ（案例）" title="就算被下架，內容仍在你手上" img="illustrations/censorship-resistance.jpg" alt="用發光的根彼此相連的漂浮花園島嶼，內容在節點間流動" />
+  <ChapterHero kicker="主題 · 抗審查：內容定址與三層韌性" title="就算被下架，內容仍在你手上" img="illustrations/censorship-resistance.jpg" alt="用發光的根彼此相連的漂浮花園島嶼，內容在節點間流動" />
   <p class="lead">「有些記者在上面發文，即使記者不見了，文章可能會比記者活得久一點。」</p>
 
   <h2>內容定址 vs 位置定址</h2>
   <p>
-    HTTP 是位置定址：內容綁在 IP／網域，刪檔或改 DNS 就失效。IPFS 改用<strong>內容定址</strong>：內容有一個唯一指紋（CID），
-    只要還有節點持有就讀得到，傳統封鎖失效。三件技術：IPFS（2018）→ IPNS 固定地址（2022）→ ENS 好記名（2022）。
+    我們平常用的網路（HTTP）是「位置定址」：內容綁在某個 IP 或網域上，只要把檔案刪掉、或改掉 <Term zh="網域名稱系統" en="DNS">把人記得住的網址翻成電腦用的位址，像網路的電話簿。</Term>，它就失效了。<Term zh="分散式儲存" en="IPFS">把檔案打散、複製到全球許多台電腦上保存的網路。只要還有一台留著，內容就讀得到。</Term> 改用「內容定址」：每份內容有一個獨一無二的<strong>內容指紋（CID）</strong>，只要還有一台電腦留著它就讀得到，傳統的封鎖手段對它沒輒。這套靠三項技術接力：分散式儲存（IPFS，2018）→ IPNS 固定地址（2022）→ ENS 好記名稱（2022）。
   </p>
   <div class="figure">
-    <div class="figure__head"><span class="figure__title">HTTP vs IPFS：刪掉一個節點會怎樣</span><span class="figure__hint">點按鈕試</span></div>
-    <AddressingDemo />
+    <div class="figure__head"><span class="figure__title">HTTP vs IPFS：刪掉一個節點會怎樣</span><span class="figure__hint">點節點，把它下架</span></div>
+    <!-- 招牌互動（玻璃感）：位置定址 vs 內容定址。左 HTTP 內容只掛 1 個節點，刪了就 404；
+         右 IPFS 同一份 CID 複製在多個節點，刪到只剩 1 個都還讀得到。對齊 BeModerator / .fp-card 玻璃卡。 -->
+    <div class="ad" id="ad-root">
+      <div class="ad-cols">
+        <!-- 位置定址（HTTP）：內容只掛在唯一一個伺服器節點上 -->
+        <section class="ad-panel ad-http" id="ad-http-panel" data-mode="http">
+          <header class="ad-panel-head">
+            <span class="ad-mode">位置定址</span>
+            <span class="ad-tech">HTTP</span>
+          </header>
+          <p class="ad-sub">內容綁在單一伺服器／網域上</p>
+          <div class="ad-grid ad-grid--http">
+            <button type="button" class="ad-node ad-node--sole" data-node="http" aria-pressed="false" aria-label="伺服器節點 matters.town，點擊下架（刪除）這個節點">
+              <span class="ad-node-glyph" aria-hidden="true">🖥️</span>
+              <span class="ad-node-name">matters.town</span>
+              <span class="ad-node-cid" aria-hidden="true">唯一伺服器</span>
+              <span class="ad-node-x" aria-hidden="true">✕</span>
+            </button>
+          </div>
+          <p class="ad-status is-ok" id="ad-http-status" aria-live="polite">
+            <span class="ad-dot" aria-hidden="true"></span>內容讀得到
+          </p>
+        </section>
+
+        <!-- 內容定址（IPFS）：同一個 CID 指紋複製在多個節點上 -->
+        <section class="ad-panel ad-ipfs" id="ad-ipfs-panel" data-mode="ipfs">
+          <header class="ad-panel-head">
+            <span class="ad-mode">內容定址</span>
+            <span class="ad-tech">IPFS</span>
+          </header>
+          <p class="ad-sub">同一份內容＝同一個指紋 <span class="ad-cid-chip" aria-hidden="true">CID&nbsp;bafy…k4u</span>，複製在多個節點</p>
+          <div class="ad-grid ad-grid--ipfs" id="ad-ipfs-grid">
+            <button type="button" class="ad-node" data-node="ipfs" aria-pressed="false" aria-label="持有此 CID 的節點，點擊下架（刪除）這個節點">
+              <span class="ad-node-glyph" aria-hidden="true">📦</span><span class="ad-node-cid" aria-hidden="true">CID</span><span class="ad-node-x" aria-hidden="true">✕</span>
+            </button>
+            <button type="button" class="ad-node" data-node="ipfs" aria-pressed="false" aria-label="持有此 CID 的節點，點擊下架（刪除）這個節點">
+              <span class="ad-node-glyph" aria-hidden="true">📦</span><span class="ad-node-cid" aria-hidden="true">CID</span><span class="ad-node-x" aria-hidden="true">✕</span>
+            </button>
+            <button type="button" class="ad-node" data-node="ipfs" aria-pressed="false" aria-label="持有此 CID 的節點，點擊下架（刪除）這個節點">
+              <span class="ad-node-glyph" aria-hidden="true">📦</span><span class="ad-node-cid" aria-hidden="true">CID</span><span class="ad-node-x" aria-hidden="true">✕</span>
+            </button>
+            <button type="button" class="ad-node" data-node="ipfs" aria-pressed="false" aria-label="持有此 CID 的節點，點擊下架（刪除）這個節點">
+              <span class="ad-node-glyph" aria-hidden="true">📦</span><span class="ad-node-cid" aria-hidden="true">CID</span><span class="ad-node-x" aria-hidden="true">✕</span>
+            </button>
+          </div>
+          <p class="ad-status is-ok" id="ad-ipfs-status" aria-live="polite">
+            <span class="ad-dot" aria-hidden="true"></span>4 個節點持有同一 CID，內容讀得到
+          </p>
+        </section>
+      </div>
+
+      <div class="ad-foot">
+        <p class="ad-out" id="ad-out" aria-live="polite">點任一張節點卡把它下架，比較兩種定址方式的命運。</p>
+        <button type="button" class="btn btn--ghost btn--sm ad-reset" id="ad-reset">重置</button>
+      </div>
+
+      <noscript>
+        <p class="ad-noscript">HTTP 是<strong>位置定址</strong>：內容綁在單一伺服器／網域，刪那個節點或改 DNS，內容就 404 消失。
+        IPFS 是<strong>內容定址</strong>：內容有唯一指紋（CID），複製在許多節點上，刪掉一個節點，其他節點仍持有，內容照樣讀得到——
+        這就是 2025 春節 matters.town 網域被封鎖時，文章仍能經 IPFS 取得的原因。開啟 JavaScript 可親手點節點下架試試。</p>
+      </noscript>
+    </div>
   </div>
+
+  <style>
+    /* ── 招牌互動：HTTP vs IPFS 玻璃感（淺色子頁＝frosted 白卡浮在暖紙上，對齊 BeModerator / .fp-card） ── */
+    .ad { max-width: 680px; margin: 0 auto; font-family: var(--font-ui); }
+    .ad-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: stretch; }
+
+    /* 模式面板：frosted 玻璃卡，左 accent 邊條（紫＝可互動信號） */
+    .ad-panel { position: relative; display: flex; flex-direction: column; border-radius: 16px; overflow: hidden;
+      padding: 16px 16px 14px; color: var(--ink);
+      background: rgba(255,255,255,.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.62); box-shadow: 0 6px 22px rgba(22,18,45,.1);
+      transition: box-shadow .3s, border-color .3s; }
+    .ad-panel::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: color-mix(in srgb, var(--c-brand, #7258FF) 50%, transparent); transition: background .3s, width .3s; }
+    /* 失效態：整面板透紅；存活態：透綠（邊條加粗） */
+    .ad-panel.is-dead::before { background: var(--c-neg, #c85c41); width: 4px; }
+    .ad-panel.is-dead { border-color: color-mix(in srgb, var(--c-neg, #c85c41) 40%, rgba(255,255,255,.62)); }
+    .ad-panel.is-alive::before { background: var(--c-pos, #5c9969); width: 4px; }
+
+    .ad-panel-head { display: flex; align-items: baseline; gap: 8px; }
+    .ad-mode { font: 800 16px var(--font-ui); color: var(--ink); }
+    .ad-tech { margin-left: auto; font: 800 11px var(--font-ui); letter-spacing: .08em; color: var(--c-brand, #7258FF);
+      background: color-mix(in srgb, var(--c-brand, #7258FF) 12%, transparent); padding: 3px 9px; border-radius: 999px; }
+    .ad-sub { margin: 6px 0 13px; font: 500 12.5px/1.5 var(--font-ui); color: var(--ink-soft); }
+    .ad-cid-chip { display: inline-block; font: 700 11px var(--font-ui); font-variant-numeric: tabular-nums;
+      color: var(--c-brand, #7258FF); background: color-mix(in srgb, var(--c-brand, #7258FF) 10%, transparent);
+      border: 1px dashed color-mix(in srgb, var(--c-brand, #7258FF) 38%, transparent);
+      padding: 1px 7px; border-radius: 7px; white-space: nowrap; }
+
+    /* 節點網格 */
+    .ad-grid { display: grid; gap: 9px; margin-bottom: 14px; }
+    .ad-grid--http  { grid-template-columns: 1fr; }
+    .ad-grid--ipfs  { grid-template-columns: 1fr 1fr; }
+
+    /* 節點卡：frosted 玻璃、可點（紫＝可互動）；hover 浮起並露出 ✕「下架」提示 */
+    .ad-node { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      border-radius: 12px; padding: 14px 10px 12px; cursor: pointer; color: var(--ink);
+      font-family: var(--font-ui); text-align: center;
+      background: rgba(255,255,255,.72); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+      border: 1px solid color-mix(in srgb, var(--c-brand, #7258FF) 22%, rgba(255,255,255,.6));
+      box-shadow: 0 3px 12px rgba(22,18,45,.08);
+      transition: transform .22s, box-shadow .22s, opacity .35s, filter .35s, border-color .22s, background .22s; }
+    .ad-node--sole { padding: 18px 12px 16px; }
+    .ad-node:hover:not(.is-dead), .ad-node:focus-visible:not(.is-dead) {
+      transform: translateY(-2px); outline: none;
+      border-color: var(--c-brand, #7258FF);
+      box-shadow: 0 8px 22px rgba(114,88,255,.22), 0 0 0 3px color-mix(in srgb, var(--c-brand, #7258FF) 22%, transparent); }
+    .ad-node-glyph { font-size: 24px; line-height: 1; }
+    .ad-node-name { font: 700 12px var(--font-ui); color: var(--ink); }
+    .ad-node-cid { font: 700 10px var(--font-ui); letter-spacing: .06em; color: var(--c-brand, #7258FF);
+      background: color-mix(in srgb, var(--c-brand, #7258FF) 12%, transparent); padding: 1px 7px; border-radius: 999px; }
+    /* hover 時浮現的「✕ 下架」角標 */
+    .ad-node-x { position: absolute; top: 6px; right: 8px; font: 900 12px var(--font-ui); color: var(--c-neg, #c85c41);
+      opacity: 0; transform: scale(.7); transition: opacity .18s, transform .18s; }
+    .ad-node:hover:not(.is-dead) .ad-node-x, .ad-node:focus-visible:not(.is-dead) .ad-node-x { opacity: 1; transform: none; }
+
+    /* 已下架的節點：壓暗、灰階、打叉、不可再點 */
+    .ad-node.is-dead { cursor: default; opacity: .4; filter: grayscale(1);
+      border-color: color-mix(in srgb, var(--c-neg, #c85c41) 30%, rgba(255,255,255,.4));
+      background: rgba(245,238,227,.5); box-shadow: none; }
+    .ad-node.is-dead .ad-node-cid { color: var(--ink-soft); background: rgba(120,115,140,.16); }
+    .ad-node.is-dead .ad-node-x { opacity: 1; transform: none; }
+    .ad-node.is-dead::after { content: ''; position: absolute; inset: 0; border-radius: 12px;
+      background: repeating-linear-gradient(45deg, transparent 0 8px, color-mix(in srgb, var(--c-neg,#c85c41) 14%, transparent) 8px 9px); }
+
+    /* 狀態讀數列：綠＝存活、紅＝失效 */
+    .ad-status { display: flex; align-items: center; gap: 7px; margin: auto 0 0; padding-top: 4px;
+      font: 700 12.5px var(--font-ui); }
+    .ad-status .ad-dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; background: currentColor;
+      box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 20%, transparent); }
+    .ad-status.is-ok  { color: var(--c-pos, #5c9969); }
+    .ad-status.is-bad { color: var(--c-neg, #c85c41); }
+
+    /* 底部讀數 + 重置 */
+    .ad-foot { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
+    .ad-out { flex: 1 1 auto; margin: 0; font: 500 15px/1.6 var(--font-ui); color: var(--ink); min-height: 1.6em; }
+    .ad-out strong { color: var(--c-brand, #7258FF); }
+    .ad-reset { flex: 0 0 auto; }
+
+    .ad-noscript { font: 500 14px/1.7 var(--font-ui); color: var(--ink-soft); margin: 12px 0 0; }
+
+    @media (max-width: 560px) {
+      .ad-cols { grid-template-columns: 1fr; }
+      .ad-foot { flex-direction: column; align-items: stretch; }
+      .ad-reset { align-self: center; }
+    }
+
+    /* reduced-motion：直接呈現，不做浮起/過場動畫 */
+    @media (prefers-reduced-motion: reduce) {
+      .ad-panel, .ad-node, .ad-node-x { transition: none; }
+      .ad-node:hover:not(.is-dead) { transform: none; }
+    }
+  </style>
+
+  <script>
+    import gsap from 'gsap';
+
+    function initAddressingDemo() {
+      const root = document.getElementById('ad-root');
+      if (!root || root.dataset.adInit === '1') return; // 重入 guard
+      root.dataset.adInit = '1';
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const httpPanel = document.getElementById('ad-http-panel');
+      const ipfsPanel = document.getElementById('ad-ipfs-panel');
+      const httpStatus = document.getElementById('ad-http-status');
+      const ipfsStatus = document.getElementById('ad-ipfs-status');
+      const out = document.getElementById('ad-out');
+      const resetBtn = document.getElementById('ad-reset');
+      const ipfsNodes = Array.prototype.slice.call(root.querySelectorAll('.ad-grid--ipfs .ad-node'));
+      const httpNode = root.querySelector('.ad-grid--http .ad-node');
+      const total = ipfsNodes.length;
+
+      function setStatus(el, ok, html) {
+        el.className = 'ad-status ' + (ok ? 'is-ok' : 'is-bad');
+        el.innerHTML = '<span class="ad-dot" aria-hidden="true"></span>' + html;
+      }
+      function aliveCount() {
+        return ipfsNodes.filter(function (n) { return !n.classList.contains('is-dead'); }).length;
+      }
+      function killAnim(node) {
+        if (reduce) return;
+        gsap.fromTo(node, { scale: 1 }, { scale: 0.9, duration: 0.16, yoyo: true, repeat: 1, ease: 'power2.out' });
+      }
+
+      // HTTP：刪那唯一節點 → 內容 404 消失（紅、失效）
+      function killHttp() {
+        if (httpNode.classList.contains('is-dead')) return;
+        httpNode.classList.add('is-dead');
+        httpNode.setAttribute('aria-pressed', 'true');
+        httpNode.setAttribute('aria-disabled', 'true');
+        killAnim(httpNode);
+        httpPanel.classList.add('is-dead');
+        setStatus(httpStatus, false, '✕ 404，內容消失（唯一伺服器被刪）');
+        out.innerHTML = '<strong>位置定址</strong>：內容只掛在那一個伺服器上，刪掉它（或改寫 DNS），內容就 404 消失，傳統封鎖就是這樣奏效的。';
+      }
+
+      // IPFS：刪一個節點 → 只要還有節點持有 CID 就讀得到（綠、存活）
+      function killIpfs(node) {
+        if (node.classList.contains('is-dead')) return;
+        node.classList.add('is-dead');
+        node.setAttribute('aria-pressed', 'true');
+        node.setAttribute('aria-disabled', 'true');
+        killAnim(node);
+        const killed = total - aliveCount();
+        const left = aliveCount();
+        if (left > 0) {
+          ipfsPanel.classList.add('is-alive');
+          setStatus(ipfsStatus, true, '✓ 已刪 ' + killed + ' 個節點，' + left + ' 個仍持有同一 CID，內容還在');
+          out.innerHTML = '<strong>內容定址</strong>：內容有唯一指紋（CID），複製在多個節點上。刪了 ' + killed + ' 個，只要還有<strong>任何一個</strong>節點持有，內容就照樣讀得到。再刪刪看？';
+        } else {
+          ipfsPanel.classList.remove('is-alive');
+          ipfsPanel.classList.add('is-dead');
+          setStatus(ipfsStatus, false, '✕ 所有節點都被刪光了，內容才真的消失');
+          out.innerHTML = '砍光<strong>全部</strong> ' + total + ' 個節點，內容才真的消失，但真實世界裡，IPFS 內容散在全球許多節點上，這幾乎做不到。這就是「不可下架」。';
+        }
+      }
+
+      function reset() {
+        httpNode.classList.remove('is-dead');
+        httpNode.setAttribute('aria-pressed', 'false');
+        httpNode.removeAttribute('aria-disabled');
+        httpPanel.classList.remove('is-dead', 'is-alive');
+        setStatus(httpStatus, true, '內容讀得到');
+        ipfsNodes.forEach(function (n) {
+          n.classList.remove('is-dead');
+          n.setAttribute('aria-pressed', 'false');
+          n.removeAttribute('aria-disabled');
+        });
+        ipfsPanel.classList.remove('is-dead', 'is-alive');
+        setStatus(ipfsStatus, true, total + ' 個節點持有同一 CID，內容讀得到');
+        out.textContent = '點任一張節點卡把它下架，比較兩種定址方式的命運。';
+      }
+
+      httpNode.addEventListener('click', killHttp);
+      ipfsNodes.forEach(function (n) { n.addEventListener('click', function () { killIpfs(n); }); });
+      resetBtn.addEventListener('click', reset);
+    }
+
+    initAddressingDemo();
+    document.addEventListener('astro:page-load', initAddressingDemo);
+  </script>
 
   <h2>三層內容韌性</h2>
   <p>
-    <strong>Layer 3</strong>（首頁/搜尋/推薦）可被收編；<strong>Layer 2</strong>（IPFS 內容）不可下架；<strong>Layer 1</strong>（ENS/Tor/Fediverse）另闢蹊徑。
-    關鍵推論：「憲法言論保障到得了 Layer 2（內容存在），卻到不了 Layer 3（入口排序）」。本計畫的核心倡議就是這個分層治理——
-    平台可封禁內容，使用者仍持有去中心網址。
+    內容的韌性可以分成三層：<strong>第三層</strong>（首頁、搜尋、推薦）有可能被收編；<strong>第二層</strong>（分散式儲存上的內容）沒辦法被下架；<strong>第一層</strong>（ENS 好記名稱、Tor 洋蔥網路、聯邦宇宙等）則能另闢蹊徑。
+    由此推出一個關鍵：「憲法的言論保障，管得到第二層（內容還在不在），卻管不到第三層（入口怎麼排）」。本計畫的核心主張就是這種分層治理：
+    平台可以封掉內容，但使用者手上始終握有一個去中心化的網址。
   </p>
 
   <figure class="il-figure">
     <img src="illustrations/objects/glowing-ipfs-nodes.png" alt="許多發光的節點彼此相連，內容指紋在節點間複製流動" loading="lazy" />
-    <figcaption>內容有了指紋（CID），只要還有一個節點持有就讀得到——這就是「不可下架」的來源。</figcaption>
+    <figcaption>內容有了指紋（CID），只要還有一台電腦留著就讀得到。這就是它「無法被下架」的原因。</figcaption>
   </figure>
 
-  <h2>2025 春節 DNS-RPZ 誤封</h2>
   <p>
-    二次詐騙文觸動政府打詐掃描 → TWNIC 以改寫 DNS 封鎖 → 部分台灣用戶連不上，適逢連假、救濟「形式存在實質失靈」、無預警，
-    靠私人關係聯繫執行長才解封，歷時<strong>三天</strong>。這讓平台第一次成為被治理者，照出一面「倫理鏡像」：
-    我們對使用者要求的程序透明、申訴可近、救濟可用，自己也應得到。
+    這套「不可下架」並非紙上談兵：2025 春節，Matters 整個網域被改寫網域查詢（DNS-RPZ）誤封三天，平台第一次成為被治理的一方——
+    而文章本體其實還寫在 IPFS 上、沒被消滅。這個完整事件、它照出的「倫理鏡子」與比例原則拷問，收在治理史編年裡。
   </p>
-  <blockquote style="border-left:4px solid var(--mustard);padding-left:16px;font-size:18px;margin:18px 0">
-    一邊是威權的防火牆，另一邊是民主社會的反詐基礎設施。兩者都可能——有意或無意——被用來關閉脆弱的公共空間。
-  </blockquote>
+  <p style="text-align:center;margin:16px 0 6px"><a class="read-more" href="history">深入：2025 春節 DNS-RPZ 誤封事件（治理史）</a></p>
 
-  <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/hack-the-platform">深入閱讀：Hack the Platform：可 fork 的小實驗</a>　<a class="read-more" href="reading/why-resist-at-all">抗審查真的不可或缺嗎 →</a></p>
+  <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/hack-the-platform">深入閱讀：Hack the Platform：可改作的小實驗</a>　<a class="read-more" href="reading/why-resist-at-all">抗審查真的不可或缺嗎 →</a></p>
   <ChapterNav slug="censorship-resistance" />
 </BaseLayout>

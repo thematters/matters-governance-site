@@ -242,8 +242,8 @@ const INIT_READOUT = '下面 16 張是社群裡的貼文，每張角落是它「
         if (s >= 0.7) { c.classList.add('hit'); pulse(c); }
         else { c.classList.add('dim'); }
       });
-      out.innerHTML = '單篇模型抓到 <b>' + spamCards.length + ' 篇</b>明顯垃圾，但<b>漏掉 ' + ringCards.length +
-        ' 個「翻譯社」集團帳號</b>——它們每篇分數只有 0.08–0.12，單看像正常內容。';
+      out.innerHTML = '單篇模型抓到 <b>' + spamCards.length + ' 篇</b>明顯垃圾，卻<b>漏掉 ' + ringCards.length +
+        ' 個「翻譯社」集團帳號</b>：它們每篇分數只有 0.08–0.12，單看就像正常內容。';
     });
 
     // ② 集團偵測：8 張集團卡被品牌紫外框框成一組（back.out 彈入），加標籤，其餘變淡
@@ -268,8 +268,8 @@ const INIT_READOUT = '下面 16 張是社群裡的貼文，每張角落是它「
         gsap.fromTo(frameLabel, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: .4, ease: 'power2.out', delay: .4 });
       }
 
-      out.innerHTML = '集團偵測：同一模板、<b>' + ringCards.length + ' 個帳號</b>、短時間重複出現——' +
-        '<b>抓行為、不抓字句</b>，整群一次掃掉。這正是單篇模型抓不到的盲區。';
+      out.innerHTML = '集團偵測：同一模板、<b>' + ringCards.length + ' 個帳號</b>、在短時間內重複出現，' +
+        '靠的是<b>整群帳號的行為模式</b>，一次就掃掉。這正是單篇模型抓不到的盲區。';
     });
 
     document.getElementById('ring-btn-reset').addEventListener('click', () => {

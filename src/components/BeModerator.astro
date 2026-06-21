@@ -6,10 +6,10 @@
 const cards = [
   { truth: 'spam',  cat: '色情廣告',     score: 99, text: 'Call Girls／外送茶 全套 在地約妹 加賴 ‹LINE_ID›', why: '明確的色情招攬，模型高分、人眼也一眼看穿。' },
   { truth: 'legit', cat: '日記',         score: 3,  text: '日記·超級生命密碼', why: '私人日記，無導流、無招攬，模型低分。' },
-  { truth: 'legit', cat: '防詐科普',     score: 85, text: '拆解 USDT「穩賺套利」詐騙話術（引述常見錢包與賴 ID 騙術）', why: '為了教學而引述詐騙話術，分數被拉高——但它正是在反詐騙。擋了，就誤殺了防詐內容。' },
-  { truth: 'spam',  cat: '翻譯社（集團）', score: 9,  text: '高雄翻譯社 證件公證 各國文件 急件當日 ‹LINE_ID›', why: '單篇分數只有 0.09、看起來正常，卻是 14 個帳號用同一模板洗版的集團——低分不代表安全。' },
+  { truth: 'legit', cat: '防詐科普',     score: 85, text: '拆解 USDT「穩賺套利」詐騙話術（引述常見錢包與賴 ID 騙術）', why: '為了教學而引述詐騙話術，分數被拉高，但它做的其實正是反詐騙。擋下來，就誤殺了防詐內容。' },
+  { truth: 'spam',  cat: '翻譯社（集團）', score: 9,  text: '高雄翻譯社 證件公證 各國文件 急件當日 ‹LINE_ID›', why: '單篇分數只有 0.09、看起來正常，其實是 14 個帳號用同一套模板洗版的集團。分數低，不代表安全。' },
   { truth: 'legit', cat: '人權議題',     score: 96, text: '海外中國人權律師聯盟之處境與聲援', why: '敏感詞密集讓模型給到 0.96，但這是合法的人權議題寫作。擋了，就消音了一個最該被保護的聲音。' },
-  { truth: 'spam',  cat: '二次詐騙',     score: 85, text: '我曾被詐騙 30 萬，後來找團隊幫我追回，你也遇到詐騙就私訊我', why: '偽裝成受害者經驗，實則進行第二輪詐騙——正是觸發 2025 年 DNS-RPZ 封鎖的那類文。' },
+  { truth: 'spam',  cat: '二次詐騙',     score: 85, text: '我曾被詐騙 30 萬，後來找團隊幫我追回，你也遇到詐騙就私訊我', why: '偽裝成受害者的經驗談，其實是在進行第二輪詐騙，正是觸發 2025 年改寫網域查詢（DNS-RPZ）封鎖的那一類文章。' },
 ];
 
 // 頭像底色：柔和色盤（與 StickyScroller／FalsePositiveSlider 同款，穩定指派、不寫死語意色號）
@@ -305,7 +305,7 @@ const initials = (name) => name.slice(0, 1);
           '</p>' +
           '<div class="bm-body">' +
             '<p class="bm-tally-line">六則裡，你誤殺了 <b style="color:var(--c-neg,#c85c41)">' + fp + '</b> 篇正常內容、漏放了 <b style="color:var(--c-warn,#c8a020)">' + fn + '</b> 篇垃圾。</p>' +
-            '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、人權議題、集團洗版這些灰區，才是審查最難、最容易誤殺或漏放的地方。每一個門檻，都是別人言論的生死線——這不該由工程師獨自決定。</p>' +
+            '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、人權議題、集團洗版這些灰色地帶，才是審查最難、最容易誤殺或漏放的地方。每一道門檻，都是別人言論的生死線，不該由工程師一個人決定。</p>' +
             '<div class="bm-actions"><button class="btn btn--secondary bm-r" id="bm-r">再玩一次</button></div>' +
           '</div>' +
         '</div>';

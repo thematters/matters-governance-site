@@ -1,0 +1,19 @@
+---
+// 名詞彈註：把專有名詞寫成「中文（英文）」，滑過或點一下展開浮層解釋。
+// 全用 <span>（phrasing content），可安全放進 <p> 內文，不會被瀏覽器斷段；
+// 純 CSS（hover / focus / focus-within）顯示浮層，無 JS 也能用、鍵盤可聚焦。
+// 注意：請勿放進 <a> 連結卡或按鈕內（巢狀互動元素無效）。用法：
+//   <Term zh="分散式儲存" en="IPFS">把檔案打散存到很多台電腦上……</Term>
+//   <Term zh="偽陽性">把正常內容錯當成垃圾擋下……</Term>（無英文時省略 en）
+interface Props {
+  zh: string;       // 中文名詞
+  en?: string;      // 英文原文（選填）
+  align?: 'left' | 'right'; // 浮層靠左（預設）或靠右出現，避免被視窗切掉
+}
+const { zh, en, align = 'left' } = Astro.props;
+const label = en ? `${zh}（${en}）` : zh;
+---
+<span class={`term${align === 'right' ? ' term--right' : ''}`} tabindex="0" role="note" aria-label={`${label}，可查看名詞說明`}>
+  <span class="term-label">{zh}{en && <i class="term-en">（{en}）</i>}</span>
+  <span class="term-pop"><slot /></span>
+</span>

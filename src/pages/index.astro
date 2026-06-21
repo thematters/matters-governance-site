@@ -7,6 +7,7 @@ import RingDetector from '../components/RingDetector.astro';
 import RankingSplitScreen from '../components/RankingSplitScreen.astro';
 import DecisionBoundary from '../components/DecisionBoundary.astro';
 import ChapterIntro from '../components/ChapterIntro.astro';
+import Term from '../components/Term.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="主敘事">
@@ -51,9 +52,9 @@ import '../styles/story.css';
   <section class="scene scene-wide reveal" data-stage="2">
     <p class="kicker">換你親手試 · 招牌互動</p>
     <h2>那條門檻，你會設在哪？</h2>
-    <p>方法再多，總會誤判。換你站到審查者那一側，親手拖那條線——往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）：尤其是看起來像垃圾的政治評論、學術考據、防詐科普。</p>
+    <p>再聰明的方法，也躲不掉誤判。換你坐到審查員的位置，親手拖動那條分數線：拖得越嚴，垃圾擋得越乾淨，但正常內容也會跟著被擋掉、變成灰色，尤其是那些「長得很像垃圾」的政治評論、學術考據和防詐科普。</p>
     <FalsePositiveSlider />
-    <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
+    <p style="text-align:center">所以平台守住一條原則：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
     <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
   </section>
 
@@ -61,12 +62,12 @@ import '../styles/story.css';
   <section class="scene scene-wide reveal" data-stage="2">
     <p class="kicker">親手試 · 集團偵測</p>
     <h2>有些垃圾單篇分數很低，卻是一整群</h2>
-    <p>先按「單篇模型偵測」，只有兩個明顯垃圾被抓；再按「集團偵測」，八個分數低到像正常內容的「翻譯社」帳號，因為同模板、多帳號、短時間，整群一次現形。偵測抓的是行為樣態，不是字句。</p>
+    <p>先按「單篇模型偵測」，只有兩篇明顯的垃圾被抓出來；再按「集團偵測」，原本漏網的八個「翻譯社」帳號就一次現形。它們各自的分數都低到像正常貼文，卻用同一套版型、大量帳號、在短時間內集中發文。這種一整群一起行動的帳號，就是所謂的<Term zh="集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號。單看每篇分數都不高，要看整群帳號的行為才抓得到。</Term>；判斷靠的是行為模式，不必逐字比對內容。</p>
     <div class="figure">
       <div class="figure__head"><span class="figure__title">集團掃描：單一模型 vs 行為偵測</span><span class="figure__hint">按按鈕切換</span></div>
       <RingDetector />
     </div>
-    <p style="text-align:center"><a class="read-more" href="detection#ring">深入：集團掃描與繁簡折疊</a></p>
+    <p style="text-align:center"><a class="read-more" href="detection#ring">深入：集團怎麼抓、繁簡字怎麼鑽漏洞</a></p>
   </section>
 
   <!-- ③ 模型之外的工具箱 -->
@@ -76,19 +77,19 @@ import '../styles/story.css';
     <div class="toolkit">
       <div class="tool board board--hover">
         <span class="tool-ic"><img src="illustrations/objects/broom-quiet-room.png" alt="" /></span>
-        <h3>打掃・小黑屋</h3><p>不刪除，只是把帳號/文章移出公共視野——可逆。</p>
+        <h3>打掃・小黑屋</h3><p>不刪內容，只是把帳號或文章移出公開版面，隨時能放回來。</p>
       </div>
       <div class="tool board board--hover">
         <span class="tool-ic"><img src="illustrations/objects/label-hand-card.png" alt="" /></span>
-        <h3>人工標記</h3><p>被誤殺的內容被人撿回、重新標記，回灌模型。人在迴圈裡。</p>
+        <h3>人工標記</h3><p>被誤刪的內容由真人撿回、重新標記，再回頭餵給模型學。整個過程都有人盯著。</p>
       </div>
       <div class="tool board board--hover">
         <span class="tool-ic"><img src="illustrations/objects/polished-model-gear.png" alt="" /></span>
-        <h3>重新訓練</h3><p>模型會「自我中毒」誤判，用大模型重新校正，偽陽性降十倍。</p>
+        <h3>重新訓練</h3><p>模型用久了會「自我中毒」、越判越歪，這時用更強的大模型重新校正，誤殺率能降到原本的十分之一。</p>
       </div>
       <div class="tool board board--hover">
         <span class="tool-ic"><img src="illustrations/objects/paper-lantern.png" alt="" /></span>
-        <h3>群眾守望</h3><p>守望相助隊一起把垃圾收走，公開可稽核。</p>
+        <h3>群眾守望</h3><p>由使用者組成的「守望相助隊」一起把垃圾收走，每一筆紀錄都公開、可查。</p>
       </div>
     </div>
     <a class="read-more" href="moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="crowd">深入：群眾協力</a>
@@ -98,7 +99,7 @@ import '../styles/story.css';
   <section class="scene scene-wide reveal" data-stage="2">
     <p class="kicker">親手試 · 首頁排序</p>
     <h2>誰能上首頁？是誰設計的？</h2>
-    <p>方法不只「擋垃圾」，也包含「怎麼決定誰被看見」。先猜哪一則會被演算法排到首頁第一，再看時間序與演算法序的對照——分數裡留言權重最高，獎勵的是引發討論，不是純曝光。</p>
+    <p>治理不只是「擋垃圾」，也包含「決定誰會被看見」。先猜猜看，哪一則會被演算法排到首頁第一，再對照「照時間排」和「照演算法排」有什麼差別。在計分裡，留言的權重最高，平台最想拉抬的是能引發討論的內容，曝光高低反而是其次。</p>
     <div class="figure">
       <div class="figure__head"><span class="figure__title">時間序 vs 演算法序</span><span class="figure__hint">點一則先猜</span></div>
       <RankingSplitScreen />
@@ -107,13 +108,13 @@ import '../styles/story.css';
   </section>
 
   <!-- ───────── 第三章·自己的帳號自己救（背景＝self-rescue 暗底） ───────── -->
-  <ChapterIntro id="ch-3" num="第三章" name="自己的帳號自己救" desc="誤刪無法歸零——透明的審查、可信的救濟" stage={3} />
+  <ChapterIntro id="ch-3" num="第三章" name="自己的帳號自己救" desc="誤刪無法歸零，所以更需要透明的審查和可信的救濟" stage={3} />
 
   <!-- 內嵌互動 · 決策邊界（為什麼一定有誤殺：誤刪無法歸零的幾何）-->
   <section class="scene scene-wide reveal" data-stage="3">
     <p class="kicker">親手試 · 決策邊界</p>
     <h2>為什麼一定有人被誤刪？</h2>
-    <p>把每篇內容放進二維特徵空間：綠點（正常）聚在左下、紅點（垃圾）聚在右上，中間是兩者重疊的灰色地帶。拖那條分界線——你會看到，<strong>同一條線同時誤殺一些正常、又放過一些垃圾</strong>，這就是偽陽性無法歸零的幾何原因。</p>
+    <p>把每篇內容攤在一張圖上：正常內容（綠點）大多落在左下、垃圾（紅點）大多落在右上，中間則是兩者交疊的灰色地帶。拖動那條分界線你會發現，<strong>同一條線總是一邊誤刪掉一些正常內容、一邊又放過一些垃圾</strong>。<Term zh="偽陽性">把正常內容錯當成垃圾擋下來，就是冤枉了好人。</Term>之所以永遠無法歸零，原因就在這條線上。</p>
     <div class="figure">
       <div class="figure__head"><span class="figure__title">模型怎麼畫那條線：為什麼一定有誤殺</span><span class="figure__hint">拖分界線</span></div>
       <DecisionBoundary />
@@ -124,19 +125,19 @@ import '../styles/story.css';
   <section class="scene scene-wide reveal" data-stage="3">
     <p class="kicker">那怎樣會更好？</p>
     <h2>誤刪了，怎麼救回來？</h2>
-    <p>既然誤刪無法歸零，真正的問題就不只是「少殺一點」，而是<strong>被誤殺的人能不能被救回來</strong>，以及整套審查能不能被外界檢驗。讓平台治理可被信任的，是這三件事：</p>
+    <p>既然誤刪無法歸零，問題的重點就會轉移。除了「盡量少殺一點」，更要看<strong>被誤殺的人能不能被救回來</strong>，以及整套審查能不能攤在外界面前接受檢驗。要讓平台治理被信任，靠的是這三件事：</p>
     <div class="bigq">
       <a class="board board--hover" href="false-positive" style="--bigq-c:#7258FF">
         <h3>申訴與可信救濟 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>程序透明、申訴可近、救濟可用；文章只降能見度不刪除＝可逆，誤判救得回來。</p>
+        <p>處置流程公開、申訴管道好找好用、申訴後真的會被覆核。文章只降低能見度、不刪除，所以救得回來。</p>
       </a>
       <a class="board board--hover" href="data" style="--bigq-c:#5a8a93">
         <h3>透明開盒 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>把偵測模型、處置流程、資料集都攤開——審查才能被檢驗，也能被別的平台採用。</p>
+        <p>把偵測模型、處置流程和資料集都攤開，審查才能被外界檢驗，也能讓別的平台直接拿去用。</p>
       </a>
       <a class="board board--hover" href="censorship-resistance" style="--bigq-c:#6f8f4e">
         <h3>自己救內容 · 抗審查 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>就算被下架，IPFS 讓內容指紋還在——使用者始終持有去中心網址。</p>
+        <p>就算文章被下架，分散式儲存（IPFS）仍保留著它的內容指紋，使用者手上始終握有一個不靠單一網站的網址。</p>
       </a>
     </div>
   </section>
@@ -150,21 +151,21 @@ import '../styles/story.css';
         <img class="bigq-thumb" src="illustrations/card-censorship-resistance.jpg" alt="" loading="lazy" />
         <div class="bigq-body">
           <h3>抗審查 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-          <p>平台能擋紅色，也可能擋掉它不該擋的。IPFS 讓內容被刪也還在。</p>
+          <p>平台能擋掉有害內容，但也可能擋掉它不該擋的。分散式儲存（IPFS）讓文章就算被刪，也還在。</p>
         </div>
       </a>
       <a class="board board--hover bigq-card" href="ranking" style="--bigq-c:#c8a020">
         <img class="bigq-thumb" src="illustrations/card-ranking.jpg" alt="" loading="lazy" />
         <div class="bigq-body">
           <h3>排序與末日爆滑 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-          <p>就算沒被刪，你看到的順序也被決定了——「決定誰被看見」才是真正的權力。</p>
+          <p>就算內容沒被刪，你看到的先後順序也早就被決定了。決定誰被看見，才是真正的權力。</p>
         </div>
       </a>
       <a class="board board--hover bigq-card" href="history" style="--bigq-c:#c0584a">
         <img class="bigq-thumb" src="illustrations/card-dns-rpz.jpg" alt="" loading="lazy" />
         <div class="bigq-body">
           <h3>當整個網域被封 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-          <p>2025 春節，Matters 被 DNS-RPZ 誤封三天。平台第一次成為被治理者。</p>
+          <p>2025 年春節，Matters 被改寫網域查詢（DNS-RPZ）誤封了三天，第一次嘗到被治理的滋味。</p>
         </div>
       </a>
     </div>
@@ -176,19 +177,19 @@ import '../styles/story.css';
   <!-- 附錄內容 -->
   <section class="scene reveal" id="appendix-content" data-stage="5">
     <h2>可參考、可使用的源碼模組與政策模組</h2>
-    <p>這個站本身就是「透明開盒」：偵測模型、處置流程、垃圾資料集與合規對照都開放可取用——歡迎別的平台拿去打掃。</p>
+    <p>這個網站本身就是一次「透明開盒」：偵測模型、處置流程、垃圾資料集和法規對照表全部開放取用，歡迎別的平台直接拿去打掃。</p>
     <div class="bigq">
       <a class="board board--hover" href="data" style="--bigq-c:#5a8a93">
         <h3>開源與資料集 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>分層揭露、垃圾資料庫公開——可直接接的源碼模組。</p>
+        <p>分層公開、垃圾內容資料庫開放，是能直接接來用的程式模組。</p>
       </a>
       <a class="board board--hover" href="ncc" style="--bigq-c:#8a6db0">
         <h3>NCC 合規自評 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>兩份指引 41 項對照——可參考的政策模組。</p>
+        <p>對照兩份官方指引、共 41 項逐條自評，是能參考的政策模組。</p>
       </a>
       <a class="board board--hover" href="conclusion" style="--bigq-c:#c8a020">
         <h3>結論與建言 <span class="bigq-arr" aria-hidden="true">→</span></h3>
-        <p>三悖論、給平台與主管機關的政策建言。</p>
+        <p>三個治理上的兩難，以及給平台和主管機關的政策建議。</p>
       </a>
     </div>
     <p style="text-align:center;margin-top:22px">

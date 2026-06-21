@@ -276,9 +276,9 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
       elF.textContent = fp; elS.textContent = safe;
       var msg;
       if (fp === 0 && leaked === 0) {
-        msg = '幾乎完美——但這種甜蜜點很罕見，真實內容遠比這 22 張複雜。';
+        msg = '幾乎完美，但這種理想狀態很罕見，真實內容遠比這 22 張卡片複雜。';
       } else if (fp > 0 && leaked > 0) {
-        msg = '你誤殺了 ' + fp + ' 篇正常內容，卻仍有 ' + leaked + ' 篇垃圾漏網——兩種代價同時存在。';
+        msg = '你誤殺了 ' + fp + ' 篇正常內容，卻還有 ' + leaked + ' 篇垃圾漏網，兩種代價同時發生。';
       } else if (fp > 0) {
         msg = '為了把垃圾擋乾淨，你誤殺了 ' + fp + ' 篇正常內容（偽陽性）。被誤殺的，往往正是平台最該保護的表達。';
       } else {

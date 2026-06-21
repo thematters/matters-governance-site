@@ -278,9 +278,9 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
         });
         var correct = guess === top;
         out.innerHTML = (correct ? '猜對了！' : '你猜「' + titles[guess] + '」，但演算法把「' + titles[top] + '」排第一。')
-          + ' 因為分數裡<strong>留言權重最高（0.4）</strong>——演算法獎勵的是「引發討論」，不是純曝光。'
+          + ' 因為分數裡<strong>留言的權重最高（0.4）</strong>，演算法最想獎勵的是能「引發討論」的內容，曝光高低反而是其次。'
           + '所以 60 則留言的貼文，贏過 5000 次閱讀的爆紅迷因。';
-        document.getElementById('rk-q').textContent = '時間序 vs 演算法序——同一批內容，兩種「誰被看見」。';
+        document.getElementById('rk-q').textContent = '時間序 vs 演算法序：同一批內容，兩種「誰被看見」。';
         reveal.scrollIntoView({ block: 'nearest' });
       });
     });

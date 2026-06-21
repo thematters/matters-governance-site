@@ -2,30 +2,31 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
+import Term from '../components/Term.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="開源與資料集">
-  <ChapterHero kicker="延伸 · 開源與資料集公開" title="透明開盒是一道光譜，不是開關" img="illustrations/data.jpg" alt="一個打開的木盤裝著分格的種子，有人把發光的種子分送出去，部分格子蓋著布" />
+  <ChapterHero kicker="延伸 · 開源與資料集公開" title="透明開盒是程度問題，沒有非黑即白的開關" img="illustrations/data.jpg" alt="一個打開的木盤裝著分格的種子，有人把發光的種子分送出去，部分格子蓋著布" />
 
   <h2>開源 ≠ 透明 ≠ 共創</h2>
-  <p>把程式碼丟出來<strong>不等於透明</strong>（一般人讀不懂，還需要文件、案例、說明、申訴管道——這正是本網站的理由）；開放 API 也<strong>不等於共創</strong>（資深用戶 Denken：「開源最終沒有促成共創，到最後常常只發現只有我」）。</p>
+  <p>把程式碼丟出來，<strong>不等於透明</strong>：一般人根本讀不懂，還需要文件、案例、說明和申訴管道（這正是這個網站存在的理由）。開放程式介面（API），也<strong>不等於共創</strong>：資深使用者 Denken 就說，「開源最後沒有真的促成共創，常常到頭來只發現只有我一個」。</p>
 
   <blockquote class="callout callout--quote">「開源最終沒有促成共創……到最後常常只發現只有我。」</blockquote>
 
   <h2>為什麼 Matters 敢開源</h2>
-  <p>大平台不敢，因為一開源就被繞過。Matters 的理由很反直覺：「我們已經太小了，開源換到的回饋已經更多，再多一點點沒關係。」</p>
+  <p>大平台不敢開源，因為一開源就會被人鑽漏洞繞過。Matters 的理由則有點反直覺：「我們已經夠小了，開源換回來的回饋本來就比較多，再多開一點也無妨。」</p>
 
   <h2>分層開源</h2>
-  <p>程式碼公開，但<strong>可被直接濫用的敏感參數延遲六到十二個月</strong>或抽象化。<code>spamThreshold</code> 是敏感營運資產。結論略顯悲涼卻誠實：「維持抗審查平台，往往需要為了安全而犧牲透明。」</p>
+  <p>程式碼公開，但<strong>可能被直接濫用的敏感參數，會延後六到十二個月、或先做抽象化處理</strong>。像「垃圾判定門檻」（spamThreshold）這種數值，就是敏感的營運資產。結論有點無奈卻誠實：「要維持一個抗審查平台，常常得為了安全，犧牲一部分透明。」</p>
 
   <div class="stat-row">
     <div class="stat board">
       <div class="stat__num stat__num--pos">425,689 筆</div>
-      <div class="stat__label">去識別研究資料集首版<span class="stat__delta">v2026.06・規劃 Hugging Face gated</span></div>
+      <div class="stat__label">去識別研究資料集首版<span class="stat__delta">v2026.06・預計上 Hugging Face（限申請取用）</span></div>
     </div>
     <div class="stat board">
       <div class="stat__num stat__num--neg">6–12 個月</div>
-      <div class="stat__label">敏感參數延時揭露<span class="stat__delta">spamThreshold 等先抽象化</span></div>
+      <div class="stat__label">敏感參數延時揭露<span class="stat__delta">垃圾判定門檻等先抽象化</span></div>
     </div>
     <div class="stat board">
       <div class="stat__num">5–15%</div>
@@ -37,29 +38,29 @@ import '../styles/story.css';
 
   <h2>垃圾內容靜態資料庫公開</h2>
   <p>
-    <code>matters-spam-dataset</code>：去識別研究資料集，HMAC id、聯絡方式正規化，規劃以 Hugging Face gated 釋出、授權 CC BY-NC-ND 4.0，
-    首版共 <strong>425,689 筆</strong>（spam 406,850／ham 18,839）。資料卡主動揭露早期代理標籤瑕疵與 5–15% 殘餘誤標。⚠️ <strong>目前尚未正式發布。</strong>
+    matters-spam-dataset 是一份去識別過的研究資料集：身分用 <Term zh="HMAC 雜湊" en="HMAC">把身分資訊轉成不可還原代碼的加密方法，用來去識別、保護個資。</Term> 處理、聯絡方式也正規化過，預計放上 Hugging Face（限申請取用）、採 CC BY-NC-ND 4.0 授權，
+    首版共 <strong>425,689 筆</strong>（垃圾 406,850 筆／正常 18,839 筆）。資料說明卡主動揭露了早期代理標籤的瑕疵，以及還殘留 5–15% 的誤標。⚠️ <strong>目前尚未正式發布。</strong>
   </p>
 
   <h2>為什麼整套審查方法要開盒</h2>
   <p>
-    把「透明審查」收束成一句話：<strong>不只開源程式碼，而是把整套審查方法攤開來</strong>——偵測模型、處置流程、訓練資料集一起公開。
-    理由不是漂亮話，而是這個時代的現實：機器人大戰中，人類只能在中間求生存，因此更需要透明化整個演算法、訓練資料庫，以及因偽陽而被錯殺的案例。
+    「透明審查」說穿了，是把整套審查方法都攤開來，而不只是公開程式碼：偵測模型、處置流程、訓練資料集，全部一起公開。
+    這麼做不是為了漂亮話。現實是，在機器人大量灌爆內容的環境裡，人類只能在夾縫中求生存，更需要把整個演算法、訓練資料，以及那些因為偽陽性而被錯殺的案例，一併透明化。
   </p>
   <p>
-    透明的第一個作用，是<strong>讓審查可被檢驗</strong>。許多大型平台近來被批評，正是因為背後被錯殺、封鎖、停權的使用者——有些還是付費使用者——
-    根本不知道自己為何被處置。把模型、門檻邏輯與誤判案例攤開，外界才有辦法檢查「那條線劃得對不對」，使用者也才知道該怎麼申訴。
+    透明的第一個作用，是<strong>讓審查可以被檢驗</strong>。許多大型平台近來被批評，正是因為那些被錯殺、封鎖、停權的使用者（有些還是付費使用者），
+    根本不知道自己為什麼被處置。把模型、門檻的邏輯和誤判案例攤開，外界才有辦法檢查「那條線劃得對不對」，使用者也才知道該怎麼申訴。
     透明本身，就是正當程序的前提。
   </p>
   <p>
-    第二個作用，是<strong>讓方法可被別的平台採用</strong>。守望相助隊累積的公開打掃紀錄、去識別的垃圾內容資料集，
-    都可以成為前線打詐的最佳實務，被其他小型、在地、邊緣的社群沿用——不必每個平台都從零摸索一次。
-    這也是為什麼開盒值得：對已經很小的平台來說，開源換到的回饋遠多於被繞過的風險。
+    第二個作用，是<strong>讓這套方法可以被別的平台拿去用</strong>。守望相助隊累積的公開打掃紀錄、去識別過的垃圾內容資料集，
+    都能成為第一線打詐的範例，讓其他小型、在地、邊緣的社群直接沿用，不必每個平台都從零摸索一遍。
+    開盒之所以值得，道理就在這裡：對一個已經很小的平台來說，開源換回來的回饋，遠多於被人繞過的風險。
   </p>
-  <div class="callout">最佳的平台治理，是透明化的流程開放；開源整套實作流程，是整個大環境對平台治理認識的第一步。</div>
+  <div class="callout">最好的平台治理，是把流程透明、開放出來；而開源整套做法，是整個大環境認識平台治理的第一步。</div>
 
   <h2>授權</h2>
-  <p>程式碼 MIT/AGPL · 文件 CC BY 4.0 · 研究資料依敏感度授權並去識別化。每個互動旁也將附「文字版資料表」，同時當無障礙退化與開放資料。</p>
+  <p>程式碼採 MIT／AGPL 授權，文件採 CC BY 4.0，研究資料則依敏感度分別授權並去識別化。每個互動旁邊也會附上「文字版資料表」，一方面照顧無障礙閱讀，一方面也當作開放資料。</p>
 
   <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/transparency-method">深入閱讀：分層揭露與開放資料集方法論 →</a></p>
   <ChapterNav slug="data" />

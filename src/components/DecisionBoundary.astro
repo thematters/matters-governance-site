@@ -104,10 +104,10 @@ const initK = 100;
       elB.textContent = block; elF.textContent = fp; elL.textContent = leak; elS.textContent = safe;
       handle.setAttribute('aria-valuenow', Math.round(k));
       var msg;
-      if (fp > 0 && leak > 0) msg = '看到沒？同一條線同時誤殺了 ' + fp + ' 篇正常、又放過 ' + leak + ' 篇垃圾——中間重疊區讓兩種錯一起發生。';
+      if (fp > 0 && leak > 0) msg = '看到了嗎？同一條線同時誤殺了 ' + fp + ' 篇正常、又放過 ' + leak + ' 篇垃圾，中間的重疊區讓兩種錯一起發生。';
       else if (fp > 0) msg = '為了把垃圾擋乾淨，誤殺了 ' + fp + ' 篇正常內容。往右上拖鬆一點？垃圾就會開始漏網。';
       else if (leak > 0) msg = '沒有誤殺，但放過了 ' + leak + ' 篇垃圾。往左下拖嚴一點？正常內容就開始被誤殺。';
-      else msg = '剛好全分對——但真實內容的重疊遠比這 21 點嚴重，這種完美幾乎不存在。';
+      else msg = '剛好全部分對，但真實內容的重疊遠比這 21 點嚴重，這種完美幾乎不存在。';
       elN.textContent = msg;
     }
 

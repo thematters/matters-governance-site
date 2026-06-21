@@ -4,17 +4,17 @@ import '../styles/story.css';
 
 // 每個主題配一張既有插圖縮圖（history→dns-rpz、about→seed 為近義替代）＋分流色。
 const topics = [
-  { href: './', label: '主敘事', desc: '綠紅卡片捲動走完審查的意義，從這裡開始親手走一遍。', lane: '一般', img: 'hero.jpg', feature: true },
-  { href: 'false-positive', label: '偽陽性', star: true, desc: '拖門檻看誤殺——一條分數線，兩種代價。', lane: '一般', img: 'false-positive.jpg' },
-  { href: 'detection', label: '偵測技術 + 集團掃描', desc: '模型怎麼抓垃圾、Ring 怎麼抓一整群集團帳號。', lane: '開發者', img: 'detection.jpg' },
+  { href: './', label: '主敘事', desc: '跟著卡片捲動，親手走一遍審查的意義，從這裡開始。', lane: '一般', img: 'hero.jpg', feature: true },
+  { href: 'false-positive', label: '偽陽性', star: true, desc: '拖動門檻看誤殺：一條分數線，兩種代價。', lane: '一般', img: 'false-positive.jpg' },
+  { href: 'detection', label: '偵測技術 + 集團掃描', desc: '模型怎麼抓垃圾、怎麼揪出整群洗版的集團（Ring）。', lane: '開發者', img: 'detection.jpg' },
   { href: 'moderation', label: '七種處置', desc: '從打掃到註銷的光譜、小黑屋的設計史。', lane: '一般', img: 'moderation.jpg' },
-  { href: 'ranking', label: '首頁排序', desc: '降權 ≠ 刪除——決定誰被看見，才是真正的權力。', lane: '開發者', img: 'ranking.jpg' },
-  { href: 'crowd', label: '群眾協力', desc: '守望相助隊、海巡 bot、陪審團為何失敗。', lane: '一般', img: 'crowd.jpg' },
-  { href: 'censorship-resistance', label: '抗審查 + DNS-RPZ', desc: 'IPFS 三層韌性、2025 春節整個網域被誤封。', lane: '政策', img: 'censorship-resistance.jpg' },
+  { href: 'ranking', label: '首頁排序', desc: '降權 ≠ 刪除；決定誰被看見，才是真正的權力。', lane: '開發者', img: 'ranking.jpg' },
+  { href: 'crowd', label: '群眾協力', desc: '守望相助隊、海巡機器人、陪審團為何失敗。', lane: '一般', img: 'crowd.jpg' },
+  { href: 'censorship-resistance', label: '抗審查 + DNS-RPZ', desc: '分散式儲存（IPFS）的三層韌性、2025 春節整個網域被誤封。', lane: '政策', img: 'censorship-resistance.jpg' },
   { href: 'history', label: '治理史編年', desc: '2018–2025，每一個工具如何被事件逼出來。', lane: '政策', img: 'dns-rpz.jpg' },
   { href: 'ncc', label: 'NCC 合規自評', desc: '兩份指引、41 項逐條對照的政策模組。', lane: '政策', img: 'ncc.jpg' },
-  { href: 'data', label: '開源與資料集', desc: '分層揭露、垃圾資料庫公開——直接接的源碼模組。', lane: '開發者', img: 'data.jpg' },
-  { href: 'conclusion', label: '結論與建言', desc: '三悖論，給平台與主管機關的政策建言。', lane: '政策', img: 'conclusion.jpg' },
+  { href: 'data', label: '開源與資料集', desc: '分層揭露、垃圾資料庫公開，可直接接來用的程式模組。', lane: '開發者', img: 'data.jpg' },
+  { href: 'conclusion', label: '結論與建言', desc: '三個治理兩難，給平台與主管機關的政策建言。', lane: '政策', img: 'conclusion.jpg' },
   { href: 'about', label: '關於・方法', desc: '計畫緣起、資料來源與授權。', lane: '全部', img: 'seed.jpg' },
 ];
 const laneClass = (l: string) => ({ '一般': 'lane-a', '開發者': 'lane-d', '政策': 'lane-p', '全部': 'lane-x' }[l] || 'lane-x');
@@ -30,7 +30,7 @@ const laneClass = (l: string) => ({ '一般': 'lane-a', '開發者': 'lane-d', '
     <header class="topics-hero">
       <p class="kicker">全章節索引</p>
       <h1>全部主題</h1>
-      <p class="topics-lead">想跳著讀？這裡是全部 14 個主題。一般人建議從<a href="./">主敘事</a>開始；政策與開發者可直接挑章。</p>
+      <p class="topics-lead">想跳著讀嗎？這裡列出全部 14 個主題。一般讀者建議從<a href="./">主敘事</a>開始；關心政策或技術的讀者，也可以直接挑想看的章節。</p>
     </header>
 
     <div class="full-bleed topics-gridwrap">

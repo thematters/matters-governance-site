@@ -6,6 +6,7 @@ import FalsePositiveSlider from '../components/FalsePositiveSlider.astro';
 import RingDetector from '../components/RingDetector.astro';
 import RankingSplitScreen from '../components/RankingSplitScreen.astro';
 import DecisionBoundary from '../components/DecisionBoundary.astro';
+import AddressingDemo from '../components/AddressingDemo.astro';
 import ChapterIntro from '../components/ChapterIntro.astro';
 import Term from '../components/Term.astro';
 import '../styles/story.css';
@@ -140,6 +141,18 @@ import '../styles/story.css';
         <p>就算文章被下架，分散式儲存（IPFS）仍保留著它的內容指紋，使用者手上始終握有一個不靠單一網站的網址。</p>
       </a>
     </div>
+  </section>
+
+  <!-- 親手試 · 抗審查（IPFS 不可下架；招牌互動內嵌，疊在第三章 self-rescue 暗底上）-->
+  <section class="scene scene-wide reveal" data-stage="3">
+    <p class="kicker">親手試 · 抗審查</p>
+    <h2>就算被下架，內容還在嗎？</h2>
+    <p>救濟之外還有一條路——抗審查。我們平常用的 HTTP 是「位置定址」，內容綁在單一伺服器，刪掉就 404；IPFS 改用「內容定址」，同一份內容有唯一指紋（CID）、複製在許多節點上，刪掉一個，其他節點仍讀得到。點節點把它下架，比較兩種命運。</p>
+    <div class="figure">
+      <div class="figure__head"><span class="figure__title">HTTP vs IPFS：刪掉一個節點會怎樣</span><span class="figure__hint">點節點，把它下架</span></div>
+      <AddressingDemo />
+    </div>
+    <p style="text-align:center"><a class="read-more" href="censorship-resistance">深入：內容定址與三層內容韌性</a></p>
   </section>
 
   <!-- 更大的問題（resolution：背景＝N2 light-emergence 暗底，暖金光透出） -->

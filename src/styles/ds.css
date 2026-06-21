@@ -121,6 +121,13 @@
 .banner--hero .banner__inner .sub { color: rgba(255,255,255,.92); font-size: 20px; margin-top: var(--space-sp10); max-width: 560px; }
 .banner--hero .banner__inner .scroll-cue { color: rgba(255,255,255,.85); margin-top: var(--space-sp20); }
 
+/* 手機（≤640px，mobile-only）：banner 標題與留白收緊，序幕/章節滿版頁不那麼空 */
+@media (max-width: 640px) {
+  .banner__inner { padding: var(--space-sp24, 24px) var(--space-sp16, 16px); }
+  .banner__inner h1 { font-size: clamp(23px, 6.4vw, 30px); }
+  .banner--hero .banner__inner .sub { font-size: 16px; }
+}
+
 /* 首頁固定影片背景（.hero-bg/.hero-dark/.spine-light）已退場——首頁改用 story.css 的
    #stage 章節靜態圖交叉淡入暗色舞台；以下只保留序幕 banner 與分頁 ChapterHero 用到的規則。 */
 

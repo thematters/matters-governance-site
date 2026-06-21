@@ -64,6 +64,22 @@ blockquote { margin: 1.5rem 0; padding: 12px 18px; border-left: 4px solid var(--
 main { padding: 40px 0 96px; }
 section.block { margin: 56px 0; }
 .lead { font-size: 21px; color: var(--ink-soft); }
+
+/* ─────────── 手機字級與密度（≤640px，mobile-only；桌面完全不受影響）───────────
+   桌面尺寸直接套手機會又大又鬆；這裡收一檔字級＋收緊版面間距，讓一畫面塞更多內容又好讀。
+   各互動元件/scrollytelling 另在自己的窄斷點微調。 */
+@media (max-width: 640px) {
+  /* 防手機橫向捲動的安全網：clip 不會像 hidden/auto 那樣建立捲動容器，故不破壞 sticky scrollytelling */
+  html { overflow-x: clip; }
+  body { font-size: 16px; line-height: 1.65; }
+  h2 { font-size: 20px; margin: 1.8rem 0 .6rem; }
+  h3 { font-size: 17px; margin: 1.3rem 0 .4rem; }
+  main { padding: 28px 0 72px; }
+  main p { margin: 0 0 .9rem; }
+  .lead { font-size: 16.5px; line-height: 1.6; }
+  .thesis { font-size: 18px; }
+  blockquote { margin: 1.1rem 0; padding: 10px 14px; }
+}
 /* .page-illust 已移除（分頁頂圖改用 ChapterHero 滿版 banner） */
 .kicker {
   font-family: var(--font-ui); font-size: 13px; letter-spacing: .12em;
@@ -108,7 +124,7 @@ section.block { margin: 56px 0; }
   .nav-main { gap: 10px; }
 }
 @media (max-width: 680px) {
-  .nav-main .nav-toc { display: none; }
+  /* 手機保留「全部主題」當主要導覽入口（→ /start 14 主題索引）；主題連結列已在 920px 隱藏 */
   .audience-toggle { font-size: 12px; }
   .audience-toggle button { padding: 5px 9px; }
 }
@@ -181,6 +197,11 @@ section.block { margin: 56px 0; }
 :where(.banner--hero-fixed, .banner--chapter-fixed) ~ *:has(.term:hover),
 :where(.banner--hero-fixed, .banner--chapter-fixed) ~ *:has(.term:focus-within) { z-index: 60; }
 @media (prefers-reduced-motion: reduce) { .term-pop { transition: none; } }
+/* 手機（≤640px）：名詞浮層收窄，降低靠右溢出（保留 base left:0／.term--right 定位，
+   不動位移以免左緣名詞反向溢出；overflow-x:clip 再兜底） */
+@media (max-width: 640px) {
+  .term-pop { max-width: min(260px, 86vw); }
+}
 
 /* ---- 互動佔位 ---- */
 .interaction-slot {

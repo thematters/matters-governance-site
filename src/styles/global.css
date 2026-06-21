@@ -90,6 +90,10 @@ section.block { margin: 56px 0; }
 .brand-logo { height: 18px; width: auto; display: block; }
 .brand-sub { font-family: var(--font-ui); font-weight: 700; font-size: 16px; color: var(--ink);
   line-height: 1; padding-left: 10px; border-left: 1.5px solid var(--line); }
+/* TWNIC 支持字樣：小、低調，只在寬桌面顯示（窄屏怕擠到導覽，1080px 以下隱藏） */
+.brand-credit { font-family: var(--font-ui); font-weight: 600; font-size: 11.5px; color: var(--ink-soft);
+  line-height: 1; white-space: nowrap; }
+@media (max-width: 1080px) { .brand-credit { display: none; } }
 .nav-main { display: flex; align-items: center; gap: 16px; margin-left: auto; }
 .nav-links { display: flex; gap: 16px; font-family: var(--font-ui); font-size: 14.5px;
   list-style: none; margin: 0; padding: 0; }

@@ -60,8 +60,15 @@ html.js .reveal.in-view { opacity: 1; transform: none; }
 .dark-stage .scene .rk-q { color: #fff; }
 .dark-stage .scene .rk-coltitle { color: #fff; }
 .dark-stage .scene .rk-colsub,
-.dark-stage .scene .rk-vs,
-.dark-stage .scene .rk-legend { color: rgba(255,255,255,.72); }
+.dark-stage .scene .rk-vs { color: rgba(255,255,255,.72); }
+.dark-stage .scene .rk-legend { color: rgba(255,255,255,.88); }
+/* 揭曉結論句（原本 --ink 黑字）與其強調字在暗面板上轉白 */
+.dark-stage .scene .rk-out { color: rgba(255,255,255,.94); }
+.dark-stage .scene .rk-out strong { color: #fff; }
+/* 圖例藥丸在暗底提亮：紫/綠/紅字更亮、底色更實 */
+.dark-stage .scene .rk-legtag.key { color: #ddd2ff; background: color-mix(in srgb, #7258FF 32%, rgba(255,255,255,.08)); }
+.dark-stage .scene .rk-legtag.up { color: #aadcb5; background: color-mix(in srgb, var(--c-pos, #5c9969) 30%, rgba(255,255,255,.08)); }
+.dark-stage .scene .rk-legtag.down { color: #f3ab9a; background: color-mix(in srgb, var(--c-neg, #c85c41) 30%, rgba(255,255,255,.08)); }
 .dark-stage .scene .db-note { color: rgba(255,255,255,.92); }
 .dark-stage .scene .db-axis-labels { color: rgba(255,255,255,.78); }
 .dark-stage .scene .db-stat b { color: #fff; }
@@ -71,18 +78,18 @@ html.js .reveal.in-view { opacity: 1; transform: none; }
 /* #4 Term 名詞在暗底：英文「（en）」原本 --ink-soft 深灰，提亮；虛線底維持品牌紫但提亮 */
 .dark-stage .term-en { color: rgba(255,255,255,.64); }
 .dark-stage .term-label { border-bottom-color: #b3a4ff; }
-/* 深入藥丸在暗底上提亮 */
-.dark-stage .read-more { color: #c3b6ff; border-color: rgba(165,148,255,.5);
-  background: color-mix(in srgb, #7258FF 18%, transparent); }
-.dark-stage .read-more:hover { color: #fff; border-color: #b3a4ff;
-  background: color-mix(in srgb, #7258FF 32%, transparent); }
+/* 深入藥丸在暗底上提亮（字更白亮、邊框與底色更實，暗章圖上也清楚） */
+.dark-stage .read-more { color: #e3dcff; border-color: rgba(190,176,255,.66);
+  background: color-mix(in srgb, #7258FF 26%, rgba(255,255,255,.06)); }
+.dark-stage .read-more:hover { color: #fff; border-color: #c9bdff;
+  background: color-mix(in srgb, #7258FF 40%, rgba(255,255,255,.08)); }
 
 @media (prefers-reduced-motion: reduce) {
   .stage__img, .stage-scrim { transition: none; }
 }
 
 .scroll-cue { margin-top: 36px; font-family: var(--font-ui); font-size: 14px; color: var(--accent); }
-.scroll-cue::after { content: "↓"; display: block; font-size: 22px; animation: bob 1.6s ease-in-out infinite; }
+/* 向下提示箭頭只留手繪 .scroll-arrow 一個（原本 .scroll-cue::after 的 ↓ 與它重複，已移除） */
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
 
 /* ---- 內容卡片系統 ---- */
@@ -110,7 +117,8 @@ html.js .feed-flood.in-view .card-mini:nth-child(n) { transition-delay: calc(var
 .bigq-body { padding: 15px 18px 18px; }
 .bigq-card .bigq-body h3 { margin-top: 0; }
 .scroll-arrow { width: 26px; height: auto; display: block; margin: 12px auto 0; opacity: .9;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,.3)); }
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,.3)); animation: bob 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .scroll-arrow { animation: none; } }
 @media (prefers-reduced-motion: no-preference) {
   .scroll-arrow { animation: scrollArrowBounce 1.9s ease-in-out infinite; }
 }

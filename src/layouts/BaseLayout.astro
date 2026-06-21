@@ -10,7 +10,7 @@ interface Props {
 }
 const {
   title,
-  description = '以 Matters 自身的治理史為案例，科普垃圾審查、排序演算法與抗審查。',
+  description = '這個網站告訴你什麼是平台演算法、平台如何下架垃圾內容、使用者如何自力救濟。',
   lang = 'zh-Hant',
 } = Astro.props;
 // 注意：<title>{expr}文字</title> 在 Astro 的 RCDATA 會吞掉運算式後的文字，故組成單一字串
@@ -41,7 +41,7 @@ const navLinksHtml = sections
     <script is:inline>document.documentElement.classList.add('js')</script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content="Matters 平台小教室" />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={new URL(base + 'illustrations/og.jpg', Astro.site).href} />

@@ -1,0 +1,144 @@
+---
+// 首頁章節開場：電影感「整屏底圖 → 隨捲動變黑 → 黑幕掀起、下面內容進場」。
+// 把 hero 的 dark-on-content 模式套到每一章；與分頁用的 ChapterHero 同精神，但這裡是
+// 單頁內多個章節並存，故改用 position:sticky（自足、不需全域協調），不會干擾 fixed 的 #hero-bg。
+//
+// 結構：
+//   .chintro            ── 高 175vh 的占位區段（多出來的高度＝變黑/掀幕的捲動行程）。
+//   .chintro__sticky    ── sticky 釘在視窗一屏（100vh），裝載底圖/黑幕/標題。
+//     .chintro__media   ── 底圖（img 或 anim/ 影片），object-fit:cover。
+//     .chintro__dark    ── 定值漸層 scrim（CSS 烘底，保證標題可讀；無 JS/reduced-motion 也成立）。
+//     .chintro__black   ── 純黑層，JS 隨捲動 opacity 0→1：圖「變黑」。
+//     .chintro__title   ── 章號/章名/說明疊字（白字）。
+//
+// z-index：.chintro 是 hero banner 的後續兄弟（被 ds.css `.banner--hero-fixed ~ *` 抬到 z-index:2），
+//   不透明的底圖蓋住後面 fixed 的 #hero-bg；掀幕（整塊 sticky 淡出）時露出後方暖米底（或 hero 影片）。
+//
+// 關鍵踩雷（沿用先前經驗）：banner 漸變用「直接 scroll listener」比 ScrollTrigger 對位置更穩，
+//   不受 lazy 圖位移/refresh 時序影響；reduced-motion / 無 JS 不做動畫、區段收成一屏靜態可讀。
+interface Props {
+  id: string;            // rail 錨點，如 ch-1
+  num: string;           // 第一章
+  name: string;          // 魔高一尺
+  desc: string;          // 一句說明
+  img: string;           // 相對路徑，如 illustrations/N1-dark-underworld-reference.jpg（也當影片 poster）
+  alt: string;
+  video?: string;        // anim/ 下檔名（不含副檔名），如 crowd-lantern-high-motion-4s
+}
+const { id, num, name, desc, img, alt, video } = Astro.props;
+---
+<section class="chintro" id={id} data-chintro>
+  <div class="chintro__sticky" data-chintro-sticky>
+    <div class="chintro__media" data-chintro-media aria-hidden="true">
+      {video ? (
+        <video class="chintro__el" muted loop playsinline preload="none" poster={img} aria-hidden="true" data-autoplay>
+          <source src={`illustrations/anim/${video}.webm`} type="video/webm" />
+          <source src={`illustrations/anim/${video}.mp4`} type="video/mp4" />
+        </video>
+      ) : (
+        <img class="chintro__el" src={img} alt={alt} loading="lazy" />
+      )}
+    </div>
+    <div class="chintro__dark" aria-hidden="true"></div>
+    <div class="chintro__black" data-chintro-black aria-hidden="true"></div>
+    <div class="chintro__title" data-chintro-title>
+      <p class="chintro__num">{num}</p>
+      <h2 class="chintro__name">{name}</h2>
+      <p class="chintro__desc">{desc}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* 占位區段：多出的高度＝sticky 釘住期間「變黑＋掀幕」的捲動行程 */
+  .chintro { position: relative; height: 175vh; }
+  /* sticky 釘住的一屏要「滿版 100vw」蓋住後方 fixed 的 #hero-bg（否則容器兩側露出 hero 影片）。
+     用 transform-free 的 margin 技法全出血——因為 .full-bleed 的 transform:translateX(-50%) 會讓
+     position:sticky 失效；margin-left:calc(50% - 50vw)+width:100vw 同樣置中滿版但不破壞 sticky。 */
+  .chintro__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden;
+    width: 100vw; margin-left: calc(50% - 50vw);
+    display: flex; align-items: center; justify-content: center; will-change: opacity;
+    background: #0e0b22; /* 掀幕/載入前的深底，避免縫隙閃白 */ }
+  .chintro__media { position: absolute; inset: 0; z-index: 0; will-change: transform; }
+  .chintro__el { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+  /* 定值漸層 scrim：保證亮底圖上白色標題可讀（無 JS / reduced-motion 也成立） */
+  .chintro__dark { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(14,11,22,.34) 0%, rgba(14,11,22,.14) 40%, rgba(14,11,22,.64) 100%); }
+  /* 純黑層：JS 隨捲動 opacity 0→1，讓底圖「變黑」 */
+  .chintro__black { position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: #07060d; opacity: 0; will-change: opacity; }
+  /* 疊字：白字、置中、浮在最上 */
+  .chintro__title { position: relative; z-index: 3; text-align: center; color: #fff;
+    padding: 0 20px; max-width: 760px; will-change: opacity, transform; }
+  .chintro__num { font: 800 13px/1 var(--font-ui); letter-spacing: .34em; margin: 0 0 16px;
+    color: rgba(255,255,255,.92); }
+  .chintro__num::before, .chintro__num::after { content: ''; display: inline-block;
+    width: 28px; height: 1.5px; vertical-align: middle; margin: 0 13px 4px; background: rgba(255,255,255,.62); }
+  .chintro__name { font: 800 clamp(36px, 7.4vw, 64px)/1.1 var(--font-read); margin: 0 0 16px;
+    color: #fff; letter-spacing: .03em; text-shadow: 0 2px 26px rgba(0,0,0,.55), 0 1px 5px rgba(0,0,0,.5); }
+  .chintro__desc { font: 500 clamp(15px, 2.4vw, 19px)/1.75 var(--font-ui); margin: 0 auto; max-width: 28em;
+    color: rgba(255,255,255,.9); text-shadow: 0 1px 14px rgba(0,0,0,.55); }
+
+  /* 無 JS / reduced-motion：收成一屏靜態（底圖＋定值 scrim＋標題），不做釘住/變黑/掀幕的捲動戲法 */
+  @media (prefers-reduced-motion: reduce) {
+    .chintro { height: 100svh; }
+    .chintro__sticky { position: relative; height: 100svh; }
+  }
+  :global(html:not(.js)) .chintro { height: 100svh; }
+  :global(html:not(.js)) .chintro__sticky { position: relative; height: 100svh; }
+</style>
+
+<script>
+  // ───────── 章節開場：sticky 釘住一屏，隨捲動「圖→變黑→掀幕」 ─────────
+  // 每個 .chintro 各自依自己在視窗的位置算 0→1 進度（多章並存、互不干擾）。
+  function initChintro(root: HTMLElement) {
+    if (root.dataset.cintroInited) return;
+    root.dataset.cintroInited = '1';
+    const sticky = root.querySelector<HTMLElement>('[data-chintro-sticky]');
+    const black = root.querySelector<HTMLElement>('[data-chintro-black]');
+    const title = root.querySelector<HTMLElement>('[data-chintro-title]');
+    const media = root.querySelector<HTMLElement>('[data-chintro-media]');
+    if (!sticky || !black || !title || !media) return;
+
+    // reduced-motion：CSS 已把區段收成一屏靜態（底圖＋定值 scrim＋標題），不做任何捲動動畫。
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const rect = root.getBoundingClientRect();
+      const travel = root.offsetHeight - window.innerHeight; // sticky 釘住期間可捲的總距離
+      if (travel <= 0) return;
+      // rect.top 從 0（剛釘住）降到 -travel（即將放開）；換算成 0→1。
+      const p = Math.min(1, Math.max(0, -rect.top / travel));
+
+      // 圖變黑：前 70% 把純黑層 opacity 0→1。
+      black.style.opacity = String(Math.min(1, p / 0.7));
+      // 標題：到 45%~70% 之間淡出並輕微上移（讓位給「變黑」高潮）。
+      const tp = Math.min(1, Math.max(0, (p - 0.45) / 0.25));
+      title.style.opacity = String(1 - tp);
+      title.style.transform = 'translateY(' + (tp * -24).toFixed(1) + 'px)';
+      // 克制 Ken-Burns：底圖中心緩慢放大。
+      media.style.transform = 'scale(' + (1 + p * 0.08).toFixed(4) + ')';
+      // 掀幕：最後 82%~100% 整塊 sticky 淡出，露出後方（暖米底／hero 影片），下面內容進場。
+      const lift = Math.min(1, Math.max(0, (p - 0.82) / 0.18));
+      sticky.style.opacity = String(1 - lift);
+    }
+    function onScroll() {
+      if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-chintro]').forEach(initChintro);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+  document.addEventListener('astro:page-load', initAll);
+</script>

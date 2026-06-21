@@ -86,7 +86,6 @@ const steps = [
               ))}
             </div>
           </div>
-          <div class="sg-line" id="sg-line" aria-hidden="true"></div>
           <div class="sg-ring-frame" id="sg-ring-frame" aria-hidden="true"></div>
           <div class="sg-ring-label" id="sg-ring-label" aria-hidden="true">集團 · 同一模板 ×3</div>
         </div>
@@ -183,11 +182,6 @@ const steps = [
     font: 800 13px var(--font-ui); color: #fff; white-space: nowrap; background: var(--c-brand, #7258FF);
     padding: 3px 12px; border-radius: 999px; box-shadow: 0 4px 12px rgba(70,50,160,.35); }
 
-  /* 分界線（過濾掃過） */
-  .sg-line { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: scaleX(0); transform-origin: left center;
-    background: linear-gradient(90deg, transparent, #fff 7%, var(--c-brand, #7258FF) 28%, var(--c-brand, #7258FF) 72%, #fff 93%, transparent);
-    box-shadow: 0 0 14px 2px color-mix(in srgb, var(--c-brand, #7258FF) 65%, transparent); opacity: .95; border-radius: 3px; z-index: 2; }
-
   .sg-cap { text-align: center; font: 700 15px var(--font-ui); margin: 14px 0 0; color: var(--ink); min-height: 1.4em; }
 
   .scrolly-step { min-height: 90vh; display: flex; align-items: center; }
@@ -233,7 +227,6 @@ const steps = [
     const feed = document.getElementById('sg-feed');
     const viewport = document.getElementById('sg-viewport');
     const cap = document.getElementById('sg-cap');
-    const line = document.getElementById('sg-line');
     const atmos = document.getElementById('scrolly-atmos');
     const glow = document.getElementById('sg-glow');
     const ringFrame = document.getElementById('sg-ring-frame');
@@ -349,11 +342,9 @@ const steps = [
     tl.to(hiddenOverlays(red), { opacity: 1, duration: 0.7, stagger: { each: 0.05, from: 'random' } }, 'flood');
     tl.to(red, { filter: 'grayscale(.6) brightness(.94)', duration: 0.7, stagger: { each: 0.05, from: 'random' } }, 'flood');
 
-    // 2 過濾：分界線掃過、紅卡進一步壓暗/壓扁（單欄不飛出，改用壓縮高度＋變灰）
+    // 2 過濾：紅卡進一步壓暗/壓扁（單欄不飛出，改用壓縮高度＋變灰；不再用紫色橫掃線）
     tl.addLabel('filter');
-    tl.fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: 'power1.inOut' }, 'filter');
     tl.to(red, { filter: 'grayscale(1) brightness(.86)', scaleY: 0.9, opacity: 0.85, duration: 0.7, stagger: 0.04 }, 'filter+=0.12');
-    tl.to(line, { opacity: 0, duration: 0.3 }, 'filter+=0.6');
 
     // 3 誤刪（高潮，放慢）：邊界好內容紅框高亮 + 「誤刪」標
     tl.addLabel('fp');

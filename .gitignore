@@ -19,3 +19,6 @@ materials/
 # agent skills（gsap-skills，可用 npx skills add 重裝，不進 repo）
 .agents/
 skills-lock.json
+
+# 本機 agent/preview 工具設定（launch.json 等），不進 repo
+.claude/

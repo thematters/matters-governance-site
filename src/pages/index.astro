@@ -6,6 +6,7 @@ import FalsePositiveSlider from '../components/FalsePositiveSlider.astro';
 import RingDetector from '../components/RingDetector.astro';
 import RankingSplitScreen from '../components/RankingSplitScreen.astro';
 import DecisionBoundary from '../components/DecisionBoundary.astro';
+import ChapterIntro from '../components/ChapterIntro.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="主敘事">
@@ -16,6 +17,7 @@ import '../styles/story.css';
        會讓 position:fixed 失效。這兩層 fixed 在所有內容之後、body 暖米底之上；
        GSAP 驅動 .hero-dark 變暗，捲過 StickyScroller 後整組（影片+暗幕）一起淡出。 -->
   <div class="hero-bg" id="hero-bg" aria-hidden="true">
+    <img class="hero-bg__plate" src="illustrations/hero.jpg" alt="" aria-hidden="true" />
     <video class="hero-bg__video" muted loop playsinline preload="auto" poster="illustrations/hero.jpg" data-autoplay>
       <source src="illustrations/anim/hero-everyone-moves-loop.webm" type="video/webm" />
       <source src="illustrations/anim/hero-everyone-moves-loop.mp4" type="video/mp4" />
@@ -31,10 +33,7 @@ import '../styles/story.css';
        z-index:1（與 hero-dark 同層但 DOM 在其後）；hero 那組捲過 StickyScroller 後已 opacity:0，
        結論區只剩本層在作用，兩套固定層不會同時搶畫面。 -->
   <div class="spine-light" id="spine-light" aria-hidden="true">
-    <video class="spine-light__video" muted loop playsinline preload="none" data-autoplay>
-      <source src="illustrations/anim/light-emergence-high-motion-4s.webm" type="video/webm" />
-      <source src="illustrations/anim/light-emergence-high-motion-4s.mp4" type="video/mp4" />
-    </video>
+    <img class="spine-light__video" src="illustrations/N2-light-emergence-style-v2.jpg" alt="" />
   </div>
 
   <!-- 序幕 — HERO（滿版電影感 banner；影片改由上方固定背景提供） -->
@@ -48,22 +47,28 @@ import '../styles/story.css';
     </div>
   </section>
 
-  <!-- ───────── 第一章·魔高一尺 ───────── -->
-  <div class="chapter-rest chapter-rest--on-media" id="ch-1">
-    <p class="chapter-rest__num">第一章</p>
-    <h2 class="chapter-rest__name">魔高一尺</h2>
-    <p class="chapter-rest__desc">為什麼要審查、為什麼非機器不可</p>
-  </div>
+  <!-- ───────── 第一章·魔高一尺（整屏底圖→變黑→掀幕進場） ───────── -->
+  <ChapterIntro
+    id="ch-1"
+    num="第一章"
+    name="魔高一尺"
+    desc="為什麼要審查、為什麼非機器不可"
+    img="illustrations/N1-dark-underworld-reference.jpg"
+    alt="暗色調的地下世界意象：垃圾與惡意內容自陰影中湧出"
+  />
 
   <!-- 核心 sticky scrollytelling：綠紅 feed 隨捲動變狀態 -->
   <StickyScroller />
 
-  <!-- ───────── 第二章·道高一尺 ───────── -->
-  <div class="chapter-rest" id="ch-2">
-    <p class="chapter-rest__num">第二章</p>
-    <h2 class="chapter-rest__name">道高一尺</h2>
-    <p class="chapter-rest__desc">不同的打掃方法：門檻、集團、人工、排序</p>
-  </div>
+  <!-- ───────── 第二章·道高一尺（整屏底圖→變黑→掀幕進場） ───────── -->
+  <ChapterIntro
+    id="ch-2"
+    num="第二章"
+    name="道高一尺"
+    desc="不同的打掃方法：門檻、集團、人工、排序"
+    img="illustrations/F2-moderation-spectrum.jpg"
+    alt="審查光譜意象：從打掃、降權到註銷，不同力度的處置工具"
+  />
 
   <!-- ① 換你親手試 · 偽陽性滑桿（那條門檻你會設在哪）-->
   <section class="scene scene-wide reveal">
@@ -124,12 +129,15 @@ import '../styles/story.css';
     <p style="text-align:center"><a class="read-more" href="ranking">深入：首頁排序與末日爆滑</a></p>
   </section>
 
-  <!-- ───────── 第三章·自己的帳號自己救 ───────── -->
-  <div class="chapter-rest" id="ch-3">
-    <p class="chapter-rest__num">第三章</p>
-    <h2 class="chapter-rest__name">自己的帳號自己救</h2>
-    <p class="chapter-rest__desc">誤刪無法歸零——透明的審查、可信的救濟</p>
-  </div>
+  <!-- ───────── 第三章·自己的帳號自己救（整屏底圖→變黑→掀幕進場） ───────── -->
+  <ChapterIntro
+    id="ch-3"
+    num="第三章"
+    name="自己的帳號自己救"
+    desc="誤刪無法歸零——透明的審查、可信的救濟"
+    img="illustrations/self-rescue.jpg"
+    alt="使用者自己把被誤刪的內容救回來的意象：申訴、救濟與抗審查"
+  />
 
   <!-- 內嵌互動 · 決策邊界（為什麼一定有誤殺：誤刪無法歸零的幾何）-->
   <section class="scene scene-wide reveal">
@@ -194,9 +202,19 @@ import '../styles/story.css';
     </div>
   </section>
 
-  <!-- ───────── 附錄·源碼與政策模組 ───────── -->
-  <section class="scene reveal" id="ch-appendix">
-    <p class="kicker">附錄</p>
+  <!-- ───────── 附錄·源碼與政策模組（提燈影片開場→變黑→掀幕進場） ───────── -->
+  <ChapterIntro
+    id="ch-appendix"
+    num="附錄"
+    name="源碼・政策模組"
+    desc="這個站本身就是「透明開盒」：偵測、處置、資料集都開放可取用"
+    img="illustrations/crowd.jpg"
+    alt="群眾提燈守望的意象：守望相助隊一起把垃圾收走，公開可稽核"
+    video="crowd-lantern-high-motion-4s"
+  />
+
+  <!-- 附錄內容 -->
+  <section class="scene reveal" id="appendix-content">
     <h2>可參考、可使用的源碼模組與政策模組</h2>
     <p>這個站本身就是「透明開盒」：偵測模型、處置流程、垃圾資料集與合規對照都開放可取用——歡迎別的平台拿去打掃。</p>
     <div class="bigq">

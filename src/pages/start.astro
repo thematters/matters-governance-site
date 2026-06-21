@@ -18,9 +18,14 @@ const topics = [
 ];
 ---
 <BaseLayout title="全部主題">
-  <p class="kicker">全章節索引</p>
-  <h1>全部主題</h1>
-  <p class="lead">想跳著讀？這裡是全部主題。一般人建議從<a href="./">主敘事</a>開始；政策與開發者可直接挑章。</p>
+  <section class="full-bleed banner banner--chapter" aria-label="全部主題">
+    <img src="illustrations/detection-matty-v2.jpg" alt="平台清道夫巡查內容的全景：偵測、處置、排序與抗審查" />
+    <div class="banner__inner">
+      <p class="kicker">全章節索引</p>
+      <h1>全部主題</h1>
+    </div>
+  </section>
+  <p class="lead" style="margin-top:24px">想跳著讀？這裡是全部主題。一般人建議從<a href="./">主敘事</a>開始；政策與開發者可直接挑章。</p>
   <div class="pillars" style="margin-top:24px">
     {topics.map((t) => (
       <a class="pillar" href={t.href}>

@@ -126,10 +126,15 @@
    兩層皆 position:fixed 釘在視窗；GSAP 控制 .hero-dark 變暗、再讓整組淡出。
    注意：它們不可放在 .full-bleed/.banner 內（那些帶 transform，會讓 fixed 失效）。 */
 .hero-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-  background: var(--bg); /* 影片載入前的暖米底，避免黑屏 */ }
-.hero-bg__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-  /* 直式 9:16 影片用 cover 置中：桌面裁上下、手機接近滿版（優勢），靠暗幕遮邊 */
+  background: #0e0b22; /* 影片載入前的深底，避免黑屏 */ }
+/* 模糊放大的 poster 當 backplate：桌面用 contain 顯示完整直式影片時，兩側留白由它填成電影感氛圍牆，
+   比純黑邊高級；手機 cover 滿版時被影片蓋住。 */
+.hero-bg__plate { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  object-position: center; filter: blur(34px) brightness(.5) saturate(1.1); transform: scale(1.12); }
+/* 影片：桌面 contain「全部放出來」（不再放大裁上下）；手機(直式視窗)改 cover 滿版。 */
+.hero-bg__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
   object-position: center; }
+@media (max-aspect-ratio: 1/1) { .hero-bg__video { object-fit: cover; } }
 /* 常駐可讀 scrim：影片之上、暗幕之下的固定淡漸層，確保 hero 標題在任何時刻可讀
    （無 JS / reduced-motion 也成立）。烘在 .hero-bg 內，不參與變暗/淡出的動畫。 */
 .hero-bg::after { content: ''; position: absolute; inset: 0; pointer-events: none;

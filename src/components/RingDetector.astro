@@ -21,19 +21,80 @@ const nodes = [
   { x: 290, y: 250, t: 'ring', s: 11, label: '翻譯社' },
 ];
 const rings = nodes.map((n, i) => ({ n, i })).filter((o) => o.n.t === 'ring');
+
+// 集團網狀邊：所有 ring 節點兩兩相連（一夥的證據＝彼此關聯）
+const meshEdges = [];
+for (let a = 0; a < rings.length; a++) {
+  for (let b = a + 1; b < rings.length; b++) {
+    meshEdges.push({ x1: rings[a].n.x, y1: rings[a].n.y, x2: rings[b].n.x, y2: rings[b].n.y });
+  }
+}
+
+// 集團外框：對 ring 節點取凸包再向質心外推，輸出平滑封閉路徑
+function clusterPath(pts, pad) {
+  const ctx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+  const cty = pts.reduce((a, p) => a + p.y, 0) / pts.length;
+  const sorted = [...pts].sort((p, q) => p.x - q.x || p.y - q.y);
+  const cross = (o, a, b) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+  const lower = [];
+  for (const p of sorted) { while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop(); lower.push(p); }
+  const upper = [];
+  for (let i = sorted.length - 1; i >= 0; i--) { const p = sorted[i]; while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop(); upper.push(p); }
+  const hull = lower.slice(0, -1).concat(upper.slice(0, -1));
+  const exp = hull.map((p) => { const dx = p.x - ctx, dy = p.y - cty, d = Math.hypot(dx, dy) || 1; return { x: ctx + dx / d * (d + pad), y: cty + dy / d * (d + pad) }; });
+  // Catmull-Rom → 平滑封閉 path
+  const n = exp.length;
+  let d = `M ${exp[0].x.toFixed(1)} ${exp[0].y.toFixed(1)} `;
+  for (let i = 0; i < n; i++) {
+    const p0 = exp[(i - 1 + n) % n], p1 = exp[i], p2 = exp[(i + 1) % n], p3 = exp[(i + 2) % n];
+    const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+    d += `C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)} `;
+  }
+  return d + 'Z';
+}
+const hullD = clusterPath(rings.map((o) => o.n), 30);
+const clusterCx = rings.reduce((a, o) => a + o.n.x, 0) / rings.length;
+const clusterCy = rings.reduce((a, o) => a + o.n.y, 0) / rings.length;
 ---
 <div class="ring" id="ring-root">
   <svg viewBox={`0 0 ${W} ${H}`} class="ring-svg" role="img" aria-label="帳號分佈圖：6 個正常帳號、2 個明顯垃圾、8 個同模板的『翻譯社』集團帳號">
+    <defs>
+      <radialGradient id="ring-cluster-fill" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" stop-color="var(--accent, #7258FF)" stop-opacity="0.16" />
+        <stop offset="100%" stop-color="var(--accent, #7258FF)" stop-opacity="0.04" />
+      </radialGradient>
+    </defs>
+
+    {/* 集團外框（群集現形時 back.out 彈入） */}
+    <path id="ring-hull" class="ring-hull" d={hullD} />
+
+    {/* 集團網狀連線：證明「它們是一夥的」 */}
+    <g class="ring-mesh">
+      {meshEdges.map((e) => (
+        <line class="ring-mesh-line" x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} />
+      ))}
+    </g>
+
+    {/* 單篇模式：中心放射線（既有 .ring-line / .show 邏輯保留） */}
     {rings.map((o) => (
       <line class="ring-line" x1={cx} y1={cy} x2={o.n.x} y2={o.n.y} />
     ))}
+
     {nodes.map((n, i) => (
       <g class={`ring-node ring-${n.t}`} data-i={i} data-score={n.s} data-type={n.t} transform={`translate(${n.x},${n.y})`}>
-        <circle r="17" />
+        <circle class="ring-pulse" r="17" />
+        <circle class="ring-dot" r="17" />
         <text class="ring-label" text-anchor="middle" dy="3">{n.label}</text>
         <text class="ring-score" text-anchor="middle" dy="30">{(n.s / 100).toFixed(2)}</text>
       </g>
     ))}
+
+    {/* 集團標籤：同一模板 ×N／多帳號／短時間 */}
+    <g id="ring-tag" class="ring-tag" transform={`translate(${clusterCx.toFixed(1)},${(clusterCy - 78).toFixed(1)})`}>
+      <rect class="ring-tag-bg" x="-92" y="-15" width="184" height="30" rx="15" />
+      <text class="ring-tag-text" text-anchor="middle" dy="4">同一模板 ×{rings.length}　多帳號　短時間</text>
+    </g>
   </svg>
 
   <div class="ring-controls">
@@ -48,56 +109,172 @@ const rings = nodes.map((n, i) => ({ n, i })).filter((o) => o.n.t === 'ring');
 <style>
   .ring { max-width: 620px; margin: 0 auto; }
   .ring-svg { width: 100%; height: auto; background: var(--bg-paper); border: 1px solid var(--line); border-radius: 14px; }
-  .ring-node circle { fill: #fff; stroke-width: 2; transition: fill .35s, stroke .35s, opacity .35s; }
-  .ring-normal circle { stroke: var(--c-legit, #6f8f4e); fill: var(--c-legit-bg, #eef2e3); }
-  .ring-spam circle, .ring-ring circle { stroke: var(--c-spam, #c0584a); fill: var(--c-spam-bg, #f6e6e1); }
-  .ring-label { font: 700 11px var(--font-ui); fill: var(--ink); }
-  .ring-score { font: 700 9px var(--font-ui); fill: var(--ink-soft); }
-  .ring-node.caught circle { fill: #e7e3d8; stroke: #b7b0a0; opacity: .85; }
+
+  /* 節點：玻璃感圓點，質感對齊站上 feed／波隆納土系 */
+  .ring-node { cursor: default; }
+  .ring-dot { fill: #fff; stroke-width: 2; transition: fill .35s, stroke .35s, opacity .35s; }
+  .ring-normal .ring-dot { stroke: var(--c-legit, #6f8f4e); fill: var(--c-legit-bg, #eef2e3); }
+  .ring-spam .ring-dot, .ring-ring .ring-dot { stroke: var(--c-spam, #c0584a); fill: var(--c-spam-bg, #f6e6e1); }
+  .ring-label { font: 700 11px var(--font-ui); fill: var(--ink); pointer-events: none; }
+  .ring-score { font: 700 9px var(--font-ui); fill: var(--ink-soft); pointer-events: none; }
+
+  /* 脈動環：偵測信號用品牌紫，預設不可見 */
+  .ring-pulse { fill: none; stroke: var(--accent, #7258FF); stroke-width: 2.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+
+  /* 被網羅／命中：灰化、退場感 */
+  .ring-node.caught .ring-dot { fill: #e7e3d8; stroke: #b7b0a0; opacity: .55; }
   .ring-node.caught .ring-label { fill: #8a8474; }
+  .ring-node.caught .ring-score { fill: #a39c8b; }
+
+  /* 單篇命中：紅點亮起、不灰化（高分明顯垃圾） */
+  .ring-node.hit .ring-dot { fill: var(--c-spam-bg, #f6e6e1); stroke: var(--c-spam, #c0584a); stroke-width: 3; opacity: 1; }
+  .ring-node.dim .ring-dot { opacity: .28; }
+  .ring-node.dim .ring-label, .ring-node.dim .ring-score { opacity: .35; }
+
+  /* 集團被網羅：紫色信號描邊，標示「被 Ring 抓住」 */
+  .ring-node.ringed .ring-dot { stroke: var(--accent, #7258FF); stroke-width: 2.5; fill: color-mix(in srgb, var(--accent, #7258FF) 10%, #fff); opacity: 1; }
+  .ring-node.ringed .ring-label { fill: var(--ink); }
+
+  /* 單篇放射線（既有 hook 保留） */
   .ring-line { stroke: var(--accent, #7258FF); stroke-width: 2; opacity: 0; transition: opacity .5s; }
   .ring-line.show { opacity: .55; }
+
+  /* 集團網狀連線：預設不可見，集團模式描繪 */
+  .ring-mesh-line { stroke: var(--accent, #7258FF); stroke-width: 1.4; opacity: 0; stroke-linecap: round; }
+  .ring-mesh.show .ring-mesh-line { opacity: .4; }
+
+  /* 集團外框：紫色虛線＋淡紫填充 */
+  .ring-hull { fill: url(#ring-cluster-fill); stroke: var(--accent, #7258FF); stroke-width: 2.5;
+    stroke-dasharray: 7 6; opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.6); }
+  .ring-hull.show { opacity: 1; transform: scale(1); }
+
+  /* 集團標籤 chip */
+  .ring-tag { opacity: 0; pointer-events: none; }
+  .ring-tag.show { opacity: 1; }
+  .ring-tag-bg { fill: var(--accent, #7258FF); }
+  .ring-tag-text { font: 700 11px var(--font-ui); fill: #fff; letter-spacing: .02em; }
+
   .ring-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 14px 0 8px; }
   .ring-controls button { font: 700 14px var(--font-ui); padding: 8px 16px; border-radius: 999px;
     border: 1.5px solid var(--accent, #7258FF); background: #fff; color: var(--accent, #7258FF); cursor: pointer; }
   .ring-controls button:hover { background: var(--accent, #7258FF); color: #fff; }
   .ring-controls .ring-reset { border-color: var(--line); color: var(--ink-soft); }
   .ring-readout { text-align: center; font-size: 16px; min-height: 3em; max-width: 540px; margin: 0 auto; }
+
+  /* 偏好減少動態：直接呈現最終狀態、不播放任何過場 */
   @media (prefers-reduced-motion: reduce) {
-    .ring-node circle, .ring-line { transition: none; }
+    .ring-dot, .ring-line, .ring-pulse { transition: none; }
+    .ring-hull { transition: none; }
+    .ring-hull.show { transform: scale(1); }
+    .ring-mesh-line { transition: none; }
   }
 </style>
 
-<script is:inline>
-  (function () {
-    var root = document.getElementById('ring-root');
-    if (!root) return;
-    var nodes = [].slice.call(root.querySelectorAll('.ring-node'));
-    var lines = [].slice.call(root.querySelectorAll('.ring-line'));
-    var out = document.getElementById('ring-readout');
-    function clear() { nodes.forEach(function (n) { n.classList.remove('caught'); }); lines.forEach(function (l) { l.classList.remove('show'); }); }
-    document.getElementById('ring-btn-single').addEventListener('click', function () {
+<script>
+  import gsap from 'gsap';
+
+  function initRing() {
+    const root = document.getElementById('ring-root');
+    if (!root || root.dataset.ringInit === '1') return;
+    root.dataset.ringInit = '1';
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const nodes = Array.prototype.slice.call(root.querySelectorAll('.ring-node'));
+    const lines = Array.prototype.slice.call(root.querySelectorAll('.ring-line'));
+    const mesh = root.querySelector('.ring-mesh');
+    const meshLines = Array.prototype.slice.call(root.querySelectorAll('.ring-mesh-line'));
+    const hull = document.getElementById('ring-hull');
+    const tag = document.getElementById('ring-tag');
+    const out = document.getElementById('ring-readout');
+
+    function kill() {
+      nodes.forEach((n) => gsap.killTweensOf(n.querySelector('.ring-pulse')));
+      if (hull) gsap.killTweensOf(hull);
+      meshLines.forEach((l) => gsap.killTweensOf(l));
+    }
+
+    function clear() {
+      kill();
+      nodes.forEach((n) => {
+        n.classList.remove('caught', 'hit', 'dim', 'ringed');
+        const p = n.querySelector('.ring-pulse');
+        if (p) gsap.set(p, { opacity: 0, scale: 1 });
+      });
+      lines.forEach((l) => l.classList.remove('show'));
+      if (mesh) mesh.classList.remove('show');
+      meshLines.forEach((l) => gsap.set(l, { opacity: 0, strokeDashoffset: 0, strokeDasharray: 'none' }));
+      if (hull) { hull.classList.remove('show'); gsap.set(hull, { clearProps: 'transform,opacity' }); }
+      if (tag) tag.classList.remove('show');
+    }
+
+    function pulse(node) {
+      if (reduce) return;
+      const p = node.querySelector('.ring-pulse');
+      if (!p) return;
+      gsap.fromTo(p,
+        { opacity: .9, scale: 1 },
+        { opacity: 0, scale: 2.1, duration: 1.1, ease: 'power2.out', repeat: -1, repeatDelay: .35 });
+    }
+
+    // ① 單篇模型：只有 2 個高分紅點亮起並脈動，其餘退到背景
+    document.getElementById('ring-btn-single').addEventListener('click', () => {
       clear();
-      var caught = 0, missed = 0;
-      nodes.forEach(function (n) {
-        var s = +n.getAttribute('data-score'), spam = n.getAttribute('data-type') !== 'normal';
-        if (s >= 70) { n.classList.add('caught'); caught++; }
-        else if (spam) { missed++; }
+      let caught = 0, missed = 0;
+      nodes.forEach((n) => {
+        const s = +n.getAttribute('data-score');
+        const spam = n.getAttribute('data-type') !== 'normal';
+        if (s >= 70) { n.classList.add('hit'); pulse(n); caught++; }
+        else { n.classList.add('dim'); if (spam) missed++; }
       });
       out.innerHTML = '單篇模型抓到 <b>' + caught + '</b> 篇明顯垃圾，但<b>漏掉 ' + missed + ' 個「翻譯社」集團帳號</b>——它們每篇分數只有 0.08–0.12，單看像正常內容。';
     });
-    document.getElementById('ring-btn-ring').addEventListener('click', function () {
+
+    // ② 集團偵測 Ring：網狀連線描繪 + 外框 back.out 彈入 + 節點脈動 + 標籤
+    document.getElementById('ring-btn-ring').addEventListener('click', () => {
       clear();
-      var n2 = 0;
-      lines.forEach(function (l) { l.classList.add('show'); });
-      nodes.forEach(function (n) {
-        if (n.getAttribute('data-type') === 'ring') { n.classList.add('caught'); n2++; }
-      });
+      let n2 = 0;
+      const ringed = nodes.filter((n) => n.getAttribute('data-type') === 'ring');
+      ringed.forEach((n) => { n.classList.add('ringed'); n2++; });
+      nodes.filter((n) => n.getAttribute('data-type') !== 'ring').forEach((n) => n.classList.add('dim'));
+
+      if (reduce) {
+        // 直接呈現最終狀態，不播放
+        if (hull) { hull.classList.add('show'); gsap.set(hull, { opacity: 1, scale: 1 }); }
+        if (mesh) mesh.classList.add('show');
+        meshLines.forEach((l) => gsap.set(l, { opacity: .4, strokeDashoffset: 0, strokeDasharray: 'none' }));
+        if (tag) tag.classList.add('show');
+      } else {
+        const tl = gsap.timeline();
+        // 1) 外框彈入
+        if (hull) {
+          hull.classList.add('show');
+          tl.fromTo(hull, { opacity: 0, scale: .55 },
+            { opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.7)' }, 0);
+        }
+        // 2) 網狀連線一條條描繪出來
+        if (mesh) mesh.classList.add('show');
+        meshLines.forEach((l, i) => {
+          const len = (l.getTotalLength && l.getTotalLength()) || 60;
+          gsap.set(l, { strokeDasharray: len, strokeDashoffset: len, opacity: .4 });
+          tl.to(l, { strokeDashoffset: 0, duration: .5, ease: 'power1.out' }, .15 + i * 0.012);
+        });
+        // 3) 群集節點依序脈動
+        ringed.forEach((n, i) => tl.add(() => pulse(n), .4 + i * 0.05));
+        // 4) 標籤淡入
+        if (tag) { tag.classList.add('show'); tl.fromTo(tag, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: .4, ease: 'power2.out' }, .55); }
+      }
+
       out.innerHTML = '集團偵測：同一模板、<b>' + n2 + ' 個帳號</b>、短時間重複出現——<b>抓行為、不抓字句</b>，整群一次掃掉。這正是單篇模型抓不到的盲區。';
     });
-    document.getElementById('ring-btn-reset').addEventListener('click', function () {
+
+    document.getElementById('ring-btn-reset').addEventListener('click', () => {
       clear();
       out.textContent = '每個圓是一個帳號，下方是它單篇內容的垃圾分數。先按「單篇模型偵測」，再按「集團偵測」，比較兩者抓到什麼。';
     });
-  })();
+  }
+
+  // 首頁 #ch-1 與 detection 頁皆需成立；Astro view transitions 也重跑
+  if (document.readyState !== 'loading') initRing();
+  else document.addEventListener('DOMContentLoaded', initRing);
+  document.addEventListener('astro:page-load', initRing);
 </script>

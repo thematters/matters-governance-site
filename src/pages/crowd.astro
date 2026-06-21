@@ -32,6 +32,80 @@ import '../styles/story.css';
 
   <div class="callout">透明紀錄的目的不是擴大懲罰，而是讓刪除、申訴與覆核之間，形成一個可查核的社群自治循環。</div>
 
+  <h2>猩猩打掃，越掃越強：群眾與模型的成長迴圈</h2>
+  <p>
+    「猩猩，打掃，強大！」說的是一個會自我增強的迴圈：<strong>群眾打掃留下的每一筆公開紀錄，本身就是模型的訓練真相</strong>。
+    隊員掃出來的垃圾樣態，被訓練成新模型、餵給海巡 bot；bot 接手最明確的重複垃圾，把人力釋放去處理更難判斷的內容——
+    掃得越多，模型越準，人也掃得越省力。
+  </p>
+
+  <figure class="figure loop-fig">
+    <figcaption class="figure__head">
+      <span class="figure__title">群眾打掃 → 訓練模型 → 模型也打掃 → 一路成長</span>
+      <span class="figure__hint">忠於〈猩猩，打掃，強大！〉描述的機制</span>
+    </figcaption>
+
+    <svg class="loop-svg" viewBox="0 0 720 600" role="img"
+      aria-label="一張環形示意圖：群眾打掃、累積公開標記、訓練校正模型、機器人也自動打掃、釋出人力去掃更難的，五個步驟順時針相連、回到起點，形成不斷成長的迴圈。">
+      <defs>
+        <marker id="loopArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--c-brand)" />
+        </marker>
+      </defs>
+
+      <!-- 五段順時針彎曲箭頭，沿環形軌道把節點串成閉環 -->
+      <g class="loop-arrows" fill="none" stroke="var(--c-brand)" stroke-width="3" marker-end="url(#loopArrow)">
+        <path d="M426.5,114.2 A188,188 0 0 1 506.7,172.4" />
+        <path d="M547.8,298.9 A188,188 0 0 1 517.2,393.2" />
+        <path d="M409.5,471.4 A188,188 0 0 1 310.5,471.4" />
+        <path d="M202.8,393.2 A188,188 0 0 1 172.2,298.9" />
+        <path d="M213.3,172.4 A188,188 0 0 1 293.5,114.2" />
+      </g>
+
+      <!-- 圓心：迴圈的方向感與標語 -->
+      <text x="360" y="278" class="loop-core" text-anchor="middle">一路</text>
+      <text x="360" y="312" class="loop-core" text-anchor="middle">成長</text>
+
+      <!-- 五個節點：圓 + 序號 + 標籤 + 副註 -->
+      <g class="loop-node loop-node--people">
+        <circle cx="360" cy="102" r="60" />
+        <text x="360" y="84" class="loop-step" text-anchor="middle">①</text>
+        <text x="360" y="106" class="loop-title" text-anchor="middle">群眾打掃</text>
+        <text x="360" y="126" class="loop-sub" text-anchor="middle">守望相助隊移除垃圾留言</text>
+      </g>
+      <g class="loop-node loop-node--data">
+        <circle cx="538.8" cy="231.9" r="60" />
+        <text x="538.8" y="214" class="loop-step" text-anchor="middle">②</text>
+        <text x="538.8" y="236" class="loop-title" text-anchor="middle">累積標記資料</text>
+        <text x="538.8" y="256" class="loop-sub" text-anchor="middle">公開布告欄＋管理員覆核</text>
+      </g>
+      <g class="loop-node loop-node--model">
+        <circle cx="470.5" cy="442.1" r="60" />
+        <text x="470.5" y="424" class="loop-step" text-anchor="middle">③</text>
+        <text x="470.5" y="446" class="loop-title" text-anchor="middle">訓練／校正模型</text>
+        <text x="470.5" y="466" class="loop-sub" text-anchor="middle">把垃圾樣態餵成新模型</text>
+      </g>
+      <g class="loop-node loop-node--bot">
+        <circle cx="249.5" cy="442.1" r="60" />
+        <text x="249.5" y="424" class="loop-step" text-anchor="middle">④</text>
+        <text x="249.5" y="446" class="loop-title" text-anchor="middle">機器人也打掃</text>
+        <text x="249.5" y="466" class="loop-sub" text-anchor="middle">海巡 bot 接手明確垃圾</text>
+      </g>
+      <g class="loop-node loop-node--free">
+        <circle cx="181.2" cy="231.9" r="60" />
+        <text x="181.2" y="214" class="loop-step" text-anchor="middle">⑤</text>
+        <text x="181.2" y="236" class="loop-title" text-anchor="middle">釋出人力</text>
+        <text x="181.2" y="256" class="loop-sub" text-anchor="middle">隊員去掃更難判斷的</text>
+      </g>
+    </svg>
+
+    <p class="loop-note">
+      留言模型用的是 0.1B 的小模型（multilingual-e5-small），<strong>偽陽性僅 0.33%</strong>；
+      文章模型再以 LLM 校正一次，把<strong>偽陽性降了 10 倍以上</strong>。為避免誤掃，bot 還設了煞車——
+      同樣的垃圾要重複出現三次、且符合垃圾集團（Ring）樣態才會動手。
+    </p>
+  </figure>
+
   <h2>海巡 bot：機器當隊員，但綁上煞車</h2>
   <p>
     自動巡邏、重用留言模型偵測。兩級處置（檢舉≥0.55／移除≥0.80，後者預設關閉），加上一道<strong>反轉率煞車</strong>：
@@ -60,3 +134,65 @@ import '../styles/story.css';
 
   <ChapterNav slug="crowd" />
 </BaseLayout>
+
+<style>
+  /* 群眾↔模型成長迴圈：環形示意圖（土系底＋品牌紫信號）。
+     純 SVG/CSS 靜態圖，無 JS 也完整；動畫僅在使用者允許時加，且守 reduced-motion。 */
+  .loop-fig { max-width: 640px; }
+  .loop-svg { display: block; width: 100%; height: auto; margin: 4px auto 0; }
+
+  /* 節點圓：米紙底＋細線框，沿用站上 board 的紙感層次 */
+  .loop-node circle {
+    fill: var(--bg-paper);
+    stroke: var(--line);
+    stroke-width: 2;
+  }
+  /* 五個節點以「群眾→資料→模型」走一圈：人＝土綠、模型/機器＝品牌紫、釋出人力＝回到綠 */
+  .loop-node--people circle,
+  .loop-node--free circle { stroke: var(--c-legit, #6f8f4e); }
+  .loop-node--model circle,
+  .loop-node--bot circle { stroke: var(--c-brand); }
+  .loop-node--data circle { stroke: var(--c-warn); }
+
+  .loop-step {
+    font: 700 15px var(--font-ui);
+    fill: var(--ink-soft);
+  }
+  .loop-title {
+    font: 800 16px var(--font-ui);
+    fill: var(--ink);
+  }
+  .loop-sub {
+    font: 500 11px var(--font-ui);
+    fill: var(--ink-soft);
+  }
+  .loop-core {
+    font: 800 22px var(--font-ui);
+    fill: var(--c-brand);
+    letter-spacing: .04em;
+  }
+
+  .loop-note {
+    max-width: 560px;
+    margin: 18px auto 0;
+    font: 500 14px/1.75 var(--font-ui);
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .loop-note strong { color: var(--ink); }
+
+  /* 漸進增強：只有在使用者沒要求減少動態時，才讓箭頭沿迴圈緩緩流動（純裝飾，不影響理解）。
+     預設與 reduced-motion 下皆為實線靜態圖。 */
+  @media (prefers-reduced-motion: no-preference) {
+    .loop-arrows path {
+      stroke-dasharray: 7 7;
+      animation: loopFlow 1.6s linear infinite;
+    }
+  }
+  @keyframes loopFlow { to { stroke-dashoffset: -14; } }
+
+  @media (max-width: 520px) {
+    .loop-sub { font-size: 10px; }
+    .loop-title { font-size: 15px; }
+  }
+</style>

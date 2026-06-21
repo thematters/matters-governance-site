@@ -1,49 +1,61 @@
 ---
 // 招牌互動：群眾與模型的「越掃越強」成長迴圈（GSAP ScrollTrigger scrub scrollytelling）。
-// 左舞台 CSS position:sticky 釘住一座玻璃「集合機器／模型」核心，三輪升級 v1→v2→v3、
-// 越升越大越亮、強度條上升；周圍紅 accent 垃圾貼文卡被「吸入」核心；右側五步驟隨捲動點亮。
-// 注意：pin 用的是 CSS sticky（非 GSAP pin），不操控頁面捲動，能與首頁 #stage 切章 handler
-// 與 StickyScroller 共存。漸進增強：html:not(.js)/reduced-motion 直接定版（v3、卡片就位、步驟全亮）。
-// 可重用於 crowd 分頁與首頁暗色舞台（內含 :global(.dark-stage) 把 loose 文字轉白；
-// 互動本體是淺色玻璃，浮在 .dark-stage .figure 的暗玻璃面板上，卡內深字可讀）。
+// 中央＝守望隊(群眾) ⇄ 海巡機器人 的「交棒迴圈」：守望隊把每一筆公開移除紀錄(標記梭 ✓)
+// 沿軌道交給機器去訓練；機器升級 v1→v2→v3、走過的軌道染品牌紫、模型強度只增不減；
+// 折返＝把省下的人力交還群眾去處理更難的內容。一棒比一棒快、越掃越強。標記梭只做平移、不自轉。
+// 注意：pin 用的是 CSS position:sticky（非 GSAP pin），所有動畫都掛在同一條 scrub 時間軸、
+// 不操控頁面捲動、無脫離 scrub 的並行無限 tween，能與首頁 #stage 切章 handler 與 StickyScroller 共存。
+// 漸進增強：html:not(.js)/reduced-motion 直接定版（軌道全亮、強度滿、機器人剪影、步驟全亮）。
+// 可重用於 crowd 分頁與首頁暗色舞台（內含 :global(.dark-stage) 把 loose 文字轉白、軌道/手在暗面板提亮）。
 // 一頁只放一個實例（用固定 id #grow）。
 import Term from './Term.astro';
 ---
-<h2>猩猩打掃，越掃越強：群眾與模型的成長迴圈</h2>
+<h2>守望隊與機器，互相把對方養強：越掃越強的成長迴圈</h2>
 <p>
-  「猩猩，打掃，強大！」講的是一個會自我增強的循環：<strong>群眾打掃留下的每一筆公開紀錄，本身就是訓練模型最可靠的素材</strong>。
-  隊員掃出來的垃圾樣態，被訓練成新模型，再交給海巡機器人；機器人接手最明確的重複垃圾，把人力空出來去處理更難判斷的內容。
-  掃得越多，模型越準，人也掃得越省力。
+  群眾協力不是一次性的打掃，而是一個會自我增強的循環：<strong>守望相助隊掃出來的每一筆公開紀錄，本身就是訓練模型最可靠的素材</strong>。
+  隊員把標記交給海巡機器人，機器人學會後接手最明確的重複垃圾，再把人力空出來去處理更難判斷的內容。
+  掃得越多，模型越準，人也掃得越省力——這一棒一棒交下去，整套系統就越掃越強。
 </p>
 
 <figure class="figure loop-fig">
   <figcaption class="figure__head">
-    <span class="figure__title">群眾打掃 → 集合成模型 → 模型也打掃 → 一路成長</span>
+    <span class="figure__title">守望隊 → 交棒給機器 → 機器也下場掃 → 一路成長</span>
     <span class="figure__hint">忠於〈猩猩，打掃，強大！〉描述的機制 · 往下捲動看它越掃越強</span>
   </figcaption>
 
-  <!-- 越掃越強：具象、玻璃感、可 scroll 的成長迴圈。
-       左（手機 sticky 時在上）＝一座玻璃「集合機器／模型」核心，會隨輪次升級變大變亮、強度條上升；
-       其周圍是被掃進的紅色垃圾貼文卡。右＝五個概念步驟文字隨捲動點亮。
-       無 JS / reduced-motion：直接呈現靜態定版（機器升到 v3、卡片就位、五步驟全亮），完整可讀。 -->
+  <!-- 越掃越強：具象、玻璃感、可 scroll 的交棒迴圈。
+       中央＝守望隊(左) 把標記梭(✓) 沿軌道交給海巡機器人(右)，機器升級、軌道染紫、強度條只增不減；
+       周圍是被掃進的紅色垃圾貼文卡；右側五個概念步驟文字隨捲動點亮。
+       無 JS / reduced-motion：直接呈現靜態定版（軌道全亮、強度滿、五步驟全亮），完整可讀。 -->
   <div class="grow" id="grow">
     <div class="grow-grid">
-      <!-- 視覺舞台：sticky 釘住的玻璃機器＋被吸入的垃圾卡 -->
+      <!-- 視覺舞台：sticky 釘住的玻璃交棒迴圈＋被吸入的垃圾卡 -->
       <div class="grow-figwrap">
         <div class="grow-fig" id="grow-fig" data-round="1">
           <div class="grow-stage" id="grow-stage">
-            <!-- 中央「集合機器／模型」核心：越升級越大越亮，gear 插圖轉得越快 -->
+            <!-- 中央交棒核心：守望隊(手) ── 軌道(標記梭) ── 海巡機器人，整組隨輪次放大、變亮 -->
             <div class="grow-core" id="grow-core">
               <div class="grow-core__halo" aria-hidden="true"></div>
-              <img class="grow-core__gear" src="illustrations/objects/polished-model-gear.png"
-                alt="" aria-hidden="true" loading="lazy" decoding="async" />
-              <div class="grow-core__plate">
-                <span class="grow-core__label">集合機器</span>
-                <span class="grow-core__ver" id="grow-ver">模型 v1</span>
+              <div class="relay" id="relay" aria-hidden="true">
+                <!-- 左端：群眾／守望相助隊 -->
+                <div class="relay-end relay-end--crowd is-lit" id="relay-hand">
+                  <svg viewBox="0 0 44 38"><circle cx="15" cy="12" r="6"/><path d="M5 34c0-7 4.5-11 10-11s10 4 10 11"/><circle cx="30" cy="14" r="5"/><path d="M21 34c0-6 4-9.5 9-9.5s9 3.5 9 9.5"/></svg>
+                  <span class="relay-end__label">守望隊</span>
+                </div>
+                <!-- 軌道：走過的段落染品牌紫；標記梭(✓)沿軌道把公開紀錄交給機器 -->
+                <div class="relay-track">
+                  <i class="relay-track__lit" id="relay-lit"></i>
+                  <div class="relay-shuttle" id="relay-shuttle"><span>✓</span></div>
+                </div>
+                <!-- 右端：海巡機器人＋模型版號（逐輪升級放大） -->
+                <div class="relay-end relay-end--bot" id="relay-bot">
+                  <svg viewBox="0 0 40 40"><path d="M20 5v4"/><circle cx="20" cy="3.4" r="1.6"/><rect x="8" y="9" width="24" height="21" rx="6"/><circle cx="15.5" cy="19" r="2.3"/><circle cx="24.5" cy="19" r="2.3"/><path d="M16 25.5h8"/></svg>
+                  <span class="grow-core__ver relay-end__label" id="grow-ver">模型 v1</span>
+                </div>
               </div>
             </div>
 
-            <!-- 強度條：隨輪次上升，字面表現「越掃越強」 -->
+            <!-- 強度條：模型強度只增不減，字面表現「越掃越強」 -->
             <div class="grow-strength" aria-hidden="true">
               <span class="grow-strength__cap">模型強度</span>
               <span class="grow-strength__track"><i class="grow-strength__fill" id="grow-fill"></i></span>
@@ -104,7 +116,7 @@ import Term from './Term.astro';
               </article>
             </div>
           </div>
-          <p class="grow-cap" id="grow-cap">第一輪：群眾動手打掃</p>
+          <p class="grow-cap" id="grow-cap">第一輪：群眾把公開紀錄交給機器</p>
         </div>
       </div>
 
@@ -128,7 +140,7 @@ import Term from './Term.astro';
         </div>
         <div class="grow-step" data-i="4">
           <span class="grow-step__no">⑤</span>
-          <p><b>釋出人力，再回到①。</b>隊員去掃更難判斷的內容，掃出的新樣態又集合進機器，掃得越多，模型越強。</p>
+          <p><b>釋出人力，再回到①。</b>隊員去掃更難判斷的內容，掃出的新樣態又交棒給機器，掃得越多，模型越強。</p>
         </div>
       </div>
     </div>
@@ -142,10 +154,10 @@ import Term from './Term.astro';
 </figure>
 
 <style>
-  /* ── 越掃越強：玻璃感、可 scroll 的成長迴圈 ──
-     左舞台 sticky 釘住：一座玻璃「集合機器／模型」核心（會升級變大變亮、強度條上升），
-     周圍紅 accent 的垃圾貼文卡被「吸入」核心；右側五步驟文字隨捲動點亮。
-     漸進增強：html:not(.js) / reduced-motion 直接定版（機器到 v3、卡片就位、步驟全亮），完整可讀。 */
+  /* ── 越掃越強：玻璃感、可 scroll 的交棒迴圈 ──
+     左舞台 sticky 釘住：守望隊(手) ⇄ 海巡機器人 的交棒軌道（標記梭沿軌道穿梭、走過染紫），
+     模型強度條只增不減；周圍紅 accent 的垃圾貼文卡被「吸入」核心；右側五步驟文字隨捲動點亮。
+     漸進增強：html:not(.js) / reduced-motion 直接定版（軌道全亮、強度滿、步驟全亮），完整可讀。 */
   .loop-fig { max-width: 920px; }
 
   .grow { position: relative; }
@@ -165,41 +177,48 @@ import Term from './Term.astro';
     display: flex; align-items: center; justify-content: center; overflow: hidden;
   }
 
-  /* 中央集合機器／模型核心：玻璃圓盤＋齒輪插圖＋版號牌。
-     升級時整個 .grow-core 放大（--coreScale，由 JS 在每輪設定），halo 變亮。 */
+  /* ── 交棒核心：守望隊 ── 軌道(標記梭) ── 機器人；整組隨輪次放大（--coreScale，由 JS 設定）── */
   .grow-core {
-    position: relative; z-index: 3;
-    width: clamp(132px, 30vw, 168px); aspect-ratio: 1;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border-radius: 26px;
-    background: rgba(255,255,255,.66); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,.7);
-    box-shadow: 0 10px 30px rgba(70,50,160,.16);
+    position: relative; z-index: 3; width: min(94%, 460px);
+    display: flex; flex-direction: column; align-items: center;
     transform: scale(var(--coreScale, 1)); transform-origin: center center;
-    transition: box-shadow .4s;
   }
-  /* 升級後外框染上品牌紫，越強越亮 */
-  .grow-fig[data-round="2"] .grow-core { box-shadow: 0 12px 34px rgba(70,50,160,.26); border-color: color-mix(in srgb, var(--c-brand,#7258FF) 40%, rgba(255,255,255,.7)); }
-  .grow-fig[data-round="3"] .grow-core { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-brand,#7258FF) 22%, transparent), 0 16px 40px rgba(70,50,160,.34); border-color: color-mix(in srgb, var(--c-brand,#7258FF) 60%, rgba(255,255,255,.7)); }
-
+  /* 環境光暈：越升級越亮（halo） */
   .grow-core__halo {
-    position: absolute; inset: -34%; z-index: -1; border-radius: 50%; pointer-events: none;
+    position: absolute; inset: -30% -8%; z-index: -1; border-radius: 50%; pointer-events: none;
     background: radial-gradient(closest-side, color-mix(in srgb, var(--c-brand,#7258FF) 30%, transparent), transparent 72%);
-    opacity: var(--haloOpacity, .25); transition: opacity .45s;
-  }
-  .grow-core__gear {
-    width: 56%; height: auto; display: block;
-    filter: drop-shadow(0 4px 8px rgba(60,45,30,.18));
-    transform: rotate(var(--gearRot, 0deg)); transition: transform .2s linear;
-  }
-  .grow-core__plate { text-align: center; margin-top: 4px; }
-  .grow-core__label { display: block; font: 700 11px var(--font-ui); color: var(--ink-soft); letter-spacing: .04em; }
-  .grow-core__ver {
-    display: inline-block; margin-top: 3px; font: 800 13px var(--font-ui); color: var(--c-brand);
-    font-variant-numeric: tabular-nums;
+    opacity: var(--haloOpacity, .22); transition: opacity .45s;
   }
 
-  /* 強度條：底部，隨輪次上升 */
+  .relay { position: relative; width: 100%; display: flex; align-items: center; gap: 12px; }
+  /* 兩端：守望隊(線描人形) 與 海巡機器人(線描方頭) */
+  .relay-end { flex: 0 0 auto; width: 62px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .relay-end svg { width: 42px; height: 38px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: filter .35s, transform .4s; }
+  .relay-end--crowd svg { stroke: var(--ink-soft); }
+  .relay-end--bot svg { stroke: var(--c-brand, #7258FF); transform: scale(var(--botScale, 1)); transform-origin: center bottom; }
+  /* 啟用端點短暫發光（由當前步驟點亮，呼應「梭走到哪、哪端亮一下」） */
+  .relay-end.is-lit svg { filter: drop-shadow(0 0 7px color-mix(in srgb, var(--c-brand,#7258FF) 60%, transparent)); }
+  .relay-end__label { font: 700 11px var(--font-ui); color: var(--ink-soft); white-space: nowrap; }
+  .relay-end--bot .grow-core__ver { color: var(--c-brand, #7258FF); font-weight: 800; font-variant-numeric: tabular-nums; }
+  /* 機器人隨輪次放大、描邊更亮（沿用 data-round 染色慣例） */
+  .grow-fig[data-round="2"] .relay-end--bot { --botScale: 1.12; }
+  .grow-fig[data-round="3"] .relay-end--bot { --botScale: 1.24; }
+  .grow-fig[data-round="3"] .relay-end--bot svg { filter: drop-shadow(0 0 9px var(--c-brand, #7258FF)); }
+
+  /* 軌道：膠囊，走過的段落由 --lit 染品牌紫（只用 width 過渡） */
+  .relay-track { position: relative; flex: 1 1 auto; height: 12px; border-radius: 99px; background: rgba(120,115,140,.2); }
+  .relay-track__lit { position: absolute; left: 0; top: 0; bottom: 0; width: var(--lit, 0%); border-radius: 99px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c-brand,#7258FF) 55%, #fff), var(--c-brand,#7258FF));
+    transition: width .5s ease; }
+  /* 標記梭：白圓＋✓，只沿 x 平移(--shp 0→1)、不自轉——徹底擺脫齒輪空轉 */
+  .relay-shuttle { position: absolute; top: 50%; left: calc(var(--shp, 0) * (100% - 28px));
+    transform: translateY(-50%); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    background: #fff; color: var(--c-brand, #7258FF); font: 800 15px var(--font-ui);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c-brand,#7258FF) 50%, transparent);
+    filter: drop-shadow(0 0 9px color-mix(in srgb, var(--c-brand,#7258FF) 55%, transparent)); }
+
+  /* 強度條：底部，只增不減（越掃越強的存量刻度） */
   .grow-strength {
     position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); z-index: 4;
     display: flex; align-items: center; gap: 9px; width: min(260px, 76%);
@@ -270,9 +289,13 @@ import Term from './Term.astro';
   }
   .loop-note strong { color: var(--ink); }
 
-  /* ── 漸進增強：無 JS 直接定版（機器到 v3、卡片就位、步驟全亮、不 sticky） ── */
+  /* ── 漸進增強：無 JS 直接定版（軌道全亮、梭停中點、強度滿、步驟全亮、不 sticky） ── */
   html:not(.js) .grow-figwrap { position: static; height: auto; padding: 8px 0 4px; }
   html:not(.js) .grow-step p { opacity: 1; transform: none; }
+  html:not(.js) .relay-track__lit { width: 100%; }
+  html:not(.js) .relay-shuttle { --shp: 0.5; }
+  html:not(.js) .relay-end svg { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c-brand,#7258FF) 50%, transparent)); }
+  html:not(.js) .grow-strength__fill { width: 92%; }
   html:not(.js) .grow-cards { position: relative; inset: auto; display: flex; flex-wrap: wrap;
     gap: 8px; justify-content: center; margin-top: 14px; pointer-events: auto; }
   html:not(.js) .grow-card { position: static; transform: rotate(var(--gr,0deg)); }
@@ -281,26 +304,42 @@ import Term from './Term.astro';
     .grow-grid { grid-template-columns: 1fr; gap: 0; }
     .grow-figwrap { height: auto; top: 54px; padding: 8px 0 16px; }
     .grow-stage { height: 44vh; }
+    .grow-core { width: 96%; }
+    .relay-end { width: 52px; }
+    .relay-end svg { width: 36px; height: 32px; }
     .grow-step { min-height: 62vh; }
     .grow-step p { font-size: 17px; }
     .grow-card { width: 130px; }
   }
 
-  /* ── 首頁暗色舞台：互動本體是淺色玻璃（卡內深字可讀，浮在 .dark-stage .figure 暗玻璃面板上）；
-       只有 loose 的提示／字幕／註腳要轉白。h2 與引言段由全域 .dark-stage .scene > h2/p 規則轉白。 ── */
+  /* reduced-motion：軌道/梭的 width/transform 過渡關掉，靠 JS snapFinal 直接定版 */
+  @media (prefers-reduced-motion: reduce) {
+    .relay-track__lit, .relay-shuttle, .relay-end svg, .grow-strength__fill, .grow-core__halo { transition: none; }
+  }
+
+  /* ── 首頁暗色舞台：互動本體浮在 .dark-stage .figure 暗玻璃面板上；loose 文字與線描在暗底提亮。
+       h2 與引言段由全域 .dark-stage .scene > h2/p 規則轉白。 ── */
   :global(.dark-stage) .figure__hint { color: rgba(255, 255, 255, .72); }
   :global(.dark-stage) .grow-cap { color: #fff; }
   :global(.dark-stage) .loop-note { color: rgba(255, 255, 255, .82); }
   :global(.dark-stage) .loop-note strong { color: #fff; }
-  /* 步驟序號圈：圈底「12% 紫＋透明」在暗面板上會透出暗底、紫字對比偏低，
-     暗底版把數字提亮、圈底加實一點，維持品牌紫識別又夠清楚。 */
+  /* 交棒軌道與強度條底色、守望隊線描、機器人版號在暗面板上提亮 */
+  :global(.dark-stage) .relay-track,
+  :global(.dark-stage) .grow-strength__track { background: rgba(255, 255, 255, .18); }
+  :global(.dark-stage) .relay-end--crowd svg { stroke: rgba(255, 255, 255, .82); }
+  :global(.dark-stage) .relay-end--bot svg { stroke: #b3a4ff; }
+  :global(.dark-stage) .relay-end__label { color: rgba(255, 255, 255, .8); }
+  :global(.dark-stage) .relay-end--bot .grow-core__ver { color: #cabfff; }
+  :global(.dark-stage) .grow-strength__cap { color: rgba(255, 255, 255, .8); }
+  /* 步驟序號圈：暗面板上提亮、圈底加實一點 */
   :global(.dark-stage) .grow-step__no { color: #cabfff;
     background: color-mix(in srgb, var(--c-brand, #7258FF) 32%, rgba(255, 255, 255, .12)); }
 </style>
 
 <script>
-  // 越掃越強：sticky scrollytelling。三輪「卡片被吸入核心 → 機器升級變大變亮、強度條上升」，
-  // 由 GSAP ScrollTrigger（scrub）驅動；五步驟文字隨捲動點亮。
+  // 越掃越強：交棒迴圈 sticky scrollytelling。三輪「守望隊把標記梭交給機器 → 機器升級放大、
+  // 軌道染紫、強度只增不減 → 折返釋出人力」，由 GSAP ScrollTrigger（scrub）驅動；五步驟文字隨捲動點亮。
+  // 標記梭只做 translateX（--shp 0→1），無自轉；所有動畫掛同一條 scrub tl，無並行無限 tween。
   // 漸進增強：html:not(.js) 已由 CSS 定版可讀；reduced-motion 直接跳到最終狀態、不 scrub。
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -315,96 +354,108 @@ import Term from './Term.astro';
     const fig = document.getElementById('grow-fig');
     const core = document.getElementById('grow-core');
     const halo = core ? core.querySelector('.grow-core__halo') as HTMLElement | null : null;
-    const gear = core ? core.querySelector('.grow-core__gear') as HTMLElement | null : null;
     const ver = document.getElementById('grow-ver');
     const fill = document.getElementById('grow-fill');
     const cap = document.getElementById('grow-cap');
     const cardsWrap = document.getElementById('grow-cards');
-    if (!fig || !core || !ver || !fill || !cap || !cardsWrap) return;
+    const lit = document.getElementById('relay-lit');
+    const shuttle = document.getElementById('relay-shuttle');
+    const hand = document.getElementById('relay-hand');
+    const bot = document.getElementById('relay-bot');
+    if (!fig || !core || !ver || !fill || !cap || !cardsWrap || !lit || !shuttle) return;
 
     const cards = Array.prototype.slice.call(cardsWrap.querySelectorAll('.grow-card')) as HTMLElement[];
     const byRound = (r: number) => cards.filter((c) => c.getAttribute('data-round') === String(r));
     const steps = Array.prototype.slice.call(root.querySelectorAll('.grow-step')) as HTMLElement[];
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // 每輪定版：機器版號、放大倍率、強度條、halo 亮度、字幕
+    // 每輪定版：機器版號、放大倍率、強度條、halo 亮度、軌道染紫%、字幕
     const rounds = [
-      { round: 1, ver: '模型 v1', scale: 1.0,  strength: '34%', halo: 0.22, cap: '第一輪：群眾動手打掃' },
-      { round: 2, ver: '模型 v2', scale: 1.16, strength: '64%', halo: 0.42, cap: '集合成模型 v2：掃得更準' },
-      { round: 3, ver: '模型 v3', scale: 1.34, strength: '92%', halo: 0.66, cap: '機器 v3：一次抓住整個集團' },
+      { round: 1, ver: '模型 v1', scale: 1.0,  strength: '34%', halo: 0.22, lit: '34%',  cap: '第一輪：群眾把公開紀錄交給機器' },
+      { round: 2, ver: '模型 v2', scale: 1.14, strength: '64%', halo: 0.42, lit: '67%',  cap: '交棒一次：模型升上 v2，掃得更準' },
+      { round: 3, ver: '模型 v3', scale: 1.28, strength: '92%', halo: 0.64, lit: '100%', cap: '人力交還，回到①：v3 一次掃住整個集團' },
     ];
     function applyRound(r: typeof rounds[number]) {
       fig!.setAttribute('data-round', String(r.round));
       ver!.textContent = r.ver;
       cap!.textContent = r.cap;
     }
+    // 端點點亮：群眾端(①②)或機器端(③④⑤)
+    function litEnd(which: 'crowd' | 'bot') {
+      if (hand) hand.classList.toggle('is-lit', which === 'crowd');
+      if (bot) bot.classList.toggle('is-lit', which === 'bot');
+    }
 
-    // 最終狀態（reduced-motion 與行程末端共用）：機器升到頂、所有卡吸入、步驟全亮
+    // 最終狀態（reduced-motion 與行程末端共用）：機器升到頂、軌道全亮、所有卡吸入、步驟全亮
     function snapFinal() {
       applyRound(rounds[2]);
       gsap.set(core, { '--coreScale': rounds[2].scale });
       gsap.set(halo, { '--haloOpacity': rounds[2].halo });
       gsap.set(fill, { '--strength': rounds[2].strength });
+      gsap.set(lit, { '--lit': rounds[2].lit });
+      gsap.set(shuttle, { '--shp': 0.5 });
       gsap.set(cards, { x: 0, y: 0, rotate: 0, scale: 0.6, opacity: 0.18 });
+      if (hand) hand.classList.add('is-lit');
+      if (bot) bot.classList.add('is-lit');
       steps.forEach((s) => s.classList.add('active'));
     }
 
     if (reduce) { snapFinal(); return; }
 
-    // 初始：機器 v1、卡片散落在四周「待掃」位置（由 inline --gx/--gy/--gr 決定）
+    // 初始：機器 v1、軌道未染、強度低、標記梭在守望隊端、卡片散落四周
     applyRound(rounds[0]);
     gsap.set(core, { '--coreScale': 1 });
     gsap.set(halo, { '--haloOpacity': 0.18 });
     gsap.set(fill, { '--strength': '20%' });
+    gsap.set(lit, { '--lit': '0%' });
+    gsap.set(shuttle, { '--shp': 0 });
 
     const tl = gsap.timeline({
       defaults: { ease: 'power2.out' },
       scrollTrigger: { trigger: '#grow', start: 'top top', end: 'bottom bottom', scrub: 1 },
     });
 
-    // 齒輪持續緩轉（裝飾），升級時這個值會被各輪覆寫推進得更多
-    let gearRot = 0;
-    function spinTo(deg: number, dur: number, at?: string) {
-      gearRot = deg;
-      tl.to(gear, { '--gearRot': deg + 'deg', duration: dur, ease: 'none' }, at);
-    }
-
-    // ── 輪 1：群眾打掃，兩張垃圾卡被吸入核心；機器仍 v1 但強度條動起來 ──
-    spinTo(180, 1.2, 0);
+    // ── 輪 1：守望隊把標記梭送到機器（去程），染第一段軌道、注入強度、吸入兩張卡，再折返(釋出人力) ──
+    tl.to(shuttle, { '--shp': 1, duration: 1.0, ease: 'none' }, 0);
+    tl.to(lit, { '--lit': rounds[0].lit, duration: 0.6 }, 0.2);
+    tl.to(fill, { '--strength': rounds[0].strength, duration: 0.6 }, 0.2);
     tl.to(byRound(1), {
       x: 0, y: 0, rotate: 0, scale: 0.62, opacity: 0.16,
       duration: 0.7, stagger: 0.12, ease: 'power2.in',
     }, 0.15);
-    tl.to(fill, { '--strength': rounds[0].strength, duration: 0.6 }, 0.2);
+    tl.to(shuttle, { '--shp': 0, duration: 0.6, ease: 'none' }, '>');
     tl.to({}, { duration: 0.4 });
 
-    // ── 輪 2：集合成 v2，核心放大變亮；一次抓更多（三張）卡 ──
+    // ── 輪 2：升上 v2，核心放大變亮；交棒更快，一次抓更多（三張） ──
     tl.add(() => applyRound(rounds[1]));
-    tl.to(core, { '--coreScale': rounds[1].scale, duration: 0.6, ease: 'back.out(1.5)' });
+    tl.to(core, { '--coreScale': rounds[1].scale, duration: 0.6, ease: 'back.out(1.4)' });
     tl.to(halo, { '--haloOpacity': rounds[1].halo, duration: 0.6 }, '<');
+    tl.to(shuttle, { '--shp': 1, duration: 0.8, ease: 'none' }, '<');
+    tl.to(lit, { '--lit': rounds[1].lit, duration: 0.6 }, '<');
     tl.to(fill, { '--strength': rounds[1].strength, duration: 0.6 }, '<');
-    spinTo(gearRot + 320, 0.9, '<');
     tl.to(byRound(2), {
       x: 0, y: 0, rotate: 0, scale: 0.6, opacity: 0.16,
       duration: 0.7, stagger: 0.1, ease: 'power2.in',
     }, '<0.1');
+    tl.to(shuttle, { '--shp': 0, duration: 0.5, ease: 'none' }, '>');
     tl.to({}, { duration: 0.4 });
 
-    // ── 輪 3：升級成 v3，核心更大更亮；一次掃住整個集團（五張）卡 ──
+    // ── 輪 3：升上 v3，核心更大更亮；交棒最快、軌道全亮、強度填滿，一次掃住整個集團（五張） ──
     tl.add(() => applyRound(rounds[2]));
-    tl.to(core, { '--coreScale': rounds[2].scale, duration: 0.6, ease: 'back.out(1.5)' });
+    tl.to(core, { '--coreScale': rounds[2].scale, duration: 0.6, ease: 'back.out(1.4)' });
     tl.to(halo, { '--haloOpacity': rounds[2].halo, duration: 0.6 }, '<');
+    tl.to(shuttle, { '--shp': 1, duration: 0.7, ease: 'none' }, '<');
+    tl.to(lit, { '--lit': rounds[2].lit, duration: 0.6 }, '<');
     tl.to(fill, { '--strength': rounds[2].strength, duration: 0.6 }, '<');
-    spinTo(gearRot + 520, 1.0, '<');
     tl.to(byRound(3), {
       x: 0, y: 0, rotate: 0, scale: 0.58, opacity: 0.16,
       duration: 0.8, stagger: 0.07, ease: 'power2.in',
     }, '<0.1');
 
-    // 末端輕輕回到①的暗示：核心脈動一下（越滾越大、迴圈不止）
+    // 末端輕輕回到①的暗示：核心脈動一下（迴圈不止）
     tl.to(core, { '--coreScale': rounds[2].scale * 1.04, duration: 0.4, yoyo: true, repeat: 1 });
 
-    // 步驟文字點亮：每段進入視窗中段就 active（並驅動對應字幕）
+    // 步驟文字點亮＋端點同步：每段進入視窗中段就 active（並驅動對應字幕與點亮的端點）
     steps.forEach((step, i) => {
       ScrollTrigger.create({
         trigger: step, start: 'top 58%', end: 'bottom 58%',
@@ -414,10 +465,13 @@ import Term from './Term.astro';
           // 字幕跟著步驟：①②＝v1、③＝v2、④⑤＝v3（與三輪節奏對齊）
           const ci = i <= 1 ? 0 : i === 2 ? 1 : 2;
           cap.textContent = rounds[ci].cap;
+          // 端點點亮：①②在守望隊端、③④⑤在機器端
+          litEnd(i <= 1 ? 'crowd' : 'bot');
         },
       });
     });
     steps[0].classList.add('active');
+    litEnd('crowd');
 
     let rt: ReturnType<typeof setTimeout>;
     window.addEventListener('resize', () => {

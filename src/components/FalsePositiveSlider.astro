@@ -41,6 +41,37 @@ const initials = (name: string) => name.slice(0, 1);
 const fmtScore = (s: number) => (s / 100).toFixed(2);
 ---
 <div class="fp" id="fp-root" data-initial={initial}>
+  <!-- 控制列＋讀數移到 feed 之前並 sticky 釘在頂端：拖門檻時滑桿、四格讀數與正在變色的卡片同框、即時可見 -->
+  <div class="fp-stage">
+    <div class="fp-controls">
+      <label class="fp-label" for="fp-threshold">
+        審查門檻：分數 ≥ <output class="fp-out" id="fp-threshold-val" for="fp-threshold">{initial}</output> 就當成垃圾移除
+      </label>
+      <div class="fp-slider-wrap" id="fp-wrap">
+        <div class="fp-bubble" id="fp-bubble" aria-hidden="true">{initial}</div>
+        <input
+          type="range" id="fp-threshold" class="fp-range" min="0" max="100" value={initial} step="1"
+          aria-label="審查門檻分數，0 到 100" aria-describedby="fp-conclusion"
+        />
+        <div class="fp-ticks" aria-hidden="true">
+          <span style="left:0%"><i>0</i></span>
+          <span style="left:25%"></span>
+          <span style="left:50%"><i>50</i></span>
+          <span style="left:75%"></span>
+          <span style="left:100%"><i>100</i></span>
+        </div>
+      </div>
+      <div class="fp-scale"><span>← 寬鬆：少誤殺，多漏網</span><span>嚴格：多誤殺，少漏網 →</span></div>
+    </div>
+
+    <div class="fp-readout" aria-live="polite">
+      <div class="fp-stat fp-stat-blocked"><b id="fp-blocked">0</b><span>擋下垃圾</span></div>
+      <div class="fp-stat fp-stat-leaked"><b id="fp-leaked">0</b><span>漏網垃圾</span></div>
+      <div class="fp-stat fp-stat-fp"><b id="fp-fp">0</b><span>誤殺正常</span></div>
+      <div class="fp-stat fp-stat-safe"><b id="fp-safe">0</b><span>安全保留</span></div>
+    </div>
+  </div>
+
   <div class="fp-feed" aria-label="一組正常（綠）與垃圾（紅）貼文，依模型分數被門檻過濾">
     {cards.map((c, i) => (
       <article
@@ -72,34 +103,6 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
     ))}
   </div>
 
-  <div class="fp-controls">
-    <label class="fp-label" for="fp-threshold">
-      審查門檻：分數 ≥ <output class="fp-out" id="fp-threshold-val" for="fp-threshold">{initial}</output> 就當成垃圾移除
-    </label>
-    <div class="fp-slider-wrap" id="fp-wrap">
-      <div class="fp-bubble" id="fp-bubble" aria-hidden="true">{initial}</div>
-      <input
-        type="range" id="fp-threshold" class="fp-range" min="0" max="100" value={initial} step="1"
-        aria-label="審查門檻分數，0 到 100" aria-describedby="fp-conclusion"
-      />
-      <div class="fp-ticks" aria-hidden="true">
-        <span style="left:0%"><i>0</i></span>
-        <span style="left:25%"></span>
-        <span style="left:50%"><i>50</i></span>
-        <span style="left:75%"></span>
-        <span style="left:100%"><i>100</i></span>
-      </div>
-    </div>
-    <div class="fp-scale"><span>← 寬鬆：少誤殺，多漏網</span><span>嚴格：多誤殺，少漏網 →</span></div>
-  </div>
-
-  <div class="fp-readout" aria-live="polite">
-    <div class="fp-stat fp-stat-blocked"><b id="fp-blocked">0</b><span>擋下垃圾</span></div>
-    <div class="fp-stat fp-stat-leaked"><b id="fp-leaked">0</b><span>漏網垃圾</span></div>
-    <div class="fp-stat fp-stat-fp"><b id="fp-fp">0</b><span>誤殺正常</span></div>
-    <div class="fp-stat fp-stat-safe"><b id="fp-safe">0</b><span>安全保留</span></div>
-  </div>
-
   <p class="fp-conclusion" id="fp-conclusion"></p>
   <noscript>
     <p class="fp-noscript">這是一個可拖曳的互動：拖動門檻，看模型如何在「擋垃圾」與「誤殺正常內容」之間取捨。請開啟 JavaScript 操作。結論是——門檻調得越嚴，被誤殺的正常內容越多，而那往往正是平台最該保護的表達。</p>
@@ -107,25 +110,23 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
 </div>
 
 <style>
-  /* ── feed：固定高度「可內捲容器」，讓卡片＋滑桿＋讀數同框 ──
-       原本卡片在上、滑桿在下，拖門檻時卡片捲出畫面看不到變化；改成 feed 自己內捲、
-       控制項與讀數永遠在它下方可見，拖的時候看得到卡片變色＋數字跳動。
-       上下 fade mask 提示「還有更多可捲」。 */
+  /* ── 控制列＋讀數 sticky 釘在頂端：拖門檻時，滑桿、四格讀數與正在變色的卡片永遠同框、即時可見 ──
+       這是修「要上下滑動才看得到變化」的關鍵——把操作(滑桿)與回饋(卡片變色＋數字)拉回同一畫面。
+       站上頁首是 sticky(~48px)，故 top 設 56px 讓控制列停在頁首下方；深色舞台版底色另在 :global 覆寫。 */
+  .fp-stage { position: sticky; top: 56px; z-index: 3; margin-bottom: var(--space-sp16, 16px);
+    padding: 12px 14px 10px; border-radius: 14px;
+    background: rgba(255,255,255,.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.6); box-shadow: 0 6px 20px rgba(22,18,45,.1); }
+  .fp-stage .fp-controls { margin-bottom: 8px; }
+  .fp-stage .fp-readout { margin-bottom: 0; }
+
+  /* ── feed：卡片全攤開、跟著整頁自然捲（移除原 50vh 內捲與 mask）；操作與回饋同框、無雙層捲動打架 ── */
   .fp-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); grid-auto-rows: max-content;
-    align-content: start; gap: 10px; margin-bottom: var(--space-sp16, 16px);
-    max-height: 50vh; overflow-y: auto; padding: 6px 10px 6px 4px; border-radius: 12px;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
-            mask-image: linear-gradient(180deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
-    /* 自訂細捲軸（取代違和的瀏覽器預設）：Firefox */
-    scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--c-brand, #7258FF) 38%, transparent) transparent; }
-  /* 自訂細捲軸：WebKit */
-  .fp-feed::-webkit-scrollbar { width: 7px; }
-  .fp-feed::-webkit-scrollbar-track { background: transparent; }
-  .fp-feed::-webkit-scrollbar-thumb { border-radius: 99px;
-    background: color-mix(in srgb, var(--c-brand, #7258FF) 32%, transparent);
-    border: 2px solid transparent; background-clip: padding-box; }
-  .fp-feed:hover::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--c-brand, #7258FF) 52%, transparent);
-    background-clip: padding-box; }
+    align-content: start; gap: 10px; margin-bottom: var(--space-sp16, 16px); padding: 2px; border-radius: 12px; }
+
+  /* 深色舞台（首頁）：sticky 控制列改深玻璃，白字標籤才讀得到 */
+  :global(.dark-stage) .fp-stage { background: rgba(20,18,32,.74); border-color: rgba(255,255,255,.14);
+    box-shadow: 0 8px 26px rgba(0,0,0,.42); }
 
   /* ── 玻璃感 Matters 貼文卡（對齊 StickyScroller 的 .sg-card） ── */
   .fp-card { position: relative; border-radius: 14px; overflow: hidden; height: 100%;

@@ -78,8 +78,10 @@ const INIT_READOUT = '下面 16 張是社群裡的貼文，每張角落是它「
   .rd-stage { position: relative; padding: 20px; background: var(--bg-paper); border: 1px solid var(--line);
     border-radius: 16px; overflow: visible; }
 
-  /* 16 張卡的 grid：桌面 4 欄、手機 2 欄；集團 8 張在後半連續兩列 */
-  .rd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  /* 16 張卡的 grid：桌面 4 欄、手機 2 欄；集團 8 張在後半連續兩列。
+     用 minmax(0,1fr)（非 1fr＝minmax(auto,1fr)）：欄寬不被卡片內容(作者名等)的 min-content 撐爆，
+     四欄永遠等寬、不溢出容器；卡內文字靠既有 ellipsis/line-clamp 收斂。 */
+  .rd-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 
   /* ── 迷你 Matters 貼文卡（對齊 StickyScroller .sg-card 玻璃語言，更精簡：無封面縮圖）── */
   .rd-card { position: relative; border-radius: 12px; padding: 11px 12px; color: var(--ink);
@@ -157,7 +159,7 @@ const INIT_READOUT = '下面 16 張是社群裡的貼文，每張角落是它「
   /* ── 響應式：手機 2 欄（集團 8 張改成連續 4 列、仍然相鄰一整塊） ── */
   @media (max-width: 680px) {
     .rd-stage { padding: 16px; }
-    .rd-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .rd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .rd-title { font-size: 12px; -webkit-line-clamp: 3; min-height: 0; }
     .rd-frame-label { font-size: 11px; padding: 3px 10px; }
     .rd-readout { font-size: 15px; }

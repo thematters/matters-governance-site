@@ -1,5 +1,7 @@
 ---
 // 招牌互動：be-the-moderator。逐則判「擋/放」，揭曉模型分數與後果，最後算總帳。
+// 視覺：把每則待判案例做成「社群貼文／檢舉卡」（玻璃感 Matters 貼文卡，對齊 .fp-card / .sg-card）；
+//   按鈕用 DS 的 .btn 階層；判斷後的揭曉（你的選擇 vs 正解＋說明）從卡片分離，落在卡片下方獨立的 result panel。
 const cards = [
   { truth: 'spam',  cat: '色情廣告',     score: 99, text: 'Call Girls／外送茶 全套 在地約妹 加賴 ‹LINE_ID›', why: '明確的色情招攬，模型高分、人眼也一眼看穿。' },
   { truth: 'legit', cat: '日記',         score: 3,  text: '日記·超級生命密碼', why: '私人日記，無導流、無招攬，模型低分。' },
@@ -8,10 +10,32 @@ const cards = [
   { truth: 'legit', cat: '人權議題',     score: 96, text: '海外中國人權律師聯盟之處境與聲援', why: '敏感詞密集讓模型給到 0.96，但這是合法的人權議題寫作。擋了，就消音了一個最該被保護的聲音。' },
   { truth: 'spam',  cat: '二次詐騙',     score: 85, text: '我曾被詐騙 30 萬，後來找團隊幫我追回，你也遇到詐騙就私訊我', why: '偽裝成受害者經驗，實則進行第二輪詐騙——正是觸發 2025 年 DNS-RPZ 封鎖的那類文。' },
 ];
+
+// 頭像底色：柔和色盤（與 StickyScroller／FalsePositiveSlider 同款，穩定指派、不寫死語意色號）
+const avPalette = ['#7a7390', '#b07a4a', '#6f8f4e', '#5a8a93', '#a8597a', '#8a6db0'];
+
+// 作者／來源短名：由類別衍生一個合理的台灣正體短名（不誇大、不竄改案例）。
+// 正常內容＝像真人作者；垃圾＝像會發那種內容的帳號名。
+const authorByCat = {
+  '色情廣告': '在地約妹專線',
+  '日記': '日子手記',
+  '防詐科普': '反詐小教室',
+  '翻譯社（集團）': '宏達翻譯社',
+  '人權議題': '人權觀察筆記',
+  '二次詐騙': '老師帶單群',
+};
+const authorOf = (c) => authorByCat[c.cat] || c.cat;
+const initials = (name) => name.slice(0, 1);
 ---
 <div class="bm" id="bm-root">
   <script type="application/json" id="bm-data" set:html={JSON.stringify(cards)}></script>
-  <div class="bm-stage" id="bm-stage"></div>
+
+  <!-- 待判案例：社群貼文／檢舉卡（玻璃感）。內容由 JS 逐題填入 .bm-card -->
+  <div class="bm-stage" id="bm-stage" aria-live="polite"></div>
+
+  <!-- 判斷後的揭曉：從卡片分離，獨立 result panel；逐題顯示「你的選擇」vs「正解＋說明」 -->
+  <div class="bm-result" id="bm-result" hidden></div>
+
   <div class="bm-tally" id="bm-tally" hidden>
     <span>正確 <b id="bm-ok">0</b></span>
     <span class="bm-fp">誤殺 <b id="bm-fp">0</b></span>
@@ -21,30 +45,102 @@ const cards = [
 </div>
 
 <style>
-  .bm { max-width: 600px; margin: 0 auto; }
-  .bm-stage { background: var(--bg-paper); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
-  .bm-cat { font-family: var(--font-ui); font-size: 12px; font-weight: 700; color: var(--ink-soft); }
-  .bm-text { font-size: 19px; margin: 8px 0 16px; line-height: 1.6; }
-  .bm-progress { font-family: var(--font-ui); font-size: 12px; color: var(--ink-soft); float: right; }
-  .bm-btns { display: flex; gap: 12px; }
-  .bm-btns button { flex: 1; font: 700 16px var(--font-ui); padding: 12px; border-radius: 10px; cursor: pointer; border: 1.5px solid; }
-  .bm-block { border-color: var(--c-spam, #c0584a); color: var(--c-spam, #c0584a); background: #fff; }
-  .bm-block:hover { background: var(--c-spam, #c0584a); color: #fff; }
-  .bm-allow { border-color: var(--c-legit, #6f8f4e); color: var(--c-legit, #6f8f4e); background: #fff; }
-  .bm-allow:hover { background: var(--c-legit, #6f8f4e); color: #fff; }
-  .bm-reveal { margin-top: 14px; }
-  .bm-score { font-family: var(--font-ui); font-size: 14px; }
-  .bm-verdict { font-weight: 800; font-size: 17px; margin: 6px 0; }
-  .bm-ok-v { color: var(--c-legit, #6f8f4e); }
-  .bm-bad-v { color: var(--c-spam, #c0584a); }
-  .bm-why { font-size: 15px; color: var(--ink-soft); }
-  .bm-next { margin-top: 14px; font: 700 15px var(--font-ui); padding: 9px 18px; border-radius: 999px;
-    border: 0; background: var(--accent, #7258FF); color: #fff; cursor: pointer; }
+  .bm { max-width: 600px; margin: 0 auto; font-family: var(--font-ui); }
+
+  /* ── 待判案例：玻璃感社群貼文／檢舉卡（對齊 .fp-card / .sg-card） ── */
+  .bm-card { position: relative; border-radius: 14px; overflow: hidden;
+    padding: 15px 16px; color: var(--ink);
+    background: rgba(255,255,255,.62); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+    border: 1px solid rgba(255,255,255,.62); box-shadow: 0 4px 16px rgba(22,18,45,.1); }
+  /* 左側 accent 邊條：待判時用中性品牌色（不先洩漏正解），揭曉後由結果區點亮 */
+  .bm-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: color-mix(in srgb, var(--c-brand, #7258FF) 45%, transparent); }
+
+  .bm-head { display: flex; align-items: center; gap: 7px; }
+  .bm-av { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; color: #fff;
+    font: 800 12px var(--font-ui); display: flex; align-items: center; justify-content: center; }
+  .bm-author { font: 700 13px var(--font-ui); color: var(--ink); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; max-width: 11em; flex: 0 1 auto; }
+  .bm-dot { color: var(--ink-soft); font-size: 12px; flex: 0 0 auto; }
+  .bm-cat { font: 600 11.5px var(--font-ui); color: var(--ink-soft); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; }
+  .bm-progress { margin-left: auto; font: 700 11.5px var(--font-ui); color: var(--ink-soft);
+    flex: 0 0 auto; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+
+  /* 標題：原 .bm-text 內容，社群貼文標題感（不截斷，內容是判斷依據） */
+  .bm-text { margin: 11px 0 10px; font: 700 17px/1.55 var(--font-ui); color: var(--ink); }
+
+  /* 摘要骨架（可忽略欄位，灰色暫代；沿用 .sk 命名） */
+  .bm-summary { display: flex; flex-direction: column; gap: 6px; margin-bottom: 13px; }
+  .bm-foot { display: flex; align-items: center; gap: 12px; }
+  .bm-report { display: inline-flex; align-items: center; gap: 5px; font: 700 11.5px var(--font-ui);
+    color: var(--c-neg, #c85c41); background: color-mix(in srgb, var(--c-neg, #c85c41) 12%, transparent);
+    padding: 3px 9px; border-radius: 999px; flex: 0 0 auto; }
+
+  /* 灰色半透明骨架塊（可忽略欄位：摘要／次要 meta；沿用 StickyScroller .sk） */
+  .sk { background: rgba(120,115,140,.18); border-radius: 5px; display: inline-block; }
+  .sk-line { height: 9px; width: 100%; }
+  .sk-line--short { width: 56%; }
+  .sk-meta { width: 30px; height: 9px; border-radius: 99px; }
+  .sk-meta--wide { width: 46px; }
+
+  /* ── 動作列：DS .btn 階層（擋＝secondary、放＝ghost；不土法煉鋼） ── */
+  .bm-btns { display: flex; gap: 12px; margin-top: 14px; }
+  .bm-btns .btn { flex: 1; }
+  /* 在 DS .btn--secondary / --ghost 基礎上，hover 染上語意色，強化「擋/放」決斷感 */
+  .bm-block:hover { background: var(--c-neg, #c85c41); border-color: var(--c-neg, #c85c41); color: #fff; }
+  .bm-allow:hover { color: var(--c-pos, #5c9969); border-color: var(--c-pos, #5c9969); background: color-mix(in srgb, var(--c-pos, #5c9969) 8%, transparent); }
+
+  /* ── 結果區（從卡片分離）：你的選擇 vs 正解＋說明 ── */
+  .bm-result { margin-top: 14px; }
+  .bm-panel { border-radius: 14px; border: 1px solid var(--line); background: var(--bg-paper);
+    padding: 16px 18px; box-shadow: var(--shadow-shadow1, 0 2px 8px rgba(0,0,0,.05)); }
+  /* 命中＝綠頂條、誤判＝紅頂條 */
+  .bm-panel.is-ok { border-top: 3px solid var(--c-pos, #5c9969); }
+  .bm-panel.is-bad { border-top: 3px solid var(--c-neg, #c85c41); }
+
+  .bm-verdict { display: flex; align-items: center; gap: 8px; font: 800 17px var(--font-ui); margin: 0 0 12px; }
+  .bm-verdict .bm-mark { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
+  .is-ok .bm-verdict { color: var(--c-pos, #5c9969); }
+  .is-ok .bm-mark { background: var(--c-pos, #5c9969); }
+  .is-bad .bm-verdict { color: var(--c-neg, #c85c41); }
+  .is-bad .bm-mark { background: var(--c-neg, #c85c41); }
+
+  /* 你的選擇 vs 正解：兩欄並排，清楚分開 */
+  .bm-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .bm-cell { border-radius: 10px; border: 1px solid var(--line); padding: 9px 11px;
+    background: color-mix(in srgb, var(--ink-soft, #6b6678) 4%, transparent); }
+  .bm-cell-label { font: 700 11px var(--font-ui); color: var(--ink-soft); letter-spacing: .04em; margin-bottom: 4px; }
+  .bm-cell-val { font: 800 15px var(--font-ui); color: var(--ink); }
+  .bm-cell-val.v-spam { color: var(--c-neg, #c85c41); }
+  .bm-cell-val.v-legit { color: var(--c-pos, #5c9969); }
+
+  .bm-score { font: 600 13px var(--font-ui); color: var(--ink-soft); margin: 0 0 8px; }
+  .bm-score b { font-variant-numeric: tabular-nums; color: var(--ink); }
+  .bm-why { font: 400 15px/1.65 var(--font-read, var(--font-ui)); color: var(--ink); margin: 0; }
+
+  .bm-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
+
+  @media (max-width: 480px) {
+    .bm-compare { grid-template-columns: 1fr; }
+  }
+
+  /* ── 總帳 ── */
   .bm-tally { display: flex; gap: 18px; justify-content: center; margin-top: 14px; font-family: var(--font-ui); font-size: 14px; }
-  .bm-tally .bm-fp b { color: var(--c-spam, #c0584a); }
-  .bm-tally .bm-fn b { color: #b8860b; }
-  .bm-summary { text-align: center; }
-  .bm-summary h3 { font-size: 22px; margin: 4px 0; }
+  .bm-tally .bm-fp b { color: var(--c-neg, #c85c41); }
+  .bm-tally .bm-fn b { color: var(--c-warn, #c8a020); }
+
+  .bm-summary { text-align: center; padding: 20px 18px; }
+  .bm-summary h3 { font-size: 22px; margin: 0 0 8px; color: var(--ink); }
+  .bm-summary .bm-why { text-align: left; }
+  .bm-summary .bm-actions { justify-content: center; }
+
+  /* reduced-motion：尊重使用者偏好，揭曉不做進場動畫 */
+  @media (prefers-reduced-motion: no-preference) {
+    .bm-result { animation: bm-rise .28s ease both; }
+    @keyframes bm-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  }
 </style>
 
 <script is:inline>
@@ -53,49 +149,105 @@ const cards = [
     if (!root) return;
     var cards = JSON.parse(document.getElementById('bm-data').textContent);
     var stage = document.getElementById('bm-stage');
+    var result = document.getElementById('bm-result');
     var tallyEl = document.getElementById('bm-tally');
+    var palette = ['#7a7390', '#b07a4a', '#6f8f4e', '#5a8a93', '#a8597a', '#8a6db0'];
+    var authorByCat = {
+      '色情廣告': '在地約妹專線', '日記': '日子手記', '防詐科普': '反詐小教室',
+      '翻譯社（集團）': '宏達翻譯社', '人權議題': '人權觀察筆記', '二次詐騙': '老師帶單群'
+    };
     var i = 0, ok = 0, fp = 0, fn = 0;
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function authorOf(c) { return authorByCat[c.cat] || c.cat; }
+
+    // 待判：渲染社群貼文／檢舉卡 + DS 按鈕；結果區清空隱藏
     function show() {
       var c = cards[i];
+      var author = authorOf(c);
+      var av = palette[i % palette.length];
+      result.hidden = true;
+      result.innerHTML = '';
       stage.innerHTML =
-        '<span class="bm-progress">' + (i + 1) + ' / ' + cards.length + '</span>' +
-        '<span class="bm-cat">' + esc(c.cat) + '</span>' +
-        '<p class="bm-text">「' + esc(c.text) + '」</p>' +
-        '<div class="bm-btns"><button class="bm-block" id="bm-b">擋下（是垃圾）</button>' +
-        '<button class="bm-allow" id="bm-a">放行（是正常）</button></div>';
+        '<article class="bm-card">' +
+          '<header class="bm-head">' +
+            '<span class="bm-av" style="background:' + av + '" aria-hidden="true">' + esc(author.slice(0, 1)) + '</span>' +
+            '<span class="bm-author">' + esc(author) + '</span>' +
+            '<span class="bm-dot" aria-hidden="true">·</span>' +
+            '<span class="bm-cat">' + esc(c.cat) + '</span>' +
+            '<span class="bm-progress">第 ' + (i + 1) + ' / ' + cards.length + ' 則</span>' +
+          '</header>' +
+          '<p class="bm-text">「' + esc(c.text) + '」</p>' +
+          '<div class="bm-summary" aria-hidden="true"><span class="sk sk-line"></span><span class="sk sk-line sk-line--short"></span></div>' +
+          '<footer class="bm-foot">' +
+            '<span class="bm-report">⚑ 待審核</span>' +
+            '<span class="sk sk-meta" aria-hidden="true"></span>' +
+            '<span class="sk sk-meta sk-meta--wide" aria-hidden="true"></span>' +
+          '</footer>' +
+        '</article>' +
+        '<div class="bm-btns">' +
+          '<button class="btn btn--secondary bm-block" id="bm-b">擋下（是垃圾）</button>' +
+          '<button class="btn btn--ghost bm-allow" id="bm-a">放行（是正常）</button>' +
+        '</div>';
       document.getElementById('bm-b').onclick = function () { answer('block'); };
       document.getElementById('bm-a').onclick = function () { answer('allow'); };
     }
+
+    // 揭曉：卡片保留（移除按鈕，避免重複作答），把判斷結果放進獨立的結果區
     function answer(act) {
       var c = cards[i];
       var spam = c.truth === 'spam';
-      var verdict, cls;
-      if (act === 'block' && spam) { verdict = '✓ 擋對了'; cls = 'bm-ok-v'; ok++; }
-      else if (act === 'block' && !spam) { verdict = '✗ 誤殺！這是正常內容（偽陽性）'; cls = 'bm-bad-v'; fp++; }
-      else if (act === 'allow' && spam) { verdict = '✗ 漏放！這是垃圾（偽陰性）'; cls = 'bm-bad-v'; fn++; }
-      else { verdict = '✓ 放對了'; cls = 'bm-ok-v'; ok++; }
+      var verdict, mark, panelCls;
+      if (act === 'block' && spam) { verdict = '擋對了'; mark = '✓'; panelCls = 'is-ok'; ok++; }
+      else if (act === 'block' && !spam) { verdict = '誤殺！這是正常內容（偽陽性）'; mark = '✗'; panelCls = 'is-bad'; fp++; }
+      else if (act === 'allow' && spam) { verdict = '漏放！這是垃圾（偽陰性）'; mark = '✗'; panelCls = 'is-bad'; fn++; }
+      else { verdict = '放對了'; mark = '✓'; panelCls = 'is-ok'; ok++; }
+
       tallyEl.hidden = false;
       document.getElementById('bm-ok').textContent = ok;
       document.getElementById('bm-fp').textContent = fp;
       document.getElementById('bm-fn').textContent = fn;
-      stage.innerHTML =
-        '<span class="bm-cat">' + esc(c.cat) + '</span>' +
-        '<p class="bm-text">「' + esc(c.text) + '」</p>' +
-        '<div class="bm-reveal"><p class="bm-score">模型分數：<b>' + (c.score / 100).toFixed(2) + '</b>　真相：' + (spam ? '垃圾' : '正常') + '</p>' +
-        '<p class="bm-verdict ' + cls + '">' + verdict + '</p>' +
-        '<p class="bm-why">' + esc(c.why) + '</p>' +
-        '<button class="bm-next" id="bm-n">' + (i < cards.length - 1 ? '下一則 →' : '看結果') + '</button></div>';
+
+      // 卡片保留（停用按鈕、避免重判）
+      var btns = stage.querySelector('.bm-btns');
+      if (btns) {
+        var bs = btns.querySelectorAll('button');
+        for (var k = 0; k < bs.length; k++) { bs[k].disabled = true; bs[k].setAttribute('aria-disabled', 'true'); }
+        var chosen = act === 'block' ? bs[0] : bs[1];
+        if (chosen) chosen.classList.add(panelCls === 'is-ok' ? 'btn--primary' : '');
+      }
+
+      var youText = act === 'block' ? '擋下' : '放行';
+      var truthText = spam ? '垃圾' : '正常';
+      var truthCls = spam ? 'v-spam' : 'v-legit';
+
+      result.innerHTML =
+        '<div class="bm-panel ' + panelCls + '">' +
+          '<p class="bm-verdict"><span class="bm-mark" aria-hidden="true">' + mark + '</span>' + esc(verdict) + '</p>' +
+          '<div class="bm-compare">' +
+            '<div class="bm-cell"><div class="bm-cell-label">你的選擇</div><div class="bm-cell-val">' + youText + '</div></div>' +
+            '<div class="bm-cell"><div class="bm-cell-label">正解（真相）</div><div class="bm-cell-val ' + truthCls + '">' + truthText + '</div></div>' +
+          '</div>' +
+          '<p class="bm-score">模型分數：<b>' + (c.score / 100).toFixed(2) + '</b></p>' +
+          '<p class="bm-why">' + esc(c.why) + '</p>' +
+          '<div class="bm-actions"><button class="btn btn--primary bm-next" id="bm-n">' + (i < cards.length - 1 ? '下一則 →' : '看結果') + '</button></div>' +
+        '</div>';
+      result.hidden = false;
       document.getElementById('bm-n').onclick = function () { i++; (i < cards.length) ? show() : end(); };
     }
+
     function end() {
+      result.hidden = true;
+      result.innerHTML = '';
       stage.innerHTML =
-        '<div class="bm-summary"><h3>當審查員，比想像中難</h3>' +
-        '<p>你誤殺了 <b style="color:var(--c-spam,#c0584a)">' + fp + '</b> 篇正常內容、漏放了 <b style="color:#b8860b">' + fn + '</b> 篇垃圾。</p>' +
-        '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、人權議題、集團洗版這些灰區，才是審查最難、最容易誤殺或漏放的地方。每一個門檻，都是別人言論的生死線——這不該由工程師獨自決定。</p>' +
-        '<button class="bm-next" id="bm-r">再玩一次</button></div>';
+        '<div class="bm-panel bm-summary">' +
+          '<h3>當審查員，比想像中難</h3>' +
+          '<p class="bm-score">你誤殺了 <b style="color:var(--c-neg,#c85c41)">' + fp + '</b> 篇正常內容、漏放了 <b style="color:var(--c-warn,#c8a020)">' + fn + '</b> 篇垃圾。</p>' +
+          '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、人權議題、集團洗版這些灰區，才是審查最難、最容易誤殺或漏放的地方。每一個門檻，都是別人言論的生死線——這不該由工程師獨自決定。</p>' +
+          '<div class="bm-actions"><button class="btn btn--secondary bm-r" id="bm-r">再玩一次</button></div>' +
+        '</div>';
       document.getElementById('bm-r').onclick = function () { i = 0; ok = 0; fp = 0; fn = 0; tallyEl.hidden = true; show(); };
     }
+
     show();
   })();
 </script>

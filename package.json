@@ -13,7 +13,10 @@
   },
   "dependencies": {
     "@matters/design-system-tokens": "^0.3.0",
-    "astro": "^5.6.0",
+    "astro": "^6.4.8",
     "gsap": "^3.15.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

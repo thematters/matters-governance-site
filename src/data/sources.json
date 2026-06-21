@@ -37,8 +37,8 @@
   },
   "dataset": {
     "label": "thematters/matters-spam-dataset",
-    "type": "資料集（規劃中・repo 尚未公開）",
-    "url": "",
+    "type": "資料集（規劃中・將公開於 Hugging Face，需申請取用）",
+    "url": "https://huggingface.co/datasets/thematters/matters-spam",
     "quote": "資料集 v2026.06 共 425,689 筆（spam 406,850／ham 18,839）、去識別、規劃以 Hugging Face gated 釋出、授權 CC BY-NC-ND 4.0；尚未發布。"
   },
   "prototype": {

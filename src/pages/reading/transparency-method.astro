@@ -49,7 +49,7 @@ import '../../styles/story.css';
 
   <h2>一份還沒發布的資料集，如何在安全與開放之間設計</h2>
 
-  <p>開源的下一步是資料公開。<Cite src="matters-spam-dataset README">matters-spam-dataset 是一個把平台累積的 spam 標註語料去識別後對外發布的研究資料集</Cite>，但它目前的狀態必須先講清楚：<strong>它尚未正式發布</strong>。repo 的路線圖把法務閘口列為 P0 且仍標「待法務」，包括確認服務條款含再散布／衍生條款、法務複核 data card 與資料使用協議、輪替任何曾外洩的 token；而真正跑去識別 pipeline、推上 Hugging Face 的 P2 也仍是待辦。<Cite src="matters-spam-dataset README（分階段路線圖）" quote="P0 平台授權 ✅ / ToS 再散布條款核對 + 法務複核 DUA ⬜ 待法務">平台層授權已取得，但發布前的法律與資料抽取關卡都還沒過</Cite>。所以下文描述的是一套<strong>已設計、已落地成程式碼，但尚未對外開閘</strong>的方法。</p>
+  <p>開源的下一步是資料公開。<Cite src="matters-spam-dataset README" url="https://huggingface.co/datasets/thematters/matters-spam">matters-spam-dataset 是一個把平台累積的 spam 標註語料去識別後對外發布的研究資料集</Cite>，但它目前的狀態必須先講清楚：<strong>它尚未正式發布</strong>。repo 的路線圖把法務閘口列為 P0 且仍標「待法務」，包括確認服務條款含再散布／衍生條款、法務複核 data card 與資料使用協議、輪替任何曾外洩的 token；而真正跑去識別 pipeline、推上 Hugging Face 的 P2 也仍是待辦。<Cite src="matters-spam-dataset README（分階段路線圖）" url="https://huggingface.co/datasets/thematters/matters-spam" quote="P0 平台授權 ✅ / ToS 再散布條款核對 + 法務複核 DUA ⬜ 待法務">平台層授權已取得，但發布前的法律與資料抽取關卡都還沒過</Cite>。所以下文描述的是一套<strong>已設計、已落地成程式碼，但尚未對外開閘</strong>的方法。</p>
 
   <h3>規模與授權</h3>
 
@@ -70,14 +70,14 @@ import '../../styles/story.css';
     </div>
   </div>
 
-  <p>授權不是單一一條，而是依產出與來源分流。資料整體採 <strong>CC BY-NC-ND 4.0 相容授權</strong>並受資料使用協議（DUA）約束；但單筆樣本因為承襲原始內容授權，可能是 CC0、CC BY-NC-ND 2.0 或 CC BY-NC-ND 4.0。v2026.06 為此<strong>只收 CC／CC0 來源、把保留所有權利（ARR）的內容一律排除</strong>，manifest 記錄為此移除了 436 筆原本會被舊政策放行的 ARR spam。<Cite src="matters-spam-dataset LICENSE / DATACARD" quote="資料：CC BY-NC-ND 4.0 相容授權；單筆來源含 CC0、CC BY-NC-ND 2.0、CC BY-NC-ND 4.0，且須遵守 DUA">程式碼是 MIT，資料是 CC BY-NC-ND 4.0——兩套授權刻意分開</Cite>。發布通道則設計成「靜態走 Hugging Face、動態走自建介面」：大量下載與重現用 Hugging Face（限申請取用）的資料集（需同意 DUA、以 git tag 標版本），查增量與回貢用自建介面。兩種需求互相矛盾，所以分開做。</p>
+  <p>授權不是單一一條，而是依產出與來源分流。資料整體採 <strong>CC BY-NC-ND 4.0 相容授權</strong>並受資料使用協議（DUA）約束；但單筆樣本因為承襲原始內容授權，可能是 CC0、CC BY-NC-ND 2.0 或 CC BY-NC-ND 4.0。v2026.06 為此<strong>只收 CC／CC0 來源、把保留所有權利（ARR）的內容一律排除</strong>，manifest 記錄為此移除了 436 筆原本會被舊政策放行的 ARR spam。<Cite src="matters-spam-dataset LICENSE / DATACARD" url="https://huggingface.co/datasets/thematters/matters-spam" quote="資料：CC BY-NC-ND 4.0 相容授權；單筆來源含 CC0、CC BY-NC-ND 2.0、CC BY-NC-ND 4.0，且須遵守 DUA">程式碼是 MIT，資料是 CC BY-NC-ND 4.0——兩套授權刻意分開</Cite>。發布通道則設計成「靜態走 Hugging Face、動態走自建介面」：大量下載與重現用 Hugging Face（限申請取用）的資料集（需同意 DUA、以 git tag 標版本），查增量與回貢用自建介面。兩種需求互相矛盾，所以分開做。</p>
 
   <h3>公開去識別 ≠ 內部去識別</h3>
 
   <p>這份資料集最值得政策圈與工程圈細看的，是它把「內部用」與「對外公開」當成兩種不同的去識別等級。內部的訓練語料只雜湊 id、保留原文，因為原文裡的 LINE ID、電話、錢包地址、返佣連結，既是個資，也是最強的 spam 訊號。公開版必須在「保留 spam 結構訊號」與「不外洩真人聯絡方式」之間取得平衡，做法是三層處理：</p>
 
   <div class="board">
-    <p><strong>① ID 重鍵（不可反推）</strong>：原始 user／comment／article id 用一把獨立的 <code>release_salt</code> 重新做一次 HMAC 雜湊（<Term zh="HMAC 雜湊" en="HMAC">把身分資訊轉成不可還原代碼的加密方法，用來去識別、保護個資。</Term>，演算法為 HMAC-SHA256），輸出前 16 個十六進位字元當公開 id。這把 salt 刻意<strong>不等於</strong>營運用的 <code>HASH_SALT</code>，且<strong>發布後即封存／銷毀</strong>，確保即使拿到公開資料，也無法反推回平台內部 id。<Cite src="matters-spam-dataset schema/dataset_schema.json（id 欄位）" quote="= HMAC-SHA256(release_salt, 內部 comment_hash/article_hash) 取前 16 hex。release_salt 與營運 HASH_SALT 不同且不隨資料公開，發佈後即封存，確保無法反推平台內部 id。">重鍵用獨立 salt、發布後封存，是「公開 id 不可反推內部 id」的關鍵設計</Cite>。</p>
+    <p><strong>① ID 重鍵（不可反推）</strong>：原始 user／comment／article id 用一把獨立的 <code>release_salt</code> 重新做一次 HMAC 雜湊（<Term zh="HMAC 雜湊" en="HMAC">把身分資訊轉成不可還原代碼的加密方法，用來去識別、保護個資。</Term>，演算法為 HMAC-SHA256），輸出前 16 個十六進位字元當公開 id。這把 salt 刻意<strong>不等於</strong>營運用的 <code>HASH_SALT</code>，且<strong>發布後即封存／銷毀</strong>，確保即使拿到公開資料，也無法反推回平台內部 id。<Cite src="matters-spam-dataset schema/dataset_schema.json（id 欄位）" url="https://huggingface.co/datasets/thematters/matters-spam" quote="= HMAC-SHA256(release_salt, 內部 comment_hash/article_hash) 取前 16 hex。release_salt 與營運 HASH_SALT 不同且不隨資料公開，發佈後即封存，確保無法反推平台內部 id。">重鍵用獨立 salt、發布後封存，是「公開 id 不可反推內部 id」的關鍵設計</Cite>。</p>
     <p><strong>② 聯絡方式佔位符正規化</strong>：文本裡的聯絡方式被換成帶型別的佔位符，包括 <code>&lt;PHONE&gt;</code>、<code>&lt;EMAIL&gt;</code>、<code>&lt;LINE_ID&gt;</code>、<code>&lt;WECHAT&gt;</code>、<code>&lt;TELEGRAM&gt;</code>、<code>&lt;QQ&gt;</code>、<code>&lt;WALLET&gt;</code>、<code>&lt;URL&gt;</code>、<code>&lt;MENTION&gt;</code>、<code>&lt;NUM&gt;</code>。URL 只保留 host、去掉 path 與 query，避免返佣碼與追蹤碼夾帶 PII。佔位符讓模型仍學得到「這裡有一個 LINE 帳號在招攬」的 pattern，卻不外洩真實帳號。</p>
     <p><strong>③ 準識別子粗化</strong>：時間粗化到「年-月」桶（<code>created_bucket</code>），不提供精確 timestamp，降低靠時間反推個案的風險。</p>
   </div>
@@ -109,7 +109,7 @@ import '../../styles/story.css';
     </div>
   </div>
 
-  <p><Cite src="matters-spam-dataset DATACARD（已知標籤噪音）" quote="本資料集已用人工+LLM-judge 矯正 4,980 筆（human_relabel），其中 2,649 筆由 spam 改回 ham，但未矯正部分仍可能殘留華語長文誤標。">資料卡把代理標籤的已知噪音寫進「組成」一節，並用 label_source／label_weight 提供可信度分層</Cite>。被改回 ham 的這類樣本，正是壓低誤殺的關鍵 hard-negative，它教模型認得「長得像被處置、其實是正常內容」的樣子。資料卡同時誠實標出盲點：高變化模板與跨帳號廣告集團（<Term zh="集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號；原始碼裡稱為 Ring。</Term>）在純文本層偵測不足。把「我們哪裡還會錯」寫進對外文件，本身就是一種透明度。</p>
+  <p><Cite src="matters-spam-dataset DATACARD（已知標籤噪音）" url="https://huggingface.co/datasets/thematters/matters-spam" quote="本資料集已用人工+LLM-judge 矯正 4,980 筆（human_relabel），其中 2,649 筆由 spam 改回 ham，但未矯正部分仍可能殘留華語長文誤標。">資料卡把代理標籤的已知噪音寫進「組成」一節，並用 label_source／label_weight 提供可信度分層</Cite>。被改回 ham 的這類樣本，正是壓低誤殺的關鍵 hard-negative，它教模型認得「長得像被處置、其實是正常內容」的樣子。資料卡同時誠實標出盲點：高變化模板與跨帳號廣告集團（<Term zh="集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號；原始碼裡稱為 Ring。</Term>）在純文本層偵測不足。把「我們哪裡還會錯」寫進對外文件，本身就是一種透明度。</p>
 
   <h3>用法邊界：開放，但不是無條件</h3>
 

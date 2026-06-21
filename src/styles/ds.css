@@ -181,3 +181,22 @@ html:not(.js) .hero-dark { opacity: .34; }
 @media (prefers-reduced-motion: reduce) {
   .btn, .board--hover { transition: none; }
 }
+
+/* ---- 電影感固定背景②：重見光明（resolution 暖金光吞噬層） ----
+   與 .hero-bg/.hero-dark「各自獨立」的另一片固定層：放 light-emergence 影片，
+   預設 opacity:0 隱形，捲到結論區由其「自己的」GSAP ScrollTrigger 湧現（0→1）。
+   z-index:1（與 .hero-dark 同層、DOM 在其後）；hero 那組在 StickyScroller 後已淡出 opacity:0，
+   結論區只剩本層作用，兩套不會同時搶畫面。pointer-events:none 不擋互動。
+   同樣不可放在 .full-bleed/.banner 內（帶 transform 會讓 fixed 失效）。 */
+.spine-light { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none;
+  opacity: 0; will-change: opacity, transform; }
+.spine-light__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  object-position: center; }
+/* 暖金底襯：影片載入前 / 邊緣留白時，以暖金徑向漸層墊底，讓「重見光明」即使影片未就緒也成立。 */
+.spine-light::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(72% 64% at 50% 44%, #f6e3a8 0%, #efd17e 46%, #e7c46a 100%); }
+/* 影片之上的一層極淡暖白柔光（bloom），讓暖金光更「湧現」、邊角更柔。 */
+.spine-light::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(60% 56% at 50% 42%, rgba(255,250,232,.42), rgba(255,247,222,0) 70%); }
+/* 無 JS：沒有捲動湧現動畫，光層維持隱形，讓既有 .scene-glow 撐「暖金花園光暈」即可（結論仍可讀）。 */
+html:not(.js) .spine-light { opacity: 0; }

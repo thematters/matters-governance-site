@@ -23,6 +23,20 @@ import '../styles/story.css';
   </div>
   <div class="hero-dark" id="hero-dark" aria-hidden="true"></div>
 
+  <!-- ───────── 電影感固定背景②：重見光明（resolution 暖金光吞噬層） ─────────
+       與 hero 那套（#hero-bg/#hero-dark）「完全獨立」的另一片固定層：放 light-emergence
+       影片，預設 opacity:0 隱形，捲到結論區 .scene--light 時由它「自己的」GSAP ScrollTrigger
+       湧現（0→1），完成「下潛暗(spam)→重見光明」的弧線。
+       同樣放在頁面頂層、.full-bleed（帶 transform）之外，fixed 才不會失效。
+       z-index:1（與 hero-dark 同層但 DOM 在其後）；hero 那組捲過 StickyScroller 後已 opacity:0，
+       結論區只剩本層在作用，兩套固定層不會同時搶畫面。 -->
+  <div class="spine-light" id="spine-light" aria-hidden="true">
+    <video class="spine-light__video" muted loop playsinline preload="none" data-autoplay>
+      <source src="illustrations/anim/light-emergence-high-motion-4s.webm" type="video/webm" />
+      <source src="illustrations/anim/light-emergence-high-motion-4s.mp4" type="video/mp4" />
+    </video>
+  </div>
+
   <!-- 序幕 — HERO（滿版電影感 banner；影片改由上方固定背景提供） -->
   <section class="full-bleed banner banner--hero banner--hero-fixed" id="ch-prologue">
     <div class="banner__inner">
@@ -128,8 +142,9 @@ import '../styles/story.css';
     </div>
   </section>
 
-  <!-- 更大的問題（抵達光明：暗→光弧線的 resolution，暖金花園光暈） -->
-  <section class="scene reveal scene--light">
+  <!-- 更大的問題（抵達光明：暗→光弧線的 resolution，暖金花園光暈）
+       多加 scene--light-spine：標記「重見光明」光吞噬層的落地點 + 暖金光上的可讀性處理。 -->
+  <section class="scene reveal scene--light scene--light-spine">
     <div class="scene-glow" aria-hidden="true"></div>
     <p class="kicker">更大的問題</p>
     <h2>審查與抗審查，是同一件事的兩面</h2>
@@ -265,10 +280,62 @@ import '../styles/story.css';
     });
   }
 
+  // ───────── 重見光明：resolution 暖金光吞噬轉場（獨立 ScrollTrigger） ─────────
+  // 與上方 hero 那條 timeline 完全獨立：只操作頁面級的 #spine-light，絕不碰 #hero-bg/#hero-dark。
+  // 觸發與範圍：
+  //   trigger=.scene--light（結論「更大的問題」），scrub 跟著捲動。
+  //   進場（top bottom → top 35%）：光層 opacity 0→1、輕微 scale 1.06→1（光吞噬/重見光明，bloom 感）。
+  //   停留：捲過結論主體時維持滿亮，讓 kicker/h2/三張 bigq 卡浮在暖金光上。
+  //   離場（bottom 70% → bottom top，進入附錄前）：柔和淡回 opacity 0，確保附錄回到 body 暖米底、內容可讀。
+  function initSpineLight() {
+    const lightBg = document.getElementById('spine-light');
+    const lightScene = document.querySelector('.scene--light');
+    if (!lightBg || lightBg.dataset.inited) return;
+    lightBg.dataset.inited = '1';
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // reduced-motion：不做湧現動畫；給光層一個溫和定值微亮（讓既有 .scene-glow 仍是主角），不報錯。
+    if (reduce) {
+      gsap.set(lightBg, { opacity: 0.16, scale: 1 });
+      return;
+    }
+    // 沒有結論區（理論上不會）就讓既有 .scene-glow 撐場，光層維持隱形。
+    if (!lightScene) { gsap.set(lightBg, { opacity: 0 }); return; }
+
+    // 初始：光層隱形、略放大（湧現起點）。
+    gsap.set(lightBg, { opacity: 0, scale: 1.06, transformOrigin: '50% 44%' });
+
+    // 湧現：以結論區進場為觸發，opacity 0→1 + scale 收束（bloom）。
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: lightScene,
+        start: 'top bottom',   // 結論區頂端剛進視窗底部 → 光開始湧現
+        end: 'top 35%',        // 結論區頂端推到視窗 35% 處 → 光全滿
+        scrub: 1,
+      },
+    }).fromTo(lightBg,
+      { opacity: 0, scale: 1.06 },
+      { opacity: 1, scale: 1, ease: 'power2.out', duration: 1 });
+
+    // 離場：捲過結論主體、即將進入附錄時柔和淡回，避免暖光殘留在附錄上影響可讀性。
+    gsap.to(lightBg, {
+      opacity: 0, ease: 'power1.in',
+      scrollTrigger: {
+        trigger: lightScene,
+        start: 'bottom 70%',   // 結論區底端升到視窗 70% 處 → 開始退光
+        end: 'bottom top',     // 結論區整段捲過視窗頂 → 光退盡，附錄回暖米底
+        scrub: 1,
+      },
+    });
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initHeroBg);
+    document.addEventListener('DOMContentLoaded', initSpineLight);
   } else {
     initHeroBg();
+    initSpineLight();
   }
   document.addEventListener('astro:page-load', initHeroBg);
+  document.addEventListener('astro:page-load', initSpineLight);
 </script>

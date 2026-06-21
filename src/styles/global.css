@@ -170,6 +170,12 @@ section.block { margin: 56px 0; }
 .term:focus-within .term-pop { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
 /* 靠右側出現的名詞，浮層改向右對齊，避免被視窗切掉 */
 .term.term--right .term-pop { left: auto; right: 0; }
+/* 浮層遮蔽修正：章節 banner 後的每個兄弟都被 `.banner--*-fixed ~ *` 設成
+   position:relative; z-index:2，各自成 stacking context。名詞浮層（z-index:50）
+   被困在它所在段落的 z-index:2 層裡，會被後續同樣 z-index:2 的區塊（如 .escalation
+   卡、後續段落）依 DOM 順序覆蓋。term 啟用時，把承載它的那個直接兄弟整段抬到浮層之上。 */
+:where(.banner--hero-fixed, .banner--chapter-fixed) ~ *:has(.term:hover),
+:where(.banner--hero-fixed, .banner--chapter-fixed) ~ *:has(.term:focus-within) { z-index: 60; }
 @media (prefers-reduced-motion: reduce) { .term-pop { transition: none; } }
 
 /* ---- 互動佔位 ---- */

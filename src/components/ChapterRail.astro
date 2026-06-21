@@ -29,10 +29,12 @@ const chapters = [
   .crail-item { display: flex; align-items: center; justify-content: flex-end; gap: 9px;
     text-decoration: none; padding: 4px 6px; border-radius: 999px; transition: background .2s; }
   .crail-item:hover { background: rgba(255,255,255,.55); }
-  .crail-name { font: 700 12.5px var(--font-ui); color: var(--ink-soft); white-space: nowrap;
-    max-width: 0; opacity: 0; overflow: hidden; transition: max-width .26s ease, opacity .2s ease; }
+  /* 首頁暗色舞台：rail 標籤浮在章節圖上，用白字＋陰影確保任何底圖上都讀得到 */
+  .crail-name { font: 700 12.5px var(--font-ui); color: #fff; white-space: nowrap;
+    max-width: 0; opacity: 0; overflow: hidden; transition: max-width .26s ease, opacity .2s ease;
+    text-shadow: 0 1px 4px rgba(0,0,0,.7), 0 0 2px rgba(0,0,0,.5); }
   .crail:hover .crail-name, .crail-item.is-active .crail-name { max-width: 12em; opacity: 1; }
-  .crail-item.is-active .crail-name { color: var(--ink); }
+  .crail-item.is-active .crail-name { color: #fff; }
   .crail-num { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
     border: 1.6px solid var(--line); background: var(--bg-paper); color: var(--ink-soft);
     font: 800 12px var(--font-ui); display: flex; align-items: center; justify-content: center;

@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReadingNav from '../../components/ReadingNav.astro';
 import ChapterHero from '../../components/ChapterHero.astro';
 import Cite from '../../components/Cite.astro';
+import Term from '../../components/Term.astro';
 import '../../styles/story.css';
 ---
 <BaseLayout
@@ -24,7 +25,7 @@ import '../../styles/story.css';
 
   <blockquote class="callout callout--quote">「如果只是把程式碼丟出來，其實不等於透明……所以開源只是第一步。後面還需要文件、案例、可理解的說明、申訴管道，以及社群能夠參與的工作流程。」</blockquote>
 
-  <p>這句話其實界定了本網站存在的理由：把 repo 裡的 enum、SQL 過濾與門檻參數，翻譯成可讀、可討論、可申訴的形式。更深的一刀來自使用者端。長期使用者、同時有 PTT 自治經驗的 Denken，在工作坊上把「開放」與「共創」之間的距離點破：<Cite src="g0v Summit 2026 簡報文字記錄（Denken 觀察 2）" quote="開源 ≠ 社群參與；開放 API ≠ 使用者能影響治理決策。" url="https://github.com/thematters/spam-detection-scaffold">Matters 走到了開放 API、開源 spam-detection-scaffold，卻沒有走到共創</Cite>。他親身參與多次公開工程會議，最後常常發現「只有我」。</p>
+  <p>這句話其實界定了本網站存在的理由：把 repo 裡的 enum、SQL 過濾與門檻參數，翻譯成可讀、可討論、可申訴的形式。更深的一刀來自使用者端。長期使用者、同時有 PTT 自治經驗的 Denken，在工作坊上把「開放」與「共創」之間的距離點破：<Cite src="g0v Summit 2026 簡報文字記錄（Denken 觀察 2）" quote="開源 ≠ 社群參與；開放 API ≠ 使用者能影響治理決策。" url="https://github.com/thematters/spam-detection-scaffold">Matters 走到了開放 API、開源 spam-detection-scaffold，卻沒有走到共創</Cite>。所謂開放應用程式介面（<Term zh="應用程式介面" en="API">讓其他程式可以串接、自動取用平台資料或功能的對外介面。</Term>），是讓外部程式能串接、自動取用平台資料；但能取用資料，不等於能參與決策。他親身參與多次公開工程會議，最後常常發現「只有我」。</p>
 
   <p>於是這裡有一個三段遞進，每一段的落差都比上一段更難跨：<strong>開源 ≠ 透明</strong>（程式碼公開，但不可讀）；<strong>透明 ≠ 共創</strong>（看得懂，但無法影響決策）。Denken 的結論不是責怪「Matters 不夠好」，而是給出更謙遜的一句：不同社群會長出不同的治理形態，平台應該支撐它，而不是替它設計。透明開盒真正費力的工程，不在公開的那一刻，而在公開之後。後面這段才是計畫尚未完成、也最容易被高估的部分。</p>
 
@@ -69,14 +70,14 @@ import '../../styles/story.css';
     </div>
   </div>
 
-  <p>授權不是單一一條，而是依產出與來源分流。資料整體採 <strong>CC BY-NC-ND 4.0 相容授權</strong>並受資料使用協議（DUA）約束；但單筆樣本因為承襲原始內容授權，可能是 CC0、CC BY-NC-ND 2.0 或 CC BY-NC-ND 4.0。v2026.06 為此<strong>只收 CC／CC0 來源、把保留所有權利（ARR）的內容一律排除</strong>，manifest 記錄為此移除了 436 筆原本會被舊政策放行的 ARR spam。<Cite src="matters-spam-dataset LICENSE / DATACARD" quote="資料：CC BY-NC-ND 4.0 相容授權；單筆來源含 CC0、CC BY-NC-ND 2.0、CC BY-NC-ND 4.0，且須遵守 DUA">程式碼是 MIT，資料是 CC BY-NC-ND 4.0——兩套授權刻意分開</Cite>。發布通道則設計成「靜態走 Hugging Face、動態走自建 API」：大量下載與重現用 HF 的 gated dataset（需同意 DUA、以 git tag 標版本），查增量與回貢用自建 API，因為兩種需求互相矛盾，所以分開做。</p>
+  <p>授權不是單一一條，而是依產出與來源分流。資料整體採 <strong>CC BY-NC-ND 4.0 相容授權</strong>並受資料使用協議（DUA）約束；但單筆樣本因為承襲原始內容授權，可能是 CC0、CC BY-NC-ND 2.0 或 CC BY-NC-ND 4.0。v2026.06 為此<strong>只收 CC／CC0 來源、把保留所有權利（ARR）的內容一律排除</strong>，manifest 記錄為此移除了 436 筆原本會被舊政策放行的 ARR spam。<Cite src="matters-spam-dataset LICENSE / DATACARD" quote="資料：CC BY-NC-ND 4.0 相容授權；單筆來源含 CC0、CC BY-NC-ND 2.0、CC BY-NC-ND 4.0，且須遵守 DUA">程式碼是 MIT，資料是 CC BY-NC-ND 4.0——兩套授權刻意分開</Cite>。發布通道則設計成「靜態走 Hugging Face、動態走自建介面」：大量下載與重現用 Hugging Face（限申請取用）的資料集（需同意 DUA、以 git tag 標版本），查增量與回貢用自建介面。兩種需求互相矛盾，所以分開做。</p>
 
   <h3>公開去識別 ≠ 內部去識別</h3>
 
   <p>這份資料集最值得政策圈與工程圈細看的，是它把「內部用」與「對外公開」當成兩種不同的去識別等級。內部的訓練語料只雜湊 id、保留原文，因為原文裡的 LINE ID、電話、錢包地址、返佣連結，既是個資，也是最強的 spam 訊號。公開版必須在「保留 spam 結構訊號」與「不外洩真人聯絡方式」之間取得平衡，做法是三層處理：</p>
 
   <div class="board">
-    <p><strong>① ID 重鍵（不可反推）</strong>：原始 user／comment／article id 用一把獨立的 <code>release_salt</code> 重新做 HMAC-SHA256，輸出前 16 個十六進位字元當公開 id。這把 salt 刻意<strong>不等於</strong>營運用的 <code>HASH_SALT</code>，且<strong>發布後即封存／銷毀</strong>，確保即使拿到公開資料，也無法反推回平台內部 id。<Cite src="matters-spam-dataset schema/dataset_schema.json（id 欄位）" quote="= HMAC-SHA256(release_salt, 內部 comment_hash/article_hash) 取前 16 hex。release_salt 與營運 HASH_SALT 不同且不隨資料公開，發佈後即封存，確保無法反推平台內部 id。">重鍵用獨立 salt、發布後封存，是「公開 id 不可反推內部 id」的關鍵設計</Cite>。</p>
+    <p><strong>① ID 重鍵（不可反推）</strong>：原始 user／comment／article id 用一把獨立的 <code>release_salt</code> 重新做一次 HMAC 雜湊（<Term zh="HMAC 雜湊" en="HMAC">把身分資訊轉成不可還原代碼的加密方法，用來去識別、保護個資。</Term>，演算法為 HMAC-SHA256），輸出前 16 個十六進位字元當公開 id。這把 salt 刻意<strong>不等於</strong>營運用的 <code>HASH_SALT</code>，且<strong>發布後即封存／銷毀</strong>，確保即使拿到公開資料，也無法反推回平台內部 id。<Cite src="matters-spam-dataset schema/dataset_schema.json（id 欄位）" quote="= HMAC-SHA256(release_salt, 內部 comment_hash/article_hash) 取前 16 hex。release_salt 與營運 HASH_SALT 不同且不隨資料公開，發佈後即封存，確保無法反推平台內部 id。">重鍵用獨立 salt、發布後封存，是「公開 id 不可反推內部 id」的關鍵設計</Cite>。</p>
     <p><strong>② 聯絡方式佔位符正規化</strong>：文本裡的聯絡方式被換成帶型別的佔位符，包括 <code>&lt;PHONE&gt;</code>、<code>&lt;EMAIL&gt;</code>、<code>&lt;LINE_ID&gt;</code>、<code>&lt;WECHAT&gt;</code>、<code>&lt;TELEGRAM&gt;</code>、<code>&lt;QQ&gt;</code>、<code>&lt;WALLET&gt;</code>、<code>&lt;URL&gt;</code>、<code>&lt;MENTION&gt;</code>、<code>&lt;NUM&gt;</code>。URL 只保留 host、去掉 path 與 query，避免返佣碼與追蹤碼夾帶 PII。佔位符讓模型仍學得到「這裡有一個 LINE 帳號在招攬」的 pattern，卻不外洩真實帳號。</p>
     <p><strong>③ 準識別子粗化</strong>：時間粗化到「年-月」桶（<code>created_bucket</code>），不提供精確 timestamp，降低靠時間反推個案的風險。</p>
   </div>
@@ -91,7 +92,7 @@ import '../../styles/story.css';
 
   <h3>誠實揭露殘餘誤標</h3>
 
-  <p>最能看出方法論成熟度的，是資料卡主動寫下自己的瑕疵，而不是藏起來。早期部分正樣本來自一種代理判斷：<strong>「作者被限制 → 名下全部內容標 spam」</strong>。這會誤掃合法的政治評論、學術與創作長文，尤其是華語長文。資料集已用人工加 LLM-judge 矯正約 5,000 筆：</p>
+  <p>最能看出方法論成熟度的，是資料卡主動寫下自己的瑕疵，而不是藏起來。早期部分正樣本來自一種代理判斷：<strong>「作者被限制 → 名下全部內容標 spam」</strong>。這會誤掃合法的政治評論、學術與創作長文，尤其是華語長文。資料集已用人工加上大型語言模型（<Term zh="大型語言模型" en="LLM">像 ChatGPT、Claude 這類能讀寫、理解語言的大型 AI 模型。</Term>）擔任評判，矯正約 5,000 筆：</p>
 
   <div class="stat-row">
     <div class="stat board">
@@ -108,7 +109,7 @@ import '../../styles/story.css';
     </div>
   </div>
 
-  <p><Cite src="matters-spam-dataset DATACARD（已知標籤噪音）" quote="本資料集已用人工+LLM-judge 矯正 4,980 筆（human_relabel），其中 2,649 筆由 spam 改回 ham，但未矯正部分仍可能殘留華語長文誤標。">資料卡把代理標籤的已知噪音寫進「組成」一節，並用 label_source／label_weight 提供可信度分層</Cite>。被改回 ham 的這類樣本，正是壓低誤殺的關鍵 hard-negative，它教模型認得「長得像被處置、其實是正常內容」的樣子。資料卡同時誠實標出盲點：高變化模板與跨帳號廣告 ring 在純文本層偵測不足。把「我們哪裡還會錯」寫進對外文件，本身就是一種透明度。</p>
+  <p><Cite src="matters-spam-dataset DATACARD（已知標籤噪音）" quote="本資料集已用人工+LLM-judge 矯正 4,980 筆（human_relabel），其中 2,649 筆由 spam 改回 ham，但未矯正部分仍可能殘留華語長文誤標。">資料卡把代理標籤的已知噪音寫進「組成」一節，並用 label_source／label_weight 提供可信度分層</Cite>。被改回 ham 的這類樣本，正是壓低誤殺的關鍵 hard-negative，它教模型認得「長得像被處置、其實是正常內容」的樣子。資料卡同時誠實標出盲點：高變化模板與跨帳號廣告集團（<Term zh="集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號；原始碼裡稱為 Ring。</Term>）在純文本層偵測不足。把「我們哪裡還會錯」寫進對外文件，本身就是一種透明度。</p>
 
   <h3>用法邊界：開放，但不是無條件</h3>
 

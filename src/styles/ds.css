@@ -121,30 +121,8 @@
 .banner--hero .banner__inner .sub { color: rgba(255,255,255,.92); font-size: 20px; margin-top: var(--space-sp10); max-width: 560px; }
 .banner--hero .banner__inner .scroll-cue { color: rgba(255,255,255,.85); margin-top: var(--space-sp20); }
 
-/* ---- 電影感固定背景：常駐影片 + 隨捲動變暗的暗幕 ----
-   .hero-bg（影片，z-index 0）→ .hero-dark（暗幕，z-index 1）→ 內容（z-index 2）。
-   兩層皆 position:fixed 釘在視窗；GSAP 控制 .hero-dark 變暗、再讓整組淡出。
-   注意：它們不可放在 .full-bleed/.banner 內（那些帶 transform，會讓 fixed 失效）。 */
-.hero-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-  background: #0e0b22; /* 影片載入前的深底，避免黑屏 */ }
-/* 模糊放大的 poster 當 backplate：桌面用 contain 顯示完整直式影片時，兩側留白由它填成電影感氛圍牆，
-   比純黑邊高級；手機 cover 滿版時被影片蓋住。 */
-.hero-bg__plate { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-  object-position: center; filter: blur(34px) brightness(.5) saturate(1.1); transform: scale(1.12); }
-/* 影片：桌面 contain「全部放出來」（不再放大裁上下）；手機(直式視窗)改 cover 滿版。 */
-.hero-bg__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
-  object-position: center; }
-@media (max-aspect-ratio: 1/1) { .hero-bg__video { object-fit: cover; } }
-/* 常駐可讀 scrim：影片之上、暗幕之下的固定淡漸層，確保 hero 標題在任何時刻可讀
-   （無 JS / reduced-motion 也成立）。烘在 .hero-bg 內，不參與變暗/淡出的動畫。 */
-.hero-bg::after { content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, rgba(18,16,12,.16) 0%, rgba(18,16,12,.06) 38%, rgba(18,16,12,.5) 100%); }
-/* 變暗層：用 multiply 讓影片乾淨變暗（呼應花園隨垃圾湧入而暗下來的敘事）。
-   opacity 就是「暗度旋鈕」：0＝清亮、高＝最暗，全交給 GSAP 隨捲動推；JS 在時初始為 0。 */
-.hero-dark { position: fixed; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: multiply;
-  opacity: 0; background: radial-gradient(130% 88% at 50% 38%, #4b4570 0%, #221c44 54%, #0e0b22 100%); }
-/* 無 JS：沒有捲動變暗，給暗幕一個溫和定值，維持電影感且標題仍可讀 */
-html:not(.js) .hero-dark { opacity: .34; }
+/* 首頁固定影片背景（.hero-bg/.hero-dark/.spine-light）已退場——首頁改用 story.css 的
+   #stage 章節靜態圖交叉淡入暗色舞台；以下只保留序幕 banner 與分頁 ChapterHero 用到的規則。 */
 
 /* hero 標題塊浮在固定背景之上（banner 自身 z-index 維持其內部 scrim 堆疊） */
 .banner--hero-fixed { position: relative; z-index: 2; background: transparent; }
@@ -187,21 +165,3 @@ html:not(.js) .hero-dark { opacity: .34; }
   .btn, .board--hover { transition: none; }
 }
 
-/* ---- 電影感固定背景②：重見光明（resolution 暖金光吞噬層） ----
-   與 .hero-bg/.hero-dark「各自獨立」的另一片固定層：放 light-emergence 影片，
-   預設 opacity:0 隱形，捲到結論區由其「自己的」GSAP ScrollTrigger 湧現（0→1）。
-   z-index:1（與 .hero-dark 同層、DOM 在其後）；hero 那組在 StickyScroller 後已淡出 opacity:0，
-   結論區只剩本層作用，兩套不會同時搶畫面。pointer-events:none 不擋互動。
-   同樣不可放在 .full-bleed/.banner 內（帶 transform 會讓 fixed 失效）。 */
-.spine-light { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none;
-  opacity: 0; will-change: opacity, transform; }
-.spine-light__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-  object-position: center; }
-/* 暖金底襯：影片載入前 / 邊緣留白時，以暖金徑向漸層墊底，讓「重見光明」即使影片未就緒也成立。 */
-.spine-light::before { content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(72% 64% at 50% 44%, #f6e3a8 0%, #efd17e 46%, #e7c46a 100%); }
-/* 影片之上的一層極淡暖白柔光（bloom），讓暖金光更「湧現」、邊角更柔。 */
-.spine-light::after { content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(60% 56% at 50% 42%, rgba(255,250,232,.42), rgba(255,247,222,0) 70%); }
-/* 無 JS：沒有捲動湧現動畫，光層維持隱形，讓既有 .scene-glow 撐「暖金花園光暈」即可（結論仍可讀）。 */
-html:not(.js) .spine-light { opacity: 0; }

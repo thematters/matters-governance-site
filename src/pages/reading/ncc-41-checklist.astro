@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReadingNav from '../../components/ReadingNav.astro';
 import ChapterHero from '../../components/ChapterHero.astro';
 import Cite from '../../components/Cite.astro';
+import Term from '../../components/Term.astro';
 import '../../styles/story.css';
 ---
 <BaseLayout
@@ -15,8 +16,8 @@ import '../../styles/story.css';
     alt="一面鏡子映出兩份攤開的政策指引文件，旁邊放著逐項勾選的清單" />
 
   <p class="lead">
-    2025 年 12 月 31 日，NCC 同日公布兩份軟性指引，把「平台該揭露什麼、又該怎麼讓被處理的人有路可申訴」逐條寫了下來。
-    一個所有程式碼與使用者協議都公開的平台，理論上是檢驗這兩份指引可行性的最好樣本。這一頁就把那次自評展開成可勾稽的清單。
+    2025 年 12 月 31 日，<Term zh="國家通訊傳播委員會" en="NCC">台灣負責通訊傳播事務的主管機關。</Term>同日公布兩份軟性指引，把「平台該揭露什麼、又該怎麼讓被處理的人有路可申訴」逐條寫了下來。
+    一個所有程式碼與使用者協議都公開的平台，是檢驗這兩份指引可行性的最好樣本。這一頁就把那次自評展開成可勾稽的清單。
   </p>
 
   <p>
@@ -81,7 +82,7 @@ import '../../styles/story.css';
   </div>
 
   <p>
-    最強的合規基礎其實不在文件上，而是一套已經在跑的機制：<strong>守望相助隊</strong>（Community Watch）把處理者、理由、時間、申訴、複查
+    最強的合規基礎其實是一套已經在跑的機制：<strong>守望相助隊</strong>（Community Watch）把處理者、理由、時間、申訴、複查
     與公開紀錄做成可被外部檢視的流程，跟兩份指引「程序透明、救濟可用」的精神高度相符。
     <Cite src="community-watch（服務頁）" url="https://community-watch.matters.town">守望相助隊有對外的服務頁與公開紀錄</Cite>，
     它證明了 Matters 做得到可稽核的治理。真正需要補強的，是把這份能力從單一機制<strong>制度化、公開化</strong>，變成監理機關能看懂的固定章節，
@@ -327,7 +328,7 @@ import '../../styles/story.css';
     因此補強的路線刻意「先外殼、後自動化」。第一階段（約一到兩週）可以幾乎只靠文件與頁面完成：把分散的申訴管道集中成一個救濟中心頁、
     建一個透明度 landing page、更新使用者條款與隱私政策、為政府要求建立內部登錄表，先讓使用者看得懂、找得到、知道大概多久會被處理。
     第二階段（約兩到四週）才動資料：把一般檢舉升級成有狀態流轉（received → reviewing → action_taken → appealed → resolved）的 case workflow、
-    建立可匯出的 moderation events schema、寫個案通知模板，並據此發布第一份半年度透明度報告。第三階段（約一到三個月）處理最硬的部分：
+    建立可匯出的內容調控事件資料格式（schema）、寫個案通知模板，並據此發布第一份半年度透明度報告。第三階段（約一到三個月）處理最硬的部分：
     反濫用模型的 model card、推薦排序透明度頁、政府要求的透明度章節、無障礙易讀版，以及外部諮詢的年度回顧。
   </p>
 
@@ -340,7 +341,7 @@ import '../../styles/story.css';
 
   <p>
     這份自評裡唯一被標成最明確「缺口」、又最難補的，是透明度基礎項的第 (五) 項：公部門要求提供使用者資料的件數、機關、法源與回應比例。
-    它難的地方，不在做統計多麻煩，而在它觸到了一個抗審查平台的核心矛盾。
+    它難的地方無關統計多麻煩，而是觸到了一個抗審查平台的核心矛盾。
   </p>
 
   <p>

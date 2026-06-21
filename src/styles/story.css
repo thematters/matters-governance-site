@@ -43,12 +43,34 @@ html.js .reveal.in-view { opacity: 1; transform: none; }
 .dark-stage .scene > p { color: rgba(255,255,255,.92); text-shadow: 0 1px 12px rgba(0,0,0,.6); }
 .dark-stage .scene > p strong { color: #fff; }
 .dark-stage .scene > .kicker { color: rgba(255,255,255,.8); }
-/* 互動小工具在暗章圖上：給一層淺色玻璃面板，元件內既有深字/玻璃卡維持原樣可讀。
-   （把每個互動「深度玻璃化」＝下一輪「三個互動玻璃化」再做） */
+/* 互動小工具在暗章圖上＝深度玻璃感暗色（對齊 StickyScroller）：
+   一層 frosted 暗玻璃面板托住整個互動，元件內既有的淺色玻璃卡浮在上面、章外讀數/標籤轉白。 */
 .dark-stage .figure,
-.dark-stage .fp { background: rgba(250,249,246,.94); border: 1px solid rgba(255,255,255,.55);
-  border-radius: 20px; padding: clamp(16px, 2.4vw, 26px); box-shadow: 0 18px 52px rgba(0,0,0,.42); }
+.dark-stage .fp { background: rgba(20,18,32,.46); backdrop-filter: blur(13px); -webkit-backdrop-filter: blur(13px);
+  border: 1px solid rgba(255,255,255,.16); border-radius: 20px; padding: clamp(16px, 2.4vw, 26px);
+  box-shadow: 0 20px 56px rgba(0,0,0,.5); }
 .dark-stage .fp { max-width: 880px; margin-left: auto; margin-right: auto; }
+/* 各互動的 loose 抬頭/讀數/標籤在暗玻璃上轉白（卡片內維持深字，卡片自帶淺色玻璃底）。
+   用 .dark-stage .scene .X（3 class）壓過元件 scoped 樣式。彩色統計數字另行提亮、不被白字蓋掉。 */
+.dark-stage .scene .figure__title { color: #fff; }
+.dark-stage .scene .fp-label { color: rgba(255,255,255,.92); }
+.dark-stage .scene .fp-conclusion { color: #fff; }
+.dark-stage .scene .fp-scale { color: rgba(255,255,255,.6); }
+.dark-stage .scene .rd-readout { color: rgba(255,255,255,.92); }
+.dark-stage .scene .rk-q { color: #fff; }
+.dark-stage .scene .rk-coltitle { color: #fff; }
+.dark-stage .scene .rk-colsub,
+.dark-stage .scene .rk-vs,
+.dark-stage .scene .rk-legend { color: rgba(255,255,255,.72); }
+.dark-stage .scene .db-note { color: rgba(255,255,255,.92); }
+.dark-stage .scene .db-axis-labels { color: rgba(255,255,255,.78); }
+.dark-stage .scene .db-stat b { color: #fff; }
+.dark-stage .scene .db-stat span { color: rgba(255,255,255,.68); }
+.dark-stage .scene .db-stat-fp b { color: #ff8f7e; }
+.dark-stage .scene .db-stat-leak b { color: #f0c64e; }
+/* #4 Term 名詞在暗底：英文「（en）」原本 --ink-soft 深灰，提亮；虛線底維持品牌紫但提亮 */
+.dark-stage .term-en { color: rgba(255,255,255,.64); }
+.dark-stage .term-label { border-bottom-color: #b3a4ff; }
 /* 深入藥丸在暗底上提亮 */
 .dark-stage .read-more { color: #c3b6ff; border-color: rgba(165,148,255,.5);
   background: color-mix(in srgb, #7258FF 18%, transparent); }

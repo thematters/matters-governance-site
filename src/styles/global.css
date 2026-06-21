@@ -71,6 +71,8 @@ section.block { margin: 56px 0; }
 @media (max-width: 640px) {
   /* 防手機橫向捲動的安全網：clip 不會像 hidden/auto 那樣建立捲動容器，故不破壞 sticky scrollytelling */
   html { overflow-x: clip; }
+  /* 頁首在手機收一點 padding，抵銷 .btn--sm 觸控放大(44px)帶來的高度 */
+  .nav { padding: 9px 16px; }
   body { font-size: 16px; line-height: 1.65; }
   h2 { font-size: 20px; margin: 1.8rem 0 .6rem; }
   h3 { font-size: 17px; margin: 1.3rem 0 .4rem; }

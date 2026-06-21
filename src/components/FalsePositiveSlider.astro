@@ -119,6 +119,8 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
     border: 1px solid rgba(255,255,255,.6); box-shadow: 0 6px 20px rgba(22,18,45,.1); }
   .fp-stage .fp-controls { margin-bottom: 8px; }
   .fp-stage .fp-readout { margin-bottom: 0; }
+  /* 手機頁首較高(~67px，.btn--sm 觸控放大)，sticky 控制列下移避免被頁首蓋到 */
+  @media (max-width: 640px) { .fp-stage { top: 72px; } }
 
   /* ── feed：卡片全攤開、跟著整頁自然捲（移除原 50vh 內捲與 mask）；操作與回饋同框、無雙層捲動打架 ── */
   .fp-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); grid-auto-rows: max-content;
@@ -202,6 +204,9 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
 
   @media (max-width: 480px) {
     .fp-feed { grid-template-columns: 1fr; }
+    /* 觸控：滑桿 thumb 放大好抓（margin-top 同步抵銷以維持與軌道置中：-(34-8)/2） */
+    .fp-range::-webkit-slider-thumb { width: 34px; height: 34px; margin-top: -13px; }
+    .fp-range::-moz-range-thumb { width: 34px; height: 34px; }
   }
 
   .fp-slider-wrap { position: relative; padding-top: 34px; }

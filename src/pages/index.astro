@@ -10,34 +10,25 @@ import ChapterIntro from '../components/ChapterIntro.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="主敘事">
+  <!-- ───────── 固定章節背景舞台 ─────────
+       各章一張靜態章節圖，隨捲動「交叉淡入」(.is-active + CSS opacity transition＝漸層轉場)，
+       上覆一層暗幕(scrim，依章調整暗度以利白字閱讀)。內容(.dark-stage)疊在最上層。
+       不再用影片、不再硬切；放頁面頂層、.full-bleed(帶 transform)之外，fixed 才不失效。 -->
+  <div class="stage" id="stage" aria-hidden="true">
+    <img class="stage__img is-active" data-stage-img="0" src="illustrations/hero.jpg" alt="" />
+    <img class="stage__img" data-stage-img="1" src="illustrations/N1-dark-underworld-reference.jpg" alt="" />
+    <img class="stage__img" data-stage-img="2" src="illustrations/F2-moderation-spectrum.jpg" alt="" />
+    <img class="stage__img" data-stage-img="3" src="illustrations/self-rescue.jpg" alt="" />
+    <img class="stage__img" data-stage-img="4" src="illustrations/N2-light-emergence-style-v2.jpg" alt="" />
+    <img class="stage__img" data-stage-img="5" src="illustrations/crowd.jpg" alt="" />
+  </div>
+  <div class="stage-scrim" id="stage-scrim" aria-hidden="true"></div>
+
   <ChapterRail />
 
-  <!-- ───────── 電影感固定背景：常駐影片 + 暗幕（隨捲動變暗→淡出） ─────────
-       放在頁面最上層（不在 .banner--hero 內），因為 .full-bleed 帶 transform，
-       會讓 position:fixed 失效。這兩層 fixed 在所有內容之後、body 暖米底之上；
-       GSAP 驅動 .hero-dark 變暗，捲過 StickyScroller 後整組（影片+暗幕）一起淡出。 -->
-  <div class="hero-bg" id="hero-bg" aria-hidden="true">
-    <img class="hero-bg__plate" src="illustrations/hero.jpg" alt="" aria-hidden="true" />
-    <video class="hero-bg__video" muted loop playsinline preload="auto" poster="illustrations/hero.jpg" data-autoplay>
-      <source src="illustrations/anim/hero-everyone-moves-loop.webm" type="video/webm" />
-      <source src="illustrations/anim/hero-everyone-moves-loop.mp4" type="video/mp4" />
-    </video>
-  </div>
-  <div class="hero-dark" id="hero-dark" aria-hidden="true"></div>
-
-  <!-- ───────── 電影感固定背景②：重見光明（resolution 暖金光吞噬層） ─────────
-       與 hero 那套（#hero-bg/#hero-dark）「完全獨立」的另一片固定層：放 light-emergence
-       影片，預設 opacity:0 隱形，捲到結論區 .scene--light 時由它「自己的」GSAP ScrollTrigger
-       湧現（0→1），完成「下潛暗(spam)→重見光明」的弧線。
-       同樣放在頁面頂層、.full-bleed（帶 transform）之外，fixed 才不會失效。
-       z-index:1（與 hero-dark 同層但 DOM 在其後）；hero 那組捲過 StickyScroller 後已 opacity:0，
-       結論區只剩本層在作用，兩套固定層不會同時搶畫面。 -->
-  <div class="spine-light" id="spine-light" aria-hidden="true">
-    <img class="spine-light__video" src="illustrations/N2-light-emergence-style-v2.jpg" alt="" />
-  </div>
-
-  <!-- 序幕 — HERO（滿版電影感 banner；影片改由上方固定背景提供） -->
-  <section class="full-bleed banner banner--hero banner--hero-fixed" id="ch-prologue">
+  <div class="dark-stage">
+  <!-- 序幕 — HERO（靜態章節圖背景；影片已移除） -->
+  <section class="full-bleed banner banner--hero banner--hero-fixed" id="ch-prologue" data-stage="0">
     <div class="banner__inner">
       <p class="kicker">技術文件 · 經典案例 · 開放原始碼大公開</p>
       <h1>看不見的平台清道夫</h1>
@@ -47,31 +38,17 @@ import '../styles/story.css';
     </div>
   </section>
 
-  <!-- ───────── 第一章·魔高一尺（整屏底圖→變黑→掀幕進場） ───────── -->
-  <ChapterIntro
-    id="ch-1"
-    num="第一章"
-    name="魔高一尺"
-    desc="為什麼要審查、為什麼非機器不可"
-    img="illustrations/N1-dark-underworld-reference.jpg"
-    alt="暗色調的地下世界意象：垃圾與惡意內容自陰影中湧出"
-  />
+  <!-- ───────── 第一章·魔高一尺（背景＝N1 鬼怪暗底，常駐變暗） ───────── -->
+  <ChapterIntro id="ch-1" num="第一章" name="魔高一尺" desc="為什麼要審查、為什麼非機器不可" stage={1} />
 
-  <!-- 核心 sticky scrollytelling：綠紅 feed 隨捲動變狀態 -->
-  <StickyScroller />
+  <!-- 核心 sticky scrollytelling：綠紅 feed 隨捲動變狀態（疊在第一章 N1 暗底上） -->
+  <div data-stage="1"><StickyScroller /></div>
 
-  <!-- ───────── 第二章·道高一尺（整屏底圖→變黑→掀幕進場） ───────── -->
-  <ChapterIntro
-    id="ch-2"
-    num="第二章"
-    name="道高一尺"
-    desc="不同的打掃方法：門檻、集團、人工、排序"
-    img="illustrations/F2-moderation-spectrum.jpg"
-    alt="審查光譜意象：從打掃、降權到註銷，不同力度的處置工具"
-  />
+  <!-- ───────── 第二章·道高一尺（背景＝F2 打掃光譜暗底） ───────── -->
+  <ChapterIntro id="ch-2" num="第二章" name="道高一尺" desc="不同的打掃方法：門檻、集團、人工、排序" stage={2} />
 
   <!-- ① 換你親手試 · 偽陽性滑桿（那條門檻你會設在哪）-->
-  <section class="scene scene-wide reveal">
+  <section class="scene scene-wide reveal" data-stage="2">
     <p class="kicker">換你親手試 · 招牌互動</p>
     <h2>那條門檻，你會設在哪？</h2>
     <p>方法再多，總會誤判。換你站到審查者那一側，親手拖那條線——往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）：尤其是看起來像垃圾的政治評論、學術考據、防詐科普。</p>
@@ -81,7 +58,7 @@ import '../styles/story.css';
   </section>
 
   <!-- ② 內嵌互動 · 集團偵測 Ring（偵測抓的是行為樣態）-->
-  <section class="scene scene-wide reveal">
+  <section class="scene scene-wide reveal" data-stage="2">
     <p class="kicker">親手試 · 集團偵測</p>
     <h2>有些垃圾單篇分數很低，卻是一整群</h2>
     <p>先按「單篇模型偵測」，只有兩個明顯垃圾被抓；再按「集團偵測」，八個分數低到像正常內容的「翻譯社」帳號，因為同模板、多帳號、短時間，整群一次現形。偵測抓的是行為樣態，不是字句。</p>
@@ -93,7 +70,7 @@ import '../styles/story.css';
   </section>
 
   <!-- ③ 模型之外的工具箱 -->
-  <section class="scene scene-wide reveal">
+  <section class="scene scene-wide reveal" data-stage="2">
     <p class="kicker">模型之外</p>
     <h2>光靠模型不夠</h2>
     <div class="toolkit">
@@ -118,7 +95,7 @@ import '../styles/story.css';
   </section>
 
   <!-- 內嵌互動 · 首頁排序對照（第二章動手 beat：決定誰被看見也是治理）-->
-  <section class="scene scene-wide reveal">
+  <section class="scene scene-wide reveal" data-stage="2">
     <p class="kicker">親手試 · 首頁排序</p>
     <h2>誰能上首頁？是誰設計的？</h2>
     <p>方法不只「擋垃圾」，也包含「怎麼決定誰被看見」。先猜哪一則會被演算法排到首頁第一，再看時間序與演算法序的對照——分數裡留言權重最高，獎勵的是引發討論，不是純曝光。</p>
@@ -129,18 +106,11 @@ import '../styles/story.css';
     <p style="text-align:center"><a class="read-more" href="ranking">深入：首頁排序與末日爆滑</a></p>
   </section>
 
-  <!-- ───────── 第三章·自己的帳號自己救（整屏底圖→變黑→掀幕進場） ───────── -->
-  <ChapterIntro
-    id="ch-3"
-    num="第三章"
-    name="自己的帳號自己救"
-    desc="誤刪無法歸零——透明的審查、可信的救濟"
-    img="illustrations/self-rescue.jpg"
-    alt="使用者自己把被誤刪的內容救回來的意象：申訴、救濟與抗審查"
-  />
+  <!-- ───────── 第三章·自己的帳號自己救（背景＝self-rescue 暗底） ───────── -->
+  <ChapterIntro id="ch-3" num="第三章" name="自己的帳號自己救" desc="誤刪無法歸零——透明的審查、可信的救濟" stage={3} />
 
   <!-- 內嵌互動 · 決策邊界（為什麼一定有誤殺：誤刪無法歸零的幾何）-->
-  <section class="scene scene-wide reveal">
+  <section class="scene scene-wide reveal" data-stage="3">
     <p class="kicker">親手試 · 決策邊界</p>
     <h2>為什麼一定有人被誤刪？</h2>
     <p>把每篇內容放進二維特徵空間：綠點（正常）聚在左下、紅點（垃圾）聚在右上，中間是兩者重疊的灰色地帶。拖那條分界線——你會看到，<strong>同一條線同時誤殺一些正常、又放過一些垃圾</strong>，這就是偽陽性無法歸零的幾何原因。</p>
@@ -151,7 +121,7 @@ import '../styles/story.css';
   </section>
 
   <!-- 救濟與透明（第三章主軸：誤刪救得回來、整套審查可被檢驗）-->
-  <section class="scene scene-wide reveal">
+  <section class="scene scene-wide reveal" data-stage="3">
     <p class="kicker">那怎樣會更好？</p>
     <h2>誤刪了，怎麼救回來？</h2>
     <p>既然誤刪無法歸零，真正的問題就不只是「少殺一點」，而是<strong>被誤殺的人能不能被救回來</strong>，以及整套審查能不能被外界檢驗。讓平台治理可被信任的，是這三件事：</p>
@@ -171,10 +141,8 @@ import '../styles/story.css';
     </div>
   </section>
 
-  <!-- 更大的問題（抵達光明：暗→光弧線的 resolution，暖金花園光暈）
-       多加 scene--light-spine：標記「重見光明」光吞噬層的落地點 + 暖金光上的可讀性處理。 -->
-  <section class="scene scene-wide reveal scene--light scene--light-spine">
-    <div class="scene-glow" aria-hidden="true"></div>
+  <!-- 更大的問題（resolution：背景＝N2 light-emergence 暗底，暖金光透出） -->
+  <section class="scene scene-wide reveal" data-stage="4">
     <p class="kicker">更大的問題</p>
     <h2>審查與抗審查，是同一件事的兩面</h2>
     <div class="bigq">
@@ -202,19 +170,11 @@ import '../styles/story.css';
     </div>
   </section>
 
-  <!-- ───────── 附錄·源碼與政策模組（提燈影片開場→變黑→掀幕進場） ───────── -->
-  <ChapterIntro
-    id="ch-appendix"
-    num="附錄"
-    name="源碼・政策模組"
-    desc="這個站本身就是「透明開盒」：偵測、處置、資料集都開放可取用"
-    img="illustrations/crowd.jpg"
-    alt="群眾提燈守望的意象：守望相助隊一起把垃圾收走，公開可稽核"
-    video="crowd-lantern-high-motion-4s"
-  />
+  <!-- ───────── 附錄·源碼與政策模組（背景＝crowd 提燈守望暗底，靜態圖） ───────── -->
+  <ChapterIntro id="ch-appendix" num="附錄" name="源碼・政策模組" desc="這個站本身就是「透明開盒」：偵測、處置、資料集都開放可取用" stage={5} />
 
   <!-- 附錄內容 -->
-  <section class="scene reveal" id="appendix-content">
+  <section class="scene reveal" id="appendix-content" data-stage="5">
     <h2>可參考、可使用的源碼模組與政策模組</h2>
     <p>這個站本身就是「透明開盒」：偵測模型、處置流程、垃圾資料集與合規對照都開放可取用——歡迎別的平台拿去打掃。</p>
     <div class="bigq">
@@ -237,6 +197,7 @@ import '../styles/story.css';
       <a class="read-more" href="start">看全部 14 個主題 →</a>
     </p>
   </section>
+  </div>
 </BaseLayout>
 
 <script is:inline>
@@ -256,125 +217,50 @@ import '../styles/story.css';
 </script>
 
 <script>
-  // ───────── 電影感固定背景：隨捲動變暗 → 淡出（GSAP ScrollTrigger） ─────────
-  // 完全獨立於 StickyScroller 的 timeline，只操作頁面級的 #hero-bg / #hero-dark。
-  // 觸發與範圍：
-  //   ① 變暗：以 #scrolly（核心 scrollytelling）為 trigger，從它頂端進場（花園漸暗）
-  //      推到中段達到峰值；到後段「收斂」讓位給 scrolly 自己的 .scrolly-atmos，
-  //      避免兩層暗幕疊起來變死黑。
-  //   ② 淡出：捲過 #scrolly、抵達第二章休息點(#ch-2) 時，整組（影片+暗幕）opacity→0，
-  //      下方章節回到 body 暖米底（影片不透在後面）。
-  import gsap from 'gsap';
-  import ScrollTrigger from 'gsap/ScrollTrigger';
+  // ───────── 固定章節背景：依捲動位置「交叉淡入」該章靜態圖（漸層轉場）＋調整暗幕 ─────────
+  // 內容(.dark-stage)疊在 #stage(各章靜態圖)＋#stage-scrim(暗幕)之上。
+  // 每個帶 data-stage 的區段(章節標題段/scene/StickyScroller 包裹)宣告它屬於第幾章；
+  // 捲到誰，就把對應 .stage__img 設 is-active（CSS opacity transition 做平滑漸層轉場），
+  // 並依該章把暗幕透明度調到「白字可讀」的程度。不用影片、不硬切。
+  function initStage() {
+    const stage = document.getElementById('stage');
+    const scrim = document.getElementById('stage-scrim');
+    if (!stage || stage.dataset.inited) return;
+    stage.dataset.inited = '1';
+    const imgs = Array.prototype.slice.call(stage.querySelectorAll('.stage__img'));
+    const markers = Array.prototype.slice.call(document.querySelectorAll('[data-stage]'));
+    // 每章暗幕強度（白字可讀；序幕較亮、resolution 留些暖光、附錄稍暗）
+    const scrimByStage = [0.40, 0.50, 0.58, 0.58, 0.50, 0.64];
 
-  gsap.registerPlugin(ScrollTrigger);
-
-  function initHeroBg() {
-    const heroBg = document.getElementById('hero-bg');
-    const heroDark = document.getElementById('hero-dark');
-    const scrolly = document.getElementById('scrolly');
-    if (!heroBg || !heroDark || heroBg.dataset.inited) return;
-    heroBg.dataset.inited = '1';
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // reduced-motion：不做捲動變暗動畫；留一層溫和定值暗幕確保標題可讀，影片照常輪播。
-    if (reduce) {
-      gsap.set(heroDark, { opacity: 0.34 });
-      return;
+    let current = -1;
+    function setStage(idx) {
+      if (idx === current) return;
+      current = idx;
+      imgs.forEach(function (im) { im.classList.toggle('is-active', +im.dataset.stageImg === idx); });
+      if (scrim) scrim.style.opacity = String(scrimByStage[idx] != null ? scrimByStage[idx] : 0.55);
     }
 
-    // 安全保險：沒有 #scrolly 時退化成「只在序幕區段附近顯示、之後淡出」。
-    const ch2 = document.getElementById('ch-2');
-    const fadeRef = scrolly || ch2 || document.getElementById('ch-1');
-    if (!fadeRef) { gsap.set(heroDark, { opacity: 0.34 }); return; }
-
-    // 初始：暗幕清亮（變暗交給捲動），影片背景全顯示。
-    gsap.set(heroDark, { opacity: 0 });
-    gsap.set(heroBg, { opacity: 1 });
-
-    // 單一時間軸（關鍵：避免兩個 scrub trigger 同時寫 hero-bg/hero-dark 的 opacity 互相打架）。
-    //   trigger=#scrolly：top bottom 進場 → bottom top 離場（整段 scrollytelling 捲過視窗）。
-    //   前 ~88%：花園隨垃圾湧入而變暗，後段收斂讓位 scrolly 自己的 .scrolly-atmos（不過黑）；
-    //   末 ~12%：StickyScroller 捲完時整組（影片+暗幕）淡出 →0。電影區只含 hero+魔高一尺+StickyScroller；
-    //   其後的章節與內嵌互動（RingDetector/排序/決策邊界…）都是暖米底實心元件，落在 body 暖米底、不疊在影片上。
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: fadeRef,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-      },
-    });
-    tl.to(heroDark, { opacity: 0.18, ease: 'none', duration: 0.10 })            // 進場：花園起霧
-      .to(heroDark, { opacity: 0.52, ease: 'none', duration: 0.40 })            // 中段：垃圾湧入/審查，最暗
-      .to(heroDark, { opacity: 0.30, ease: 'none', duration: 0.38 })            // 後段：收斂讓位 scrolly-atmos
-      .to([heroBg, heroDark], { opacity: 0, ease: 'power1.inOut', duration: 0.12 }); // 末段：整組淡出離場
-
-    // 圖片/字體載入造成版面位移 → 刷新 ScrollTrigger 起訖位置（否則 trigger 落點會偏，淡出對不準）。
-    window.addEventListener('load', () => ScrollTrigger.refresh());
-    let rt;
-    window.addEventListener('resize', () => {
-      clearTimeout(rt);
-      rt = setTimeout(() => ScrollTrigger.refresh(), 200);
-    });
-  }
-
-  // ───────── 重見光明：resolution 暖金光吞噬轉場（獨立 ScrollTrigger） ─────────
-  // 與上方 hero 那條 timeline 完全獨立：只操作頁面級的 #spine-light，絕不碰 #hero-bg/#hero-dark。
-  // 觸發與範圍：
-  //   trigger=.scene--light（結論「更大的問題」），scrub 跟著捲動。
-  //   進場（top bottom → top 35%）：光層 opacity 0→1、輕微 scale 1.06→1（光吞噬/重見光明，bloom 感）。
-  //   停留：捲過結論主體時維持滿亮，讓 kicker/h2/三張 bigq 卡浮在暖金光上。
-  //   離場（bottom 70% → bottom top，進入附錄前）：柔和淡回 opacity 0，確保附錄回到 body 暖米底、內容可讀。
-  function initSpineLight() {
-    const lightBg = document.getElementById('spine-light');
-    const lightScene = document.querySelector('.scene--light');
-    if (!lightBg || lightBg.dataset.inited) return;
-    lightBg.dataset.inited = '1';
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // reduced-motion：不做湧現動畫；給光層一個溫和定值微亮（讓既有 .scene-glow 仍是主角），不報錯。
-    if (reduce) {
-      gsap.set(lightBg, { opacity: 0.16, scale: 1 });
-      return;
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const y = window.scrollY + window.innerHeight * 0.42; // 視窗 42% 線：誰的頂端越過它，誰就是當前章
+      let active = 0;
+      for (let i = 0; i < markers.length; i++) {
+        const m = markers[i];
+        if (m.getBoundingClientRect().top + window.scrollY <= y) active = +m.getAttribute('data-stage');
+      }
+      setStage(active);
     }
-    // 沒有結論區（理論上不會）就讓既有 .scene-glow 撐場，光層維持隱形。
-    if (!lightScene) { gsap.set(lightBg, { opacity: 0 }); return; }
-
-    // 初始：光層隱形、略放大（湧現起點）。
-    gsap.set(lightBg, { opacity: 0, scale: 1.06, transformOrigin: '50% 44%' });
-
-    // 湧現：以結論區進場為觸發，opacity 0→1 + scale 收束（bloom）。
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: lightScene,
-        start: 'top bottom',   // 結論區頂端剛進視窗底部 → 光開始湧現
-        end: 'top 35%',        // 結論區頂端推到視窗 35% 處 → 光全滿
-        scrub: 1,
-      },
-    }).fromTo(lightBg,
-      { opacity: 0, scale: 1.06 },
-      { opacity: 1, scale: 1, ease: 'power2.out', duration: 1 });
-
-    // 離場：捲過結論主體、即將進入附錄時柔和淡回，避免暖光殘留在附錄上影響可讀性。
-    gsap.to(lightBg, {
-      opacity: 0, ease: 'power1.in',
-      scrollTrigger: {
-        trigger: lightScene,
-        start: 'bottom 70%',   // 結論區底端升到視窗 70% 處 → 開始退光
-        end: 'bottom top',     // 結論區整段捲過視窗頂 → 光退盡，附錄回暖米底
-        scrub: 1,
-      },
-    });
+    function onScroll() { if (!ticking) { window.requestAnimationFrame(update); ticking = true; } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeroBg);
-    document.addEventListener('DOMContentLoaded', initSpineLight);
+    document.addEventListener('DOMContentLoaded', initStage);
   } else {
-    initHeroBg();
-    initSpineLight();
+    initStage();
   }
-  document.addEventListener('astro:page-load', initHeroBg);
-  document.addEventListener('astro:page-load', initSpineLight);
+  document.addEventListener('astro:page-load', initStage);
 </script>

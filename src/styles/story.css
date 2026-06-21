@@ -23,12 +23,41 @@ html.js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .
 html.js .reveal.in-view { opacity: 1; transform: none; }
 
 /* 舊 .story-hero 已移除（hero 改用 ds.css 的 .banner--hero 滿版）；.scroll-cue 仍用於 hero */
-/* 抵達光明：resolution 段的暖金花園光暈（暗→光弧線收束） */
-.scene--light { position: relative; }
-.scene--light > :not(.scene-glow) { position: relative; z-index: 1; }
-.scene-glow { position: absolute; top: -10%; bottom: -10%; left: 50%; transform: translateX(-50%); width: 100vw;
-  z-index: 0; pointer-events: none;
-  background: radial-gradient(55% 52% at 50% 44%, color-mix(in srgb, #d9b24a 15%, transparent), transparent 72%); }
+
+/* ===========================================================================
+   首頁章節暗色舞台：固定的章節靜態圖（交叉淡入＝漸層轉場）＋暗幕，內容疊在上面、章外文字轉白
+   =========================================================================== */
+.stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: #0e0b22; }
+.stage__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;
+  opacity: 0; transition: opacity .9s ease; will-change: opacity; }
+.stage__img.is-active { opacity: 1; }
+.stage-scrim { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .40;
+  transition: opacity .9s ease; will-change: opacity;
+  background: linear-gradient(180deg, rgba(8,7,14,.78) 0%, rgba(8,7,14,.6) 44%, rgba(8,7,14,.9) 100%); }
+
+/* 內容層：疊在舞台之上 */
+.dark-stage { position: relative; z-index: 2; }
+
+/* 暗色舞台上的「章外」文字轉白（卡片內文字維持原樣，卡片本身是淺色玻璃/紙面） */
+.dark-stage .scene > h2 { color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,.55), 0 1px 4px rgba(0,0,0,.5); }
+.dark-stage .scene > p { color: rgba(255,255,255,.92); text-shadow: 0 1px 12px rgba(0,0,0,.6); }
+.dark-stage .scene > p strong { color: #fff; }
+.dark-stage .scene > .kicker { color: rgba(255,255,255,.8); }
+/* 互動小工具在暗章圖上：給一層淺色玻璃面板，元件內既有深字/玻璃卡維持原樣可讀。
+   （把每個互動「深度玻璃化」＝下一輪「三個互動玻璃化」再做） */
+.dark-stage .figure,
+.dark-stage .fp { background: rgba(250,249,246,.94); border: 1px solid rgba(255,255,255,.55);
+  border-radius: 20px; padding: clamp(16px, 2.4vw, 26px); box-shadow: 0 18px 52px rgba(0,0,0,.42); }
+.dark-stage .fp { max-width: 880px; margin-left: auto; margin-right: auto; }
+/* 深入藥丸在暗底上提亮 */
+.dark-stage .read-more { color: #c3b6ff; border-color: rgba(165,148,255,.5);
+  background: color-mix(in srgb, #7258FF 18%, transparent); }
+.dark-stage .read-more:hover { color: #fff; border-color: #b3a4ff;
+  background: color-mix(in srgb, #7258FF 32%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage__img, .stage-scrim { transition: none; }
+}
 
 .scroll-cue { margin-top: 36px; font-family: var(--font-ui); font-size: 14px; color: var(--accent); }
 .scroll-cue::after { content: "↓"; display: block; font-size: 22px; animation: bob 1.6s ease-in-out infinite; }
@@ -130,19 +159,9 @@ html.js .feed-flood.in-view .card-mini:nth-child(n) { transition-delay: calc(var
 .bigq a:hover .bigq-arr { transform: translateX(5px); }
 .bigq p { margin: 0; font-size: 15px; color: var(--ink-soft); line-height: 1.7; }
 
-/* ---- 重見光明：結論區在暖金光吞噬層（#spine-light）上的可讀性處理 ----
-   亮場（非白字）：標題/kicker 維持深墨字（暖金上對比足），靠極淡白 scrim + 輕陰影把字「托」清楚，
-   呼應 hero 的 .chapter-rest--on-media（白字+scrim）思路，但這裡是亮底，故用亮 scrim、不用白字。
-   三張 bigq 卡提高底不透明度＋柔陰影，浮在暖光上不被沖淡。只加新 class，不動既有 .scene--light/.scene-glow。 */
-.scene--light-spine .kicker,
-.scene--light-spine > h2 { position: relative; }
-/* 標題塊一層幾乎透明的暖白柔光 scrim：托住深墨字，亮場上仍清晰、和諧不突兀 */
-.scene--light-spine > h2 { text-shadow: 0 1px 12px rgba(255, 252, 240, .85), 0 1px 2px rgba(255, 252, 240, .9); }
-.scene--light-spine .kicker { text-shadow: 0 1px 8px rgba(255, 252, 240, .9); }
-/* bigq 卡：在暖金光上提高卡底實心度＋柔陰影，維持層次與可讀（仍是亮場暖調，不轉白字） */
-.scene--light-spine .bigq-card { background: var(--bg-paper);
-  box-shadow: 0 6px 22px rgba(120, 92, 30, .16), 0 1px 3px rgba(120, 92, 30, .12); }
-.scene--light-spine .bigq-body { background: rgba(255, 255, 255, .72); }
+/* 暗色舞台上的 bigq 卡：保持淺色玻璃卡浮在暗章圖上（卡內維持深字、可讀） */
+.dark-stage .bigq-card { background: var(--bg-paper);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, .3), 0 1px 3px rgba(0, 0, 0, .25); }
 
 /* ---- 無障礙 / reduced-motion ---- */
 @media (prefers-reduced-motion: reduce) {

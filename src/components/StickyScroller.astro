@@ -183,6 +183,8 @@ const steps = [
     padding: 3px 12px; border-radius: 999px; box-shadow: 0 4px 12px rgba(70,50,160,.35); }
 
   .sg-cap { text-align: center; font: 700 15px var(--font-ui); margin: 14px 0 0; color: var(--ink); min-height: 1.4em; }
+  /* 首頁暗色舞台：StickyScroller 落在第一章 N1 暗底上，loose 標題轉白 */
+  :global(.dark-stage) .sg-cap { color: #fff; text-shadow: 0 1px 10px rgba(0,0,0,.6); }
 
   .scrolly-step { min-height: 90vh; display: flex; align-items: center; }
   .scrolly-step:first-child { min-height: 55vh; }

@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingNav from '../../components/ReadingNav.astro';
+import ChapterHero from '../../components/ChapterHero.astro';
+import Cite from '../../components/Cite.astro';
+import '../../styles/story.css';
+---
+<BaseLayout
+  title="敢開源的反直覺帳：分層揭露與開放資料集方法論"
+  description="拆解開源、透明、共創三段遞進，敏感參數延時 6–12 個月的取捨，以及一份去識別資料集如何在安全與開放之間落地。"
+>
+  <ChapterHero
+    kicker="延伸閱讀 · 方法論與資料"
+    title="敢開源的反直覺帳：<br>分層揭露與開放資料集方法論"
+    img="illustrations/data.jpg"
+    alt="抽象資料流與標註欄位的插畫"
+  />
+
+  <p class="lead">把一般平台視為商業機密的審查演算法攤開來，是這個計畫的方法，也是它的主張。但「攤開」從來不是一個開關，它比較像一道需要逐層設計的光譜。哪些立即公開、哪些延時、哪些去識別後分級釋出，每一刀都是治理判斷，而不是套用技術預設值。</p>
+
+  <h2>開源不會自動變成透明，透明也不會自動變成共創</h2>
+
+  <p>關於「公開」這件事，計畫內部反覆校準的重點，與其放在「要不要公開」，更多是放在公開之後到底發生了什麼。把程式碼丟到 GitHub 上，常被當成透明度的終點。但在 g0v Summit 的討論裡，主持人把它退回成第一步：<Cite src="g0v Summit 2026 校正版逐字稿（草案，非現場逐字）" quote="如果只是把程式碼丟出來，其實不等於透明。因為一般使用者不一定能讀懂程式碼，也不一定知道資料怎麼來，規則怎麼被套用，模型怎麼影響結果。">讓一般使用者讀不懂程式碼的關鍵，是它預設了讀者已經是工程師</Cite>。</p>
+
+  <blockquote class="callout callout--quote">「如果只是把程式碼丟出來，其實不等於透明……所以開源只是第一步。後面還需要文件、案例、可理解的說明、申訴管道，以及社群能夠參與的工作流程。」</blockquote>
+
+  <p>這句話其實界定了本網站存在的理由：把 repo 裡的 enum、SQL 過濾與門檻參數，翻譯成可讀、可討論、可申訴的形式。更深的一刀來自使用者端。長期使用者、同時有 PTT 自治經驗的 Denken，在工作坊上把「開放」與「共創」之間的距離點破：<Cite src="g0v Summit 2026 簡報文字記錄（Denken 觀察 2）" quote="開源 ≠ 社群參與；開放 API ≠ 使用者能影響治理決策。" url="https://github.com/thematters/spam-detection-scaffold">Matters 走到了開放 API、開源 spam-detection-scaffold，卻沒有走到共創</Cite>。他親身參與多次公開工程會議，最後常常發現「只有我」。</p>
+
+  <p>於是這裡有一個三段遞進，每一段的落差都比上一段更難跨：<strong>開源 ≠ 透明</strong>（程式碼公開，但不可讀）；<strong>透明 ≠ 共創</strong>（看得懂，但無法影響決策）。Denken 的結論不是責怪「Matters 不夠好」，而是給出更謙遜的一句：不同社群會長出不同的治理形態，平台應該支撐它，而不是替它設計。透明開盒真正費力的工程，不在公開的那一刻，而在公開之後。後面這段才是計畫尚未完成、也最容易被高估的部分。</p>
+
+  <h2>為什麼是 Matters 敢開源：一筆大平台算不過來的帳</h2>
+
+  <p>大多數平台不公開審查邏輯，理由很實在：偵測門檻一旦攤開，攻擊者就能據此最佳化規避策略。這個顧慮計畫也誠實承認，它確實是開源的最大風險之一。但 Matters 願意賭的，是一筆規模特殊的帳。在 TWIGF 2026 工作坊的校正版逐字稿（草案，非現場逐字）裡，這筆帳被講得很直白：</p>
+
+  <blockquote class="callout callout--quote">「我們想說我們已經太小了，開源出去，feedback 已經換到更多了，再多一點點沒關係。」</blockquote>
+
+  <p>對一個中小型平台，開源換到的社群信任與外部回饋，已經大於被繞過的邊際風險。同一件事在超大型平台上算出來是負的，因為攤開等於把規避地圖直接交給對手；在小平台上卻是正的，因為它本來缺的不是防線，而是願意一起來看防線的人。所以這不是一條普世真理，而是被自身規模與處境決定的局部結論。</p>
+
+  <h2>分層開源：程式碼立即公開，敏感參數延時 6–12 個月</h2>
+
+  <p>「敢開源」不等於「全部公開」。真正落地的折衷是<strong>分層開源</strong>：治理流程與程式碼可立即公開、可檢驗；至於<strong>可被直接濫用的敏感參數</strong>，例如 spam 判定門檻、帳號叢集規則、門檻掃描細節，則延遲六到十二個月才釋出，或先做抽象化處理。</p>
+
+  <p>這道分層有它的工程根據。判定門檻 <code>spamThreshold</code> 存在 <code>feature_flag</code> 資料表、走 Redis 快取，調整門檻不必重新部署。也就是說，它本身就是一項可即時調動的營運資產，公開它幾乎等於公開規避說明書。簡報把這個取捨講得很白：<Cite src="《自由與管制的天平》課堂簡報（胡博硯老師課堂, 2026-05-26）" quote="折衷：分層開源——程式碼公開，但敏感參數延遲發布 6–12 個月。">理論上一切都該公開，現實上門檻一旦公開，攻擊者就能調整輸入避開偵測</Cite>。</p>
+
+  <blockquote class="callout callout--quote">「sustaining 一個 censorship-resistant 平台，很多時候要犧牲透明度來換安全。」</blockquote>
+
+  <p>這句結論略顯悲涼，卻很誠實。它和守望相助隊「處置行為全公開」形成一組刻意的張力：同一個平台，在<strong>處置行為</strong>上追求極致透明（問責），在<strong>偵測參數</strong>上卻必須延遲揭露（安全）。哪些該即時透明、哪些該延時，從來不是技術問題，而是治理判斷。研究報告也因此全程用【內部】標記，把這道分層落實在文件層級。</p>
+
+  <h2>一份還沒發布的資料集，如何在安全與開放之間設計</h2>
+
+  <p>開源的下一步是資料公開。<Cite src="matters-spam-dataset README">matters-spam-dataset 是一個把平台累積的 spam 標註語料去識別後對外發布的研究資料集</Cite>，但它目前的狀態必須先講清楚：<strong>它尚未正式發布</strong>。repo 的路線圖把法務閘口列為 P0 且仍標「待法務」，包括確認服務條款含再散布／衍生條款、法務複核 data card 與資料使用協議、輪替任何曾外洩的 token；而真正跑去識別 pipeline、推上 Hugging Face 的 P2 也仍是待辦。<Cite src="matters-spam-dataset README（分階段路線圖）" quote="P0 平台授權 ✅ / ToS 再散布條款核對 + 法務複核 DUA ⬜ 待法務">平台層授權已取得，但發布前的法律與資料抽取關卡都還沒過</Cite>。所以下文描述的是一套<strong>已設計、已落地成程式碼，但尚未對外開閘</strong>的方法。</p>
+
+  <h3>規模與授權</h3>
+
+  <p>首發版本 v2026.06 以文章為主，留言與動態規劃以增量釋出。規模與標籤分佈來自 repo 的 data card 與 dist manifest（站方自述，未經第三方獨立驗證）：</p>
+
+  <div class="stat-row">
+    <div class="stat board">
+      <div class="stat__num">425,689</div>
+      <div class="stat__label">v2026.06 文章總筆數<span class="stat__delta">站方自述</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">406,850</div>
+      <div class="stat__label">標為 spam<span class="stat__delta">站方自述</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">18,839</div>
+      <div class="stat__label">標為 ham<span class="stat__delta">站方自述</span></div>
+    </div>
+  </div>
+
+  <p>授權不是單一一條，而是依產出與來源分流。資料整體採 <strong>CC BY-NC-ND 4.0 相容授權</strong>並受資料使用協議（DUA）約束；但單筆樣本因為承襲原始內容授權，可能是 CC0、CC BY-NC-ND 2.0 或 CC BY-NC-ND 4.0。v2026.06 為此<strong>只收 CC／CC0 來源、把保留所有權利（ARR）的內容一律排除</strong>，manifest 記錄為此移除了 436 筆原本會被舊政策放行的 ARR spam。<Cite src="matters-spam-dataset LICENSE / DATACARD" quote="資料：CC BY-NC-ND 4.0 相容授權；單筆來源含 CC0、CC BY-NC-ND 2.0、CC BY-NC-ND 4.0，且須遵守 DUA">程式碼是 MIT，資料是 CC BY-NC-ND 4.0——兩套授權刻意分開</Cite>。發布通道則設計成「靜態走 Hugging Face、動態走自建 API」：大量下載與重現用 HF 的 gated dataset（需同意 DUA、以 git tag 標版本），查增量與回貢用自建 API，因為兩種需求互相矛盾，所以分開做。</p>
+
+  <h3>公開去識別 ≠ 內部去識別</h3>
+
+  <p>這份資料集最值得政策圈與工程圈細看的，是它把「內部用」與「對外公開」當成兩種不同的去識別等級。內部的訓練語料只雜湊 id、保留原文，因為原文裡的 LINE ID、電話、錢包地址、返佣連結，既是個資，也是最強的 spam 訊號。公開版必須在「保留 spam 結構訊號」與「不外洩真人聯絡方式」之間取得平衡，做法是三層處理：</p>
+
+  <div class="board">
+    <p><strong>① ID 重鍵（不可反推）</strong>：原始 user／comment／article id 用一把獨立的 <code>release_salt</code> 重新做 HMAC-SHA256，輸出前 16 個十六進位字元當公開 id。這把 salt 刻意<strong>不等於</strong>營運用的 <code>HASH_SALT</code>，且<strong>發布後即封存／銷毀</strong>，確保即使拿到公開資料，也無法反推回平台內部 id。<Cite src="matters-spam-dataset schema/dataset_schema.json（id 欄位）" quote="= HMAC-SHA256(release_salt, 內部 comment_hash/article_hash) 取前 16 hex。release_salt 與營運 HASH_SALT 不同且不隨資料公開，發佈後即封存，確保無法反推平台內部 id。">重鍵用獨立 salt、發布後封存，是「公開 id 不可反推內部 id」的關鍵設計</Cite>。</p>
+    <p><strong>② 聯絡方式佔位符正規化</strong>：文本裡的聯絡方式被換成帶型別的佔位符，包括 <code>&lt;PHONE&gt;</code>、<code>&lt;EMAIL&gt;</code>、<code>&lt;LINE_ID&gt;</code>、<code>&lt;WECHAT&gt;</code>、<code>&lt;TELEGRAM&gt;</code>、<code>&lt;QQ&gt;</code>、<code>&lt;WALLET&gt;</code>、<code>&lt;URL&gt;</code>、<code>&lt;MENTION&gt;</code>、<code>&lt;NUM&gt;</code>。URL 只保留 host、去掉 path 與 query，避免返佣碼與追蹤碼夾帶 PII。佔位符讓模型仍學得到「這裡有一個 LINE 帳號在招攬」的 pattern，卻不外洩真實帳號。</p>
+    <p><strong>③ 準識別子粗化</strong>：時間粗化到「年-月」桶（<code>created_bucket</code>），不提供精確 timestamp，降低靠時間反推個案的風險。</p>
+  </div>
+
+  <p>pipeline 的程式碼註解裡藏著魔鬼般的細節，恰恰證明去識別不是跑一條 regex 就了事：聯絡方式佔位符化後，後面常殘留「<code>&lt;LINE_ID&gt;:abc888</code>」這種真實 handle，所以要再收尾兩遍，把緊跟佔位符的帳號 token 一併吃掉；錢包地址、QQ 號、被空白拆開的 URL（<code>https:// example.com</code>）也都各自有專門規則。這些細節說明，去識別的品質決定在邊界案例怎麼處理，而非主規則本身。</p>
+
+  <h3>標籤結構與可信度分層</h3>
+
+  <p>資料集沒有把所有標籤都當成等價的真理。每筆樣本除了二元 <code>spam</code>／<code>ham</code>，還帶研究用的 <code>spam_category</code>（seo／gambling／pharma／scam／porn／mlm／circumvention／market_report／other）、<code>label_source</code>（標籤來源）與 <code>label_weight</code>（建議訓練權重，沿用內部 2.0／1.0／0.5 的慣例）。來源的可信度被明白排序：管理員逐篇判定（<code>admin_set_spam</code>）與人工矯正（<code>human_relabel</code>）權重 2.0，被推翻的處置（<code>reversed_moderation</code>／<code>restored_content</code>）是「這其實是 ham」的強訊號，純模型輔助（<code>model_assisted</code>）權重最低，資料卡也明文要求下游別把它當 ground truth。</p>
+
+  <p>還有一個容易被忽略卻很關鍵的設計：<strong>test split 凍結</strong>。切分以 id 雜湊穩定分流，test 一經發布就永不變動，當作協作 benchmark 的唯一裁判集，避免不同貢獻者各自洗榜、也避免測試集洩漏。對一個「邀請外部回貢標註、共同訓練」的資料集來說，這是維持評測公正性的地基。</p>
+
+  <h3>誠實揭露殘餘誤標</h3>
+
+  <p>最能看出方法論成熟度的，是資料卡主動寫下自己的瑕疵，而不是藏起來。早期部分正樣本來自一種代理判斷：<strong>「作者被限制 → 名下全部內容標 spam」</strong>。這會誤掃合法的政治評論、學術與創作長文，尤其是華語長文。資料集已用人工加 LLM-judge 矯正約 5,000 筆：</p>
+
+  <div class="stat-row">
+    <div class="stat board">
+      <div class="stat__num">4,980</div>
+      <div class="stat__label">已矯正的代理標籤筆數（human_relabel）<span class="stat__delta">站方自述</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">2,649</div>
+      <div class="stat__label">其中由 spam 改回 ham<span class="stat__delta">站方自述</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">仍有殘留</div>
+      <div class="stat__label">未矯正部分仍可能殘留華語長文誤標（資料卡未量化）</div>
+    </div>
+  </div>
+
+  <p><Cite src="matters-spam-dataset DATACARD（已知標籤噪音）" quote="本資料集已用人工+LLM-judge 矯正 4,980 筆（human_relabel），其中 2,649 筆由 spam 改回 ham，但未矯正部分仍可能殘留華語長文誤標。">資料卡把代理標籤的已知噪音寫進「組成」一節，並用 label_source／label_weight 提供可信度分層</Cite>。被改回 ham 的這類樣本，正是壓低誤殺的關鍵 hard-negative，它教模型認得「長得像被處置、其實是正常內容」的樣子。資料卡同時誠實標出盲點：高變化模板與跨帳號廣告 ring 在純文本層偵測不足。把「我們哪裡還會錯」寫進對外文件，本身就是一種透明度。</p>
+
+  <h3>用法邊界：開放，但不是無條件</h3>
+
+  <p>開放不等於放任。資料使用協議與資料卡把禁止用途寫死：<strong>禁止任何形式的反識別</strong>（不得還原、推測樣本對應的真實作者或聯絡對象，不得與其他資料交叉比對達成反識別）、<strong>禁止商業用途</strong>（受 CC BY-NC-ND 4.0 與 DUA 雙重約束）、禁止用於騷擾或起底、禁止用來訓練生成 spam 或規避偵測的工具。Hugging Face 端設計成 gated，下載前要填用途、勾選同意 DUA。並且保留 PDPA 下的<strong>移除請求</strong>機制：當事人可要求複審或下架，資料集發布 tombstone 後，使用者須在下次同步刪除對應樣本、不得保留原文。一份去識別資料集的「開放」程度，最終由這些邊界條件定義，而不是由筆數定義。</p>
+
+  <h2>分層揭露，既是方法也是回答</h2>
+
+  <p>把這幾段拼起來，會看到一個一致的姿態：透明是一道光譜，而不是開關。程式碼立即公開、敏感參數延時、資料去識別後分級釋出，並在公開之後持續把它翻譯成可讀、可討論、可參與的形式。後面這一段，計畫自己也承認還沒走完。這套分層揭露既是方法，也是這個計畫對「安全與透明能不能兼得」的具體回答：答案不是直接兼得，而是逐項排序、逐層設計，把每一個「公開或延時」的決定攤在桌上，讓它本身也可被檢驗。</p>
+
+  <ReadingNav slug="transparency-method" />
+</BaseLayout>

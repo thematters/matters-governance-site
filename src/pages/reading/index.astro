@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ChapterHero from '../../components/ChapterHero.astro';
+import '../../styles/story.css';
+
+const pages = [
+  { slug: 'why-resist-at-all',    title: '抗審查真的不可或缺嗎',                 desc: '逃生梯、蜜罐與超級市場——把「為何一個小平台值得抗審查」講成可被政策圈理解的論述。', tag: '導論・論述' },
+  { slug: 'platform-meets-law',   title: '當平台遇到法律',                       desc: '公權力請求、侵權 takedown 與管轄分離：一個後台不在台灣、刻意最小化蒐集個資的平台，如何在配合與不過度配合之間取平衡。', tag: '法律・政策' },
+  { slug: 'who-is-a-spammer',     title: '誰是 spammer？帳號主義 vs 作品主義',   desc: '一個真實組織為何始終拒絕定義「誰是 spammer」、相信人會變、用月度切片重評——治理的痕跡而非教科書答案。', tag: '治理利害關係人' },
+  { slug: 'how-the-model-learns', title: '模型怎麼學、怎麼被毒、怎麼救',         desc: '兩代模型並存、小模型勝過笨重模型的反直覺、模型自我中毒與低成本校正——給想複製的工程團隊一份可讀技術敘事。', tag: '開發者' },
+  { slug: 'transparency-method',  title: '敢開源的反直覺帳：分層揭露與開放資料集', desc: '開源不等於透明不等於共創、敏感參數延時揭露，以及一份去識別資料集如何在安全與開放之間設計。', tag: '治理・資料工程' },
+  { slug: 'ncc-41-checklist',     title: '用兩份指引照一次鏡子：NCC 逐條合規自評', desc: '把 NCC 透明度與申訴救濟兩份指引拆成可勾稽的自評表，逐項標達成／部分／缺口，給其他台灣平台一張現成清單。', tag: '合規・政策' },
+  { slug: 'users-on-governance',  title: '使用者怎麼看治理：U1–U5 人聲',          desc: '五位資深匿名用戶的第一手聲音，把「無審查加身份安全是最強隱性激勵」「檢舉是自衛非他律」帶進治理討論。', tag: '政策・設計' },
+  { slug: 'hack-the-platform',    title: 'Hack the Platform：可 fork、可用的小實驗', desc: '與其打造大平台，不如做隱形基礎設施——RSS、守望相助隊、Tor 洋蔥站、IPFS 救援轉換器等可動手玩的對外元件。', tag: '開發者・公民科技' },
+];
+---
+<BaseLayout title="延伸閱讀" description="給政策制定者、開發者與平台治理利害關係人的延伸閱讀：把簡報、逐字稿、訪談、運營史與合規素材整理成可引用的正式長文。">
+  <ChapterHero
+    kicker="延伸閱讀 · 給專業讀者"
+    title="把素材攤開：給專業讀者的延伸閱讀"
+    img="illustrations/seed.jpg"
+    alt="一個打開的木盤裝著分格的種子，有人把發光的種子分送出去" />
+
+  <p class="lead">
+    主敘事的十個章節，是給所有人讀的科普版本。這裡則是為<strong>政策制定者、開發者與平台治理的利害關係人</strong>準備的延伸閱讀——
+    把計畫的簡報、對外逐字稿、內部討論、用戶訪談、運營治理史、工程文件與合規素材，整理成可引用、可查證的正式長文。
+  </p>
+  <p>
+    每篇都標注出處：行內以可展開的引註（＊）連到原始文件、程式碼庫或資料集。涉及人名、個資、政治敏感與法律當事人之處，
+    一律去識別並分層揭露；用戶訪談依知情同意書以代號引述。凡屬「站方自述、尚未由第三方獨立驗證」的數字，文中均會明白標示。
+  </p>
+
+  <div class="bigq-grid">
+    {pages.map((p) => (
+      <a class="board board--hover bigq-card" href={`reading/${p.slug}`} style="--bigq-c:#7258FF">
+        <span class="chip">{p.tag}</span>
+        <span class="bigq-body">
+          <strong>{p.title}</strong>
+          <span>{p.desc}</span>
+        </span>
+      </a>
+    ))}
+  </div>
+
+  <div class="callout">
+    這些頁面是站台主敘事的「深入」延伸，與十個互動章節互補：章節談「發生什麼、為什麼這樣做」，延伸閱讀補上完整的證據、引文與制度脈絡。
+  </div>
+
+  <style>
+    .bigq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 24px 0; }
+    .bigq-grid .bigq-card { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; }
+    .bigq-grid .bigq-card .chip { align-self: flex-start; }
+    .bigq-grid .bigq-body { display: flex; flex-direction: column; gap: 6px; }
+    .bigq-grid .bigq-body strong { font: 800 clamp(17px, 2.4vw, 20px)/1.35 var(--font-ui); color: var(--ink); }
+    .bigq-grid .bigq-body span { font-size: 14.5px; line-height: 1.7; color: var(--ink-soft); }
+    @media (max-width: 680px) { .bigq-grid { grid-template-columns: 1fr; } }
+  </style>
+</BaseLayout>

@@ -1,0 +1,396 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingNav from '../../components/ReadingNav.astro';
+import ChapterHero from '../../components/ChapterHero.astro';
+import Cite from '../../components/Cite.astro';
+import '../../styles/story.css';
+---
+<BaseLayout
+  title="NCC 逐條合規自評"
+  description="把 NCC《透明度報告指引》與《申訴及救濟機制指引》拆成 41 個可勾稽細項，逐項標達成／部分／缺口，給其他台灣平台一張現成的自評表。">
+  <ChapterHero
+    kicker="延伸閱讀 · 合規"
+    title="用兩份指引照一次鏡子：<br>NCC 逐條合規自評"
+    img="illustrations/ncc.jpg"
+    alt="一面鏡子映出兩份攤開的政策指引文件，旁邊放著逐項勾選的清單" />
+
+  <p class="lead">
+    2025 年 12 月 31 日，NCC 同日公布兩份軟性指引，把「平台該揭露什麼、又該怎麼讓被處理的人有路可申訴」逐條寫了下來。
+    一個所有程式碼與使用者協議都公開的平台，理論上是檢驗這兩份指引可行性的最好樣本。這一頁就把那次自評展開成可勾稽的清單。
+  </p>
+
+  <p>
+    在 TWIGF 的座談上，主持人把這件事的緣起講得很直白：因為 Matters 連使用者條款都開源，他索性把兩份指引整份餵進去逐條對照。
+    <Cite src="TWIGF 逐字稿（校正版）" quote="我就把它全部都餵進去來看看合規到什麼程度，結果發現幾乎都合規，大概只剩下一層到兩層，還需要再多做一點而已">他形容自己是「手癢」</Cite>，
+    並由此反過來建議行政部門「藉由回過頭來檢視我們的規範是不是可行」。本頁要做的，正是把那句「大概只剩一兩成」的籠統印象，
+    落成一張逐項標示<strong>達成／部分／缺口</strong>的表。這張表不只給 Matters 自己，也給其他想照同一面鏡子的台灣中小型平台一份現成的勾稽底稿。
+  </p>
+
+  <div class="callout">
+    <strong>本頁的所有合規判定都屬「站方自評」，非 NCC 或任何第三方的官方認證。</strong>
+    凡涉及 NCC 程式變更者，相關工程修改目前僅 merge 到 <code>develop</code> 分支、尚未上 production，一律標示為 <strong>in-progress</strong>；
+    指引條文照兩份 PDF 原文逐條列出，狀態欄反映的是撰稿當下的自我檢核結果。
+  </div>
+
+  <h2>兩份指引在要求什麼</h2>
+
+  <p>
+    兩份指引的分工，其實對應了平台治理的兩個面向：一份管「平台對外說了多少」，一份管「被平台處理的人有沒有路可走」。
+  </p>
+
+  <p>
+    <strong>《網際網路服務提供者透明度報告指引》</strong>把揭露義務分成基礎與進階兩層，各七項。基礎層要求平台
+    <Cite src="NCC 透明度報告指引" quote="定期（至少每年度）公布網際網路服務提供者涉及我國業務之透明度報告並具備正體中文版本" url="https://www.ncc.gov.tw">以正體中文、至少每年度發布報告</Cite>，
+    並揭露內容調控的依據、統計區間與原因類別、處理結果與自動化工具使用情形、申訴救濟實施情形，還有一個對抗審查平台特別敏感的項目，
+    <Cite src="NCC 透明度報告指引" quote="揭露公部門要求提供網際網路服務使用者資料之相關資訊，包括：1、要求之單位⋯2、要求之法源依據⋯6、網際網路服務提供者回應公部門要求之數量及比例">公部門要求提供使用者資料的件數、機關、法源與回應比例</Cite>，
+    加上隱私政策與重大政策變更公告。進階層再往上疊：內容調控的判斷標準與資源分配、網路安全與事前預防、個資分享運用、
+    <Cite src="NCC 透明度報告指引" quote="說明推薦系統與產品介面如何提升網際網路服務使用者資訊自主能力，或緩解過濾氣泡（filter bubble）、同溫層效應之產生">推薦系統與產品介面設計機制</Cite>、
+    多方利害關係人交流、公私協力，以及數位素養推廣。
+  </p>
+
+  <p>
+    <strong>《網際網路服務使用者申訴及救濟機制指引》</strong>的設計起點，是依「侵害來源」分成三類，
+    <Cite src="NCC 申訴及救濟機制指引" quote="若網際網路服務使用者權益侵害係源自於公部門⋯若侵害係源自於網際網路服務提供者⋯而若侵害係來自其他網際網路服務使用者之行為⋯申訴及救濟機制之設計即著重於協助受影響之網際網路服務使用者恢復權益">公部門、平台自身、其他使用者</Cite>，
+    各自設計合適管道。基礎層的七項要求平台提供明確的申訴救濟管道與流程、正體中文選項、服務受限時的明確通知、內容調控規則公開、
+    權益恢復措施、個資權利行使，還有一個 Matters 目前最弱的環節，
+    <Cite src="NCC 申訴及救濟機制指引" quote="說明申訴及救濟機制之合理處理期程，或透過電子郵件、表單或入口頁面等方式，使網際網路服務使用者得以知悉、更新或檢視自身案件之處理情形">建立合理的處理期程與可查詢的案件歷程</Cite>。
+    進階層則要求個案層級的判準範例與具體原因、AI／自動化工具的個案揭露與補充說明管道、優於法律的權利行使管道、防濫用、
+    台灣專責人員與教育訓練，以及面向不同群體的易讀無障礙版本。
+  </p>
+
+  <h2>整體判定：四個類別都落在「部分達成」</h2>
+
+  <p>
+    把兩份指引合計的 14 個基礎項目與 14 個進階項目，展開成 41 個可逐一勾稽的細項後，四個類別的整體判定如下。
+    這裡刻意不給一個漂亮的「合規分數」，因為指引本身是軟性的、項目間權重也不對等，硬湊百分比只會製造虛假的精確。
+  </p>
+
+  <div class="stat-row">
+    <div class="stat board">
+      <div class="stat__num">14 + 14</div>
+      <div class="stat__label">兩份指引的基礎＋進階項目（自評）<span class="stat__delta">＝展開 41 細項</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">4 / 4</div>
+      <div class="stat__label">四類別判定皆為「部分達成」<span class="stat__delta">無一全達成、無一全空缺</span></div>
+    </div>
+    <div class="stat board">
+      <div class="stat__num">in-progress</div>
+      <div class="stat__label">NCC 合規程式變更狀態<span class="stat__delta">僅 merge develop、未上 production</span></div>
+    </div>
+  </div>
+
+  <p>
+    最強的合規基礎其實不在文件上，而是一套已經在跑的機制：<strong>守望相助隊</strong>（Community Watch）把處理者、理由、時間、申訴、複查
+    與公開紀錄做成可被外部檢視的流程，跟兩份指引「程序透明、救濟可用」的精神高度相符。
+    <Cite src="community-watch（服務頁）" url="https://community-watch.matters.town">守望相助隊有對外的服務頁與公開紀錄</Cite>，
+    它證明了 Matters 做得到可稽核的治理。真正需要補強的，是把這份能力從單一機制<strong>制度化、公開化</strong>，變成監理機關能看懂的固定章節，
+    而這恰好就是兩份指引要求的東西。
+  </p>
+
+  <h2>透明度報告・基礎項目（7 項）</h2>
+
+  <p>
+    這一層的判定可以用一句話概括：守望相助隊已經把「即時公開紀錄」這件難事做出來了，但<strong>年度繁中透明度報告、政府要求揭露、自動化比例</strong>
+    這三塊還沒有形成可被檢核的固定產出。整體為「部分達成偏低」。
+  </p>
+
+  <div class="checklist board">
+    <table>
+      <thead><tr><th>指引條文（基礎）</th><th>自評</th><th>依據與缺口</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>(一) 定期揭露透明度報告並具備正體中文版本</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>守望相助隊有即時繁中公開紀錄，但<strong>無年度形式的透明度報告</strong>章節。</td>
+        </tr>
+        <tr>
+          <td>(二) 揭露內容調控之依據、統計區間與原因類別</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>守望已說明處理依據與原因，但缺固定統計區間與天數的彙總。</td>
+        </tr>
+        <tr>
+          <td>(三) 揭露內容調控之數據、處理結果與自動化工具使用情形</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>處理方式（隱藏／不予處理）公開，但<strong>自動化與人工比例未量化揭露</strong>。</td>
+        </tr>
+        <tr>
+          <td>(四) 說明使用者申訴及救濟機制之實施情形</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>守望有申訴與複查流程，但缺申訴數量、類型、處理時間的統計。</td>
+        </tr>
+        <tr>
+          <td>(五) 公部門要求提供資料之相關資訊（單位／法源／件數／回應比例）</td>
+          <td><span class="chip chip--neg">缺口</span></td>
+          <td>隱私政策有「依法可揭露」條款，但<strong>無件數、機關、法源、資料類型、回應比例的統計</strong>。目前最明確的尚未達成項。</td>
+        </tr>
+        <tr>
+          <td>(六) 隱私政策與個人資料之蒐集、處理與利用</td>
+          <td><span class="chip chip--pos">達成</span></td>
+          <td>Privacy Policy 已涵蓋蒐集種類、保存期限、利用方式與使用者個資權利。</td>
+        </tr>
+        <tr>
+          <td>(七) 重大政策變更公告</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>有公開更新管道，但「演算法重大變更」的可讀公告尚未制度化。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    第 (五) 項是這份自評裡最尖銳的一格，留到最後一節單獨討論。它牽涉的不只是「有沒有做統計」，更是一個抗審查平台願不願意、能不能把
+    「自己如何回應公權力」也攤開的揭露邊界問題。
+  </p>
+
+  <h2>透明度報告・進階項目（7 項）</h2>
+
+  <p>
+    進階層的整體判定是「尚未系統化」。素材本身大多存在，散落在隱私政策、守望相助隊紀錄、工程文件與公開文章裡，
+    只是<strong>還沒收斂成可被檢核的報告章節</strong>。比較有意思的是，這一層裡 Matters 真正有底氣的，剛好是兩個常被視為困難的項目：
+    開源本身就是最徹底的「判斷標準與資源分配」揭露，而<strong>推薦系統透明度</strong>則因為平台史上一次罕見的產品決定而幾乎反向達標。
+  </p>
+
+  <div class="checklist board">
+    <table>
+      <thead><tr><th>指引條文（進階）</th><th>自評</th><th>依據與缺口</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>(一) 內容調控之判斷標準與資源分配</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>反垃圾偵測框架已開源、可被外部閱讀與 fork，判斷邏輯透明；但人力／訓練／支持措施未成文。</td>
+        </tr>
+        <tr>
+          <td>(二) 提升網路安全、事前預防與風險緩解措施</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>實務上已長期承受並抵禦攻擊，但缺對外的事前預防與緩解措施說明。</td>
+        </tr>
+        <tr>
+          <td>(三) 個人資料分享運用之相關資訊</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>隱私政策有分享依據，但資料最小化措施、對象、目的、儲存地區未成章節。</td>
+        </tr>
+        <tr>
+          <td>(四) 推薦系統與產品介面設計機制（緩解過濾氣泡）</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>影響可見度的因素（互動、檢舉、調控、熱門度）公開可查；首頁推薦在用戶長年回饋下被刻意弱化，但尚無正式的推薦透明度頁。</td>
+        </tr>
+        <tr>
+          <td>(五) 多方利害關係人機制之交流情形</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>本研究計畫即是一次多方交流（TWIGF 座談、用戶訪談、外部專家），但尚未制度化為常態諮詢機制。</td>
+        </tr>
+        <tr>
+          <td>(六) 公私協力合作之相關作為</td>
+          <td><span class="chip chip--neg">缺口</span></td>
+          <td>無對外揭露的快速通報、急難協力或情資分享機制。</td>
+        </tr>
+        <tr>
+          <td>(七) 數位素養推廣之實際情形與教育資源</td>
+          <td><span class="chip chip--neg">缺口</span></td>
+          <td>有零星公開文章，但無成形的素養推廣計畫與教育資源頁。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    第 (四) 項背後有一段值得記下的平台史。在 TWIGF 上，一位早期資深用戶回顧首頁推薦演算法一旦公開「就可以操弄它」，而
+    <Cite src="TWIGF 逐字稿（校正版）" quote="用戶的心聲綻放了成果，最後演化到現在，馬特市是把首頁給弱化掉了，現在反而首頁已經不是馬特市主要的流量來源了">經過好幾年後，平台索性把首頁弱化</Cite>。
+    這意味著「緩解過濾氣泡」對 Matters 來說，要做的不太是新增功能，比較像是把一個已經發生的產品決定，補寫成指引看得懂的說明。
+  </p>
+
+  <h2>申訴及救濟・基礎項目（7 項）</h2>
+
+  <p>
+    這一層 Matters 的底子最厚：站內檢舉、客服信箱、守望相助隊申訴、內容恢復與隱私請求都已存在，個別管道都過得了關。
+    真正卡住整體判定（「部分達成」）的是兩件結構性的事：<strong>缺一個統一入口</strong>，以及<strong>缺平台級的案件狀態與處理時限</strong>。
+  </p>
+
+  <div class="checklist board">
+    <table>
+      <thead><tr><th>指引條文（基礎）</th><th>自評</th><th>依據與缺口</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>(一) 提供明確之申訴及救濟管道及流程（含公部門侵害時的轉介）</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>站內檢舉、<code>hi@matters.town</code>、守望申訴皆存在，但<strong>散落各處、缺統一入口</strong>，使用者得自己知道該找哪一個。</td>
+        </tr>
+        <tr>
+          <td>(二) 提供正體中文選項</td>
+          <td><span class="chip chip--pos">達成</span></td>
+          <td>介面與管道原生支援正體中文。</td>
+        </tr>
+        <tr>
+          <td>(三) 使用者服務受限時提供明確通知</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>帳號層處置有通知，但內容被收進「小黑屋」（不上首頁）時的個案通知不一致。</td>
+        </tr>
+        <tr>
+          <td>(四) 揭露內容調控之相關規則</td>
+          <td><span class="chip chip--pos">達成</span></td>
+          <td>社群守則與調控規則公開；偵測框架開源使規則可被檢視。</td>
+        </tr>
+        <tr>
+          <td>(五) 權益恢復措施（恢復服務、解除封鎖、移轉存取權、備份等）</td>
+          <td><span class="chip chip--pos">達成</span></td>
+          <td>處置設計上可逆（如關小黑屋而非刪除），文章本體經 IPFS 仍可由站外存取。</td>
+        </tr>
+        <tr>
+          <td>(六) 個人資料保護法之權利行使</td>
+          <td><span class="chip chip--pos">達成</span></td>
+          <td>隱私政策提供查閱、更正、刪除等個資權利行使管道。</td>
+        </tr>
+        <tr>
+          <td>(七) 建立合理之處理期程與案件歷程</td>
+          <td><span class="chip chip--neg">缺口</span></td>
+          <td>守望紀錄有狀態，但<strong>一般檢舉只有「送出成功」、無案件狀態流轉與明確 SLA</strong>。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    第 (五) 項的「可逆」是 Matters 在這份指引裡最漂亮的一格，而它幾乎是技術架構的副產品。在 TWIGF 上，工程貢獻者說明
+    被判為 spam 的文章<Cite src="TWIGF 逐字稿（校正版）" quote="它並不是直接把它刪除或是封鎖，它只是讓它不要出現在公共的區塊⋯你把網址輸上去還是可以打開這些文章的內容，所以其實算是一種蠻溫柔的做法">並非刪除而是不上公共區塊</Cite>，
+    加上內容本體存在 IPFS、站外仍可由指紋取回。權益恢復在這裡不必額外打造功能，是設計本身就留好的一條退路。
+  </p>
+
+  <h2>申訴及救濟・進階項目（7 項）</h2>
+
+  <p>
+    進階層是整份自評最低的一塊（「部分達成偏低」）：AI／自動化的個案揭露、台灣專責人員、易讀無障礙版、利害關係人諮詢，
+    多半<strong>尚未制度化</strong>。這裡也藏著一個工程與治理的接縫：模型雖然開源，但分數門檻、auto-collapse 等決策若影響可見度，
+    指引要求的是在<strong>個案層級</strong>把處理來源說清楚，而這還停在工程文件裡。
+  </p>
+
+  <div class="checklist board">
+    <table>
+      <thead><tr><th>指引條文（進階）</th><th>自評</th><th>依據與缺口</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>(一) 說明內容調控之判斷標準範例與具體原因</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>規則與框架公開，但缺個案層級的範例彙整與具體原因說明。</td>
+        </tr>
+        <tr>
+          <td>(二) 於個案中揭露自動化工具之使用情形，並提供補充說明管道</td>
+          <td><span class="chip chip--neg">缺口</span></td>
+          <td>守望已說明「AI 不直接刪除」，但 spam 模型／分數／門檻仍在工程文件；<strong>個案通知未載明處理來源與申訴方式</strong>。</td>
+        </tr>
+        <tr>
+          <td>(三) 說明優於我國法律所示權利之行使管道</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>實務上對處置採可逆、最小化設計，但未明文載於透明度報告或政策。</td>
+        </tr>
+        <tr>
+          <td>(四) 防免申訴及救濟機制遭不當濫用</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>歷史上曾試行陪審團與訴狀投票機制（已停辦），目前無正式的防濫用審核排序說明。</td>
+        </tr>
+        <tr>
+          <td>(五) 建立公私協力與多方利害關係人交流諮詢機制</td>
+          <td><span class="chip chip--warn">部分</span></td>
+          <td>本計畫即一次多方交流，但尚未成為常態諮詢機制。</td>
+        </tr>
+        <tr>
+          <td>(六) 於我國配置處理申訴及救濟之專責人員與教育訓練</td>
+          <td><span class="chip chip--neg">缺口</span></td>
+          <td>無明文的台灣專責人員配置與教育訓練機制。</td>
+        </tr>
+        <tr>
+          <td>(七) 提升申訴及救濟機制對不同群體之近用性（易讀版）</td>
+          <td><span class="chip chip--neg">缺口</span></td>
+          <td>無易讀／圖卡／簡化版的無障礙申訴說明。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    第 (四) 項的「部分」帶著一段教訓。Matters 曾在 2021 年試行讓社群參與裁決的「馬特市建築師」陪審團，
+    營運主管在 TWIGF 上坦言這個制度<Cite src="TWIGF 逐字稿（校正版）" quote="這個陪審團其實只做了一屆，也就大概一年左右，後來我們就沒有繼續了">只做了一屆就停辦</Cite>，
+    把邊界模糊的裁決交給一般用戶，反而陷入主觀說服與人情拉票。這提醒了一件事：指引要的「防濫用」，除了擋住惡意檢舉，
+    還要讓救濟機制本身不被人情與聲量綁架，而那遠比寫一份制度文件難。
+
+  </p>
+
+  <h2>從自評到補強：先做合規外殼，再把報告自動化</h2>
+
+  <p>
+    把上面四張表的缺口收斂起來，最高優先的五個其實彼此相關：缺統一申訴入口、缺平台級案件狀態與處理時限、
+    缺一個能穩定產出的透明度報告資料模型、缺政府要求揭露，以及自動化與 AI 的個案揭露不足。它們的共同點是，
+    <strong>大多不是技術做不到，而是還沒被收斂成可被外部檢核的固定形式</strong>。
+  </p>
+
+  <p>
+    因此補強的路線刻意「先外殼、後自動化」。第一階段（約一到兩週）可以幾乎只靠文件與頁面完成：把分散的申訴管道集中成一個救濟中心頁、
+    建一個透明度 landing page、更新使用者條款與隱私政策、為政府要求建立內部登錄表，先讓使用者看得懂、找得到、知道大概多久會被處理。
+    第二階段（約兩到四週）才動資料：把一般檢舉升級成有狀態流轉（received → reviewing → action_taken → appealed → resolved）的 case workflow、
+    建立可匯出的 moderation events schema、寫個案通知模板，並據此發布第一份半年度透明度報告。第三階段（約一到三個月）處理最硬的部分：
+    反濫用模型的 model card、推薦排序透明度頁、政府要求的透明度章節、無障礙易讀版，以及外部諮詢的年度回顧。
+  </p>
+
+  <div class="callout">
+    給其他台灣中小型平台的一句話：別被「41 個細項」嚇到。這張表真正的訊息是，<strong>合規的第一階段幾乎都是把已經在做的事寫清楚、放對位置</strong>。
+    真正難的是制度化與公開化，新增功能反而還在其次。一套像守望相助隊那樣可稽核的處理流程，會比一份漂亮的報告更接近指引的精神。
+  </div>
+
+  <h2>一個繞不開的張力：透明開盒要連「如何回應政府」都攤開</h2>
+
+  <p>
+    這份自評裡唯一被標成最明確「缺口」、又最難補的，是透明度基礎項的第 (五) 項：公部門要求提供使用者資料的件數、機關、法源與回應比例。
+    它難的地方，不在做統計多麻煩，而在它觸到了一個抗審查平台的核心矛盾。
+  </p>
+
+  <p>
+    Matters 對政府資料請求的事實立場，在 TWIGF 上被主持人講得很清楚：平台主體已轉移、後台不在台灣，面對來函
+    <Cite src="TWIGF 逐字稿（校正版）" quote="我們希望做到的方向是最小化的去回應，那通常啦，沒有回應居多⋯真的碰到問題的，像是這種兒少檢舉的才有馬上回">傾向最小化回應，多數情況是不回應，僅兒少檢舉等才即時處理</Cite>。
+    這是一個吸引跨境敏感書寫者、必須保護使用者安全的平台，刻意選擇的姿態。
+  </p>
+
+  <p>
+    而 NCC 透明度指引要求揭露的，恰恰是把「收到幾件、哪個機關、依什麼法、回應了多少」公開。於是「透明開盒」若要徹底，
+    平台除了公開它如何治理使用者，<strong>還得公開它如何回應公權力</strong>。這對一個把「無資料可交、未必回應」當成保護手段的平台，
+    是一個需要謹慎拿捏的揭露邊界。揭露件數與機關，可能本身就洩漏了哪些書寫者正被盯上；完全不揭露，又正是指引想矯正的不透明。
+    這道難題沒有乾淨的解，它和「分層揭露」是同一個問題的兩面：<strong>透明本身也需要被治理</strong>。
+    決定攤開什麼、對誰攤開、何時攤開，本來就是平台治理最重的一筆。
+  </p>
+
+  <p>
+    所以這面鏡子照出來的，比起一張漂亮的成績單，更值得記下的是這個結論：Matters 對使用者要求的程序透明、申訴可近、救濟可用，
+    正好是它自己對照指引時最該補強的部分。守望相助隊已經證明它做得到可稽核的治理；剩下要做的，
+    是把這份能力從單一機制擴展成平台級、可被監理機關理解的制度，而那條路的第一段，比想像中短。
+  </p>
+
+  <style>
+    .checklist { padding: 0; overflow: hidden; }
+    .checklist table { width: 100%; border-collapse: collapse; font-family: var(--font-ui); }
+    .checklist thead th {
+      text-align: left; font: 700 13px var(--font-ui); color: var(--ink);
+      background: var(--color-primary-0, #f6f4ff);
+      padding: 12px 16px; border-bottom: 1px solid var(--line);
+    }
+    .checklist thead th:nth-child(2) { text-align: center; white-space: nowrap; }
+    .checklist tbody td {
+      padding: 13px 16px; font-size: 14.5px; line-height: 1.6; color: var(--ink);
+      border-bottom: 1px solid var(--line); vertical-align: top;
+    }
+    .checklist tbody tr:last-child td { border-bottom: 0; }
+    .checklist tbody td:first-child { font-weight: 600; color: var(--ink); width: 38%; }
+    .checklist tbody td:nth-child(2) { text-align: center; white-space: nowrap; }
+    .checklist tbody td:last-child { color: var(--ink-soft); }
+    .checklist code {
+      font-size: 12.5px; background: var(--color-primary-0, #f1eeff);
+      padding: 1px 5px; border-radius: 4px;
+    }
+    .checklist tbody tr:nth-child(even) { background: color-mix(in srgb, var(--line) 16%, transparent); }
+    @media (max-width: 680px) {
+      .checklist { overflow-x: auto; }
+      .checklist table { min-width: 560px; }
+      .checklist tbody td:first-child { width: auto; }
+    }
+  </style>
+
+  <ReadingNav slug="ncc-41-checklist" />
+</BaseLayout>

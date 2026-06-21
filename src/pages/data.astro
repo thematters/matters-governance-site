@@ -20,8 +20,8 @@ import '../styles/story.css';
 
   <div class="stat-row">
     <div class="stat board">
-      <div class="stat__num stat__num--pos">約 4 萬筆</div>
-      <div class="stat__label">去識別研究資料集首版<span class="stat__delta">v2026.06・釋出到 Hugging Face</span></div>
+      <div class="stat__num stat__num--pos">425,689 筆</div>
+      <div class="stat__label">去識別研究資料集首版<span class="stat__delta">v2026.06・規劃 Hugging Face gated</span></div>
     </div>
     <div class="stat board">
       <div class="stat__num stat__num--neg">6–12 個月</div>
@@ -37,8 +37,8 @@ import '../styles/story.css';
 
   <h2>垃圾內容靜態資料庫公開</h2>
   <p>
-    <code>matters-spam-dataset</code>：去識別研究資料集，HMAC id、聯絡方式正規化、釋出到 Hugging Face（gated、CC BY-NC），
-    首版約 <strong>4 萬筆</strong>。資料卡主動揭露早期代理標籤瑕疵與 5–15% 殘餘誤標。⚠️ <strong>目前尚未正式發布。</strong>
+    <code>matters-spam-dataset</code>：去識別研究資料集，HMAC id、聯絡方式正規化，規劃以 Hugging Face gated 釋出、授權 CC BY-NC-ND 4.0，
+    首版共 <strong>425,689 筆</strong>（spam 406,850／ham 18,839）。資料卡主動揭露早期代理標籤瑕疵與 5–15% 殘餘誤標。⚠️ <strong>目前尚未正式發布。</strong>
   </p>
 
   <h2>為什麼整套審查方法要開盒</h2>
@@ -61,5 +61,6 @@ import '../styles/story.css';
   <h2>授權</h2>
   <p>程式碼 MIT/AGPL · 文件 CC BY 4.0 · 研究資料依敏感度授權並去識別化。每個互動旁也將附「文字版資料表」，同時當無障礙退化與開放資料。</p>
 
+  <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/transparency-method">深入閱讀：分層揭露與開放資料集方法論 →</a></p>
   <ChapterNav slug="data" />
 </BaseLayout>

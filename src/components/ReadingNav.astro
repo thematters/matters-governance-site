@@ -1,0 +1,28 @@
+---
+// 延伸閱讀專區的書本式導航：在 /reading/* 內算 prev/next，並回總覽。
+// 與 ChapterNav 分開（主敘事 10 章 vs 延伸閱讀 8 篇各自成序）。
+interface Props { slug: string; }
+const { slug } = Astro.props;
+const order = [
+  { slug: 'why-resist-at-all',    label: '抗審查真的不可或缺嗎' },
+  { slug: 'platform-meets-law',   label: '當平台遇到法律' },
+  { slug: 'who-is-a-spammer',     label: '誰是 spammer？' },
+  { slug: 'how-the-model-learns', label: '模型怎麼學、怎麼被毒、怎麼救' },
+  { slug: 'transparency-method',  label: '分層揭露與開放資料集' },
+  { slug: 'ncc-41-checklist',     label: 'NCC 逐條合規自評' },
+  { slug: 'users-on-governance',  label: '使用者怎麼看治理' },
+  { slug: 'hack-the-platform',    label: 'Hack the Platform' },
+];
+const i = order.findIndex((o) => o.slug === slug);
+const total = order.length;
+const prev = i > 0 ? order[i - 1] : null;
+const next = i >= 0 && i < total - 1 ? order[i + 1] : null;
+---
+<nav class="chapter-nav">
+  {prev
+    ? <a class="prev" href={`reading/${prev.slug}`}><span>← 上一篇 · {i}/{total}</span>{prev.label}</a>
+    : <a class="prev" href="reading/"><span>← 延伸閱讀總覽</span>回總覽</a>}
+  {next
+    ? <a class="next" href={`reading/${next.slug}`}><span>下一篇 · {i + 2}/{total} →</span>{next.label}</a>
+    : <a class="next" href="reading/"><span>延伸閱讀總覽 →</span>回總覽</a>}
+</nav>

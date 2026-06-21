@@ -20,6 +20,11 @@ const d = [
   <ChapterHero kicker="主題 · 七種處置" title="從打掃到註銷的光譜" img="illustrations/moderation.jpg" alt="一台推車裝滿被移除的垃圾與黑色小怪物、紅叉卡片" />
   <p class="lead">處置的上限是降低可見度，而非刪除；每一步都在降低「處置的不可逆成本」。</p>
 
+  <div class="figure bm-figure">
+    <div class="figure__head"><span class="figure__title bm-figure__title">換你當版主：六個真實案例</span><span class="figure__hint">選 擋／放</span></div>
+    <BeModerator />
+  </div>
+
   <div class="spectrum">
     <div class="spectrum-track" aria-hidden="true"></div>
     <div class="spectrum-ends"><span>輕・可逆</span><span>重・不可逆</span></div>
@@ -36,6 +41,10 @@ const d = [
   </div>
 
   <style>
+    /* 子標題放大：比一般 figure__title 更顯眼，先動手再讀解說（scoped 蓋過 ds.css .figure__title） */
+    .bm-figure { margin-bottom: 28px; }
+    .bm-figure__title { font: 800 clamp(20px, 3.2vw, 26px)/1.3 var(--font-ui); color: var(--ink); }
+
     .spectrum { margin: 22px 0; }
     .spectrum-track { height: 8px; border-radius: 99px;
       background: linear-gradient(90deg, hsl(112 56% 45%), hsl(48 72% 50%), hsl(8 66% 50%)); }
@@ -106,10 +115,5 @@ const d = [
     為避免誤掃正常留言，自動打掃設了嚴格條件：內容須重複出現三次、符合 Ring 樣態，或模型分數高到非常確定，否則不動，交由守望相助隊隊員人工判斷。
     處置粒度落在單則留言，且多半是即時移除而非降權。
   </p>
-  <div class="figure">
-    <div class="figure__head"><span class="figure__title">換你當版主：六個真實案例</span><span class="figure__hint">選 擋／放</span></div>
-    <BeModerator />
-  </div>
-
   <ChapterNav slug="moderation" />
 </BaseLayout>

@@ -1,7 +1,8 @@
 ---
 // 招牌互動：be-the-moderator。逐則判「擋/放」，揭曉模型分數與後果，最後算總帳。
 // 視覺：把每則待判案例做成「社群貼文／檢舉卡」（玻璃感 Matters 貼文卡，對齊 .fp-card / .sg-card）；
-//   按鈕用 DS 的 .btn 階層；判斷後的揭曉（你的選擇 vs 正解＋說明）從卡片分離，落在卡片下方獨立的 result panel。
+//   按鈕用 DS 的 .btn 階層；判斷後的揭曉（命中/誤判狀態＋你的選擇 vs 正解＋模型分數＋解說）
+//   從卡片分離，落在卡片下方獨立的玻璃 result panel。
 const cards = [
   { truth: 'spam',  cat: '色情廣告',     score: 99, text: 'Call Girls／外送茶 全套 在地約妹 加賴 ‹LINE_ID›', why: '明確的色情招攬，模型高分、人眼也一眼看穿。' },
   { truth: 'legit', cat: '日記',         score: 3,  text: '日記·超級生命密碼', why: '私人日記，無導流、無招攬，模型低分。' },
@@ -33,7 +34,7 @@ const initials = (name) => name.slice(0, 1);
   <!-- 待判案例：社群貼文／檢舉卡（玻璃感）。內容由 JS 逐題填入 .bm-card -->
   <div class="bm-stage" id="bm-stage" aria-live="polite"></div>
 
-  <!-- 判斷後的揭曉：從卡片分離，獨立 result panel；逐題顯示「你的選擇」vs「正解＋說明」 -->
+  <!-- 判斷後的揭曉：從卡片分離，獨立玻璃 result panel；逐題顯示命中/誤判＋「你的選擇」vs「正解＋說明」 -->
   <div class="bm-result" id="bm-result" hidden></div>
 
   <div class="bm-tally" id="bm-tally" hidden>
@@ -44,7 +45,10 @@ const initials = (name) => name.slice(0, 1);
   <noscript><p class="bm-note">這是一個「換你當審查員」的小測驗：逐則判斷「擋下/放行」，再揭曉模型分數與後果。請開啟 JavaScript。重點：明確的色情/賭博廣告好判，但防詐科普、人權議題、集團洗版這些灰區，才是審查最難、最容易誤殺或漏放的地方。</p></noscript>
 </div>
 
-<style>
+<!-- is:global：卡片與結果面板由 JS 用 innerHTML 建立（stage.innerHTML / result.innerHTML），
+     JS 插入的元素沒有 Astro scoped 的 data-astro-cid 屬性，scoped 樣式套不到→玻璃失效。
+     改 is:global 讓 .bm-*/.sk 樣式套到 JS 插入元素。選擇器全為 .bm-*/.sk（本元件只在 moderation 頁，無跨頁衝突）。 -->
+<style is:global>
   .bm { max-width: 600px; margin: 0 auto; font-family: var(--font-ui); }
 
   /* ── 待判案例：玻璃感社群貼文／檢舉卡（對齊 .fp-card / .sg-card） ── */
@@ -52,9 +56,12 @@ const initials = (name) => name.slice(0, 1);
     padding: 15px 16px; color: var(--ink);
     background: rgba(255,255,255,.62); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
     border: 1px solid rgba(255,255,255,.62); box-shadow: 0 4px 16px rgba(22,18,45,.1); }
-  /* 左側 accent 邊條：待判時用中性品牌色（不先洩漏正解），揭曉後由結果區點亮 */
+  /* 左側 accent 邊條：待判時用中性品牌色（不先洩漏正解），揭曉後由 .is-revealed 點亮紅/綠 */
   .bm-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-    background: color-mix(in srgb, var(--c-brand, #7258FF) 45%, transparent); }
+    background: color-mix(in srgb, var(--c-brand, #7258FF) 45%, transparent); transition: background .25s, width .25s; }
+  .bm-card.is-revealed { transition: box-shadow .25s, border-color .25s; }
+  .bm-card.is-revealed.r-spam::before  { background: var(--c-neg, #c85c41); width: 4px; }
+  .bm-card.is-revealed.r-legit::before { background: var(--c-pos, #5c9969); width: 4px; }
 
   .bm-head { display: flex; align-items: center; gap: 7px; }
   .bm-av { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; color: #fff;
@@ -90,40 +97,68 @@ const initials = (name) => name.slice(0, 1);
   /* 在 DS .btn--secondary / --ghost 基礎上，hover 染上語意色，強化「擋/放」決斷感 */
   .bm-block:hover { background: var(--c-neg, #c85c41); border-color: var(--c-neg, #c85c41); color: #fff; }
   .bm-allow:hover { color: var(--c-pos, #5c9969); border-color: var(--c-pos, #5c9969); background: color-mix(in srgb, var(--c-pos, #5c9969) 8%, transparent); }
+  /* 揭曉後：你選的那顆留下被選痕跡（不可再按） */
+  .bm-btns .btn.is-chosen { position: relative; }
+  .bm-btns .btn[disabled] { opacity: .5; }
+  .bm-btns .btn.is-chosen[disabled] { opacity: 1; }
 
-  /* ── 結果區（從卡片分離）：你的選擇 vs 正解＋說明 ── */
+  /* ── 結果區（從卡片分離）：玻璃 panel，命中/誤判＋你的選擇 vs 正解＋分數＋解說 ── */
   .bm-result { margin-top: 14px; }
-  .bm-panel { border-radius: 14px; border: 1px solid var(--line); background: var(--bg-paper);
-    padding: 16px 18px; box-shadow: var(--shadow-shadow1, 0 2px 8px rgba(0,0,0,.05)); }
-  /* 命中＝綠頂條、誤判＝紅頂條 */
-  .bm-panel.is-ok { border-top: 3px solid var(--c-pos, #5c9969); }
-  .bm-panel.is-bad { border-top: 3px solid var(--c-neg, #c85c41); }
+  .bm-panel { position: relative; border-radius: 14px; overflow: hidden;
+    padding: 0; color: var(--ink);
+    background: rgba(255,255,255,.66); backdrop-filter: blur(11px); -webkit-backdrop-filter: blur(11px);
+    border: 1px solid rgba(255,255,255,.6); box-shadow: 0 8px 26px rgba(22,18,45,.14); }
+  /* 命中＝綠 accent、誤判＝紅 accent（左邊條 + 頂部柔光帶） */
+  .bm-panel::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+  .bm-panel.is-ok::before  { background: var(--c-pos, #5c9969); }
+  .bm-panel.is-bad::before { background: var(--c-neg, #c85c41); }
 
-  .bm-verdict { display: flex; align-items: center; gap: 8px; font: 800 17px var(--font-ui); margin: 0 0 12px; }
-  .bm-verdict .bm-mark { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; color: #fff;
-    display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
-  .is-ok .bm-verdict { color: var(--c-pos, #5c9969); }
-  .is-ok .bm-mark { background: var(--c-pos, #5c9969); }
-  .is-bad .bm-verdict { color: var(--c-neg, #c85c41); }
+  /* 結果標頭：狀態色底帶（綠/紅淡色），命中/誤判一眼可辨 */
+  .bm-verdict { display: flex; align-items: center; gap: 10px; margin: 0; padding: 14px 18px;
+    font: 800 17px var(--font-ui); }
+  .is-ok .bm-verdict  { background: color-mix(in srgb, var(--c-pos, #5c9969) 12%, transparent); color: var(--c-pos, #5c9969); }
+  .is-bad .bm-verdict { background: color-mix(in srgb, var(--c-neg, #c85c41) 12%, transparent); color: var(--c-neg, #c85c41); }
+  .bm-mark { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; }
+  .is-ok .bm-mark  { background: var(--c-pos, #5c9969); }
   .is-bad .bm-mark { background: var(--c-neg, #c85c41); }
+  .bm-verdict-sub { margin-left: auto; font: 700 11px var(--font-ui); letter-spacing: .06em;
+    padding: 3px 10px; border-radius: 999px; color: #fff; flex: 0 0 auto; }
+  .is-ok .bm-verdict-sub  { background: var(--c-pos, #5c9969); }
+  .is-bad .bm-verdict-sub { background: var(--c-neg, #c85c41); }
 
-  /* 你的選擇 vs 正解：兩欄並排，清楚分開 */
-  .bm-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .bm-cell { border-radius: 10px; border: 1px solid var(--line); padding: 9px 11px;
-    background: color-mix(in srgb, var(--ink-soft, #6b6678) 4%, transparent); }
-  .bm-cell-label { font: 700 11px var(--font-ui); color: var(--ink-soft); letter-spacing: .04em; margin-bottom: 4px; }
-  .bm-cell-val { font: 800 15px var(--font-ui); color: var(--ink); }
-  .bm-cell-val.v-spam { color: var(--c-neg, #c85c41); }
+  .bm-body { padding: 14px 18px 16px; }
+
+  /* 你的選擇 vs 正解：兩欄並排，箭頭暗示「對照」 */
+  .bm-compare { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 10px; margin-bottom: 14px; }
+  .bm-cell { border-radius: 10px; border: 1px solid rgba(120,115,140,.22); padding: 9px 12px;
+    background: rgba(255,255,255,.5); }
+  .bm-cell-label { font: 700 10.5px var(--font-ui); color: var(--ink-soft); letter-spacing: .06em; margin-bottom: 5px; text-transform: none; }
+  .bm-cell-val { display: inline-flex; align-items: center; gap: 6px; font: 800 15px var(--font-ui); color: var(--ink); }
+  .bm-cell-val::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: 0 0 auto; }
+  .bm-cell-val.v-spam  { color: var(--c-neg, #c85c41); }
   .bm-cell-val.v-legit { color: var(--c-pos, #5c9969); }
+  .bm-cell-val.v-block { color: var(--c-neg, #c85c41); }
+  .bm-cell-val.v-allow { color: var(--c-pos, #5c9969); }
+  .bm-vs { align-self: center; font: 800 13px var(--font-ui); color: var(--ink-soft); }
 
-  .bm-score { font: 600 13px var(--font-ui); color: var(--ink-soft); margin: 0 0 8px; }
-  .bm-score b { font-variant-numeric: tabular-nums; color: var(--ink); }
+  /* 模型分數：做成一條 0–1 量尺，標出本則分數的位置（比純文字直覺） */
+  .bm-score { margin: 0 0 14px; }
+  .bm-score-top { display: flex; align-items: baseline; gap: 8px; font: 600 12.5px var(--font-ui); color: var(--ink-soft); margin-bottom: 7px; }
+  .bm-score-top b { font: 800 16px var(--font-ui); font-variant-numeric: tabular-nums; color: var(--ink); }
+  .bm-score-bar { position: relative; height: 7px; border-radius: 99px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c-pos,#5c9969) 50%, transparent), color-mix(in srgb, var(--c-warn,#c8a020) 55%, transparent), color-mix(in srgb, var(--c-neg,#c85c41) 60%, transparent)); }
+  .bm-score-mark { position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 14px; height: 14px; border-radius: 50%; background: var(--ink); border: 2.5px solid #fff;
+    box-shadow: 0 2px 6px rgba(22,18,45,.3); }
+
   .bm-why { font: 400 15px/1.65 var(--font-read, var(--font-ui)); color: var(--ink); margin: 0; }
 
-  .bm-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .bm-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
 
   @media (max-width: 480px) {
     .bm-compare { grid-template-columns: 1fr; }
+    .bm-vs { display: none; }
   }
 
   /* ── 總帳 ── */
@@ -131,10 +166,15 @@ const initials = (name) => name.slice(0, 1);
   .bm-tally .bm-fp b { color: var(--c-neg, #c85c41); }
   .bm-tally .bm-fn b { color: var(--c-warn, #c8a020); }
 
-  .bm-summary { text-align: center; padding: 20px 18px; }
-  .bm-summary h3 { font-size: 22px; margin: 0 0 8px; color: var(--ink); }
-  .bm-summary .bm-why { text-align: left; }
-  .bm-summary .bm-actions { justify-content: center; }
+  /* ── 總結（沿用玻璃 panel，置中版） ── */
+  .bm-summary-panel { text-align: center; }
+  .bm-summary-panel .bm-body { padding: 24px 22px; }
+  .bm-summary-panel h3 { font-size: 22px; margin: 0 0 12px; color: var(--ink); }
+  .bm-summary-panel .bm-score { margin-bottom: 12px; }
+  .bm-summary-panel .bm-why { text-align: left; }
+  .bm-summary-panel .bm-actions { justify-content: center; }
+  .bm-tally-line { font: 600 14px var(--font-ui); color: var(--ink-soft); margin: 0 0 14px; }
+  .bm-tally-line b { font-variant-numeric: tabular-nums; }
 
   /* reduced-motion：尊重使用者偏好，揭曉不做進場動畫 */
   @media (prefers-reduced-motion: no-preference) {
@@ -192,44 +232,62 @@ const initials = (name) => name.slice(0, 1);
       document.getElementById('bm-a').onclick = function () { answer('allow'); };
     }
 
-    // 揭曉：卡片保留（移除按鈕，避免重複作答），把判斷結果放進獨立的結果區
+    // 揭曉：卡片保留（標記正解、停用按鈕、留下被選痕跡），判斷結果放進獨立的玻璃結果區
     function answer(act) {
       var c = cards[i];
       var spam = c.truth === 'spam';
-      var verdict, mark, panelCls;
-      if (act === 'block' && spam) { verdict = '擋對了'; mark = '✓'; panelCls = 'is-ok'; ok++; }
-      else if (act === 'block' && !spam) { verdict = '誤殺！這是正常內容（偽陽性）'; mark = '✗'; panelCls = 'is-bad'; fp++; }
-      else if (act === 'allow' && spam) { verdict = '漏放！這是垃圾（偽陰性）'; mark = '✗'; panelCls = 'is-bad'; fn++; }
-      else { verdict = '放對了'; mark = '✓'; panelCls = 'is-ok'; ok++; }
+      var verdict, sub, mark, panelCls;
+      if (act === 'block' && spam) { verdict = '擋對了'; sub = '命中'; mark = '✓'; panelCls = 'is-ok'; ok++; }
+      else if (act === 'block' && !spam) { verdict = '誤殺！這是正常內容'; sub = '偽陽性'; mark = '✗'; panelCls = 'is-bad'; fp++; }
+      else if (act === 'allow' && spam) { verdict = '漏放！這是垃圾'; sub = '偽陰性'; mark = '✗'; panelCls = 'is-bad'; fn++; }
+      else { verdict = '放對了'; sub = '命中'; mark = '✓'; panelCls = 'is-ok'; ok++; }
 
       tallyEl.hidden = false;
       document.getElementById('bm-ok').textContent = ok;
       document.getElementById('bm-fp').textContent = fp;
       document.getElementById('bm-fn').textContent = fn;
 
-      // 卡片保留（停用按鈕、避免重判）
+      // 卡片揭曉：點亮正解 accent（紅/綠）、停用按鈕、被選的那顆留痕跡（避免重判）
+      var card = stage.querySelector('.bm-card');
+      if (card) {
+        card.classList.add('is-revealed', spam ? 'r-spam' : 'r-legit');
+      }
       var btns = stage.querySelector('.bm-btns');
       if (btns) {
         var bs = btns.querySelectorAll('button');
         for (var k = 0; k < bs.length; k++) { bs[k].disabled = true; bs[k].setAttribute('aria-disabled', 'true'); }
         var chosen = act === 'block' ? bs[0] : bs[1];
-        if (chosen) chosen.classList.add(panelCls === 'is-ok' ? 'btn--primary' : '');
+        // FIX：先前在誤判（is-bad）時傳入空字串給 classList.add，丟 SyntaxError，
+        // 揭曉中斷、下一則按鈕沒接上 → 卡在當下、進不去。改成只標記被選那顆。
+        if (chosen) chosen.classList.add('is-chosen');
       }
 
       var youText = act === 'block' ? '擋下' : '放行';
+      var youCls = act === 'block' ? 'v-block' : 'v-allow';
       var truthText = spam ? '垃圾' : '正常';
       var truthCls = spam ? 'v-spam' : 'v-legit';
+      var scorePct = Math.max(0, Math.min(100, c.score));
 
       result.innerHTML =
         '<div class="bm-panel ' + panelCls + '">' +
-          '<p class="bm-verdict"><span class="bm-mark" aria-hidden="true">' + mark + '</span>' + esc(verdict) + '</p>' +
-          '<div class="bm-compare">' +
-            '<div class="bm-cell"><div class="bm-cell-label">你的選擇</div><div class="bm-cell-val">' + youText + '</div></div>' +
-            '<div class="bm-cell"><div class="bm-cell-label">正解（真相）</div><div class="bm-cell-val ' + truthCls + '">' + truthText + '</div></div>' +
+          '<p class="bm-verdict">' +
+            '<span class="bm-mark" aria-hidden="true">' + mark + '</span>' +
+            '<span>' + esc(verdict) + '</span>' +
+            '<span class="bm-verdict-sub">' + esc(sub) + '</span>' +
+          '</p>' +
+          '<div class="bm-body">' +
+            '<div class="bm-compare">' +
+              '<div class="bm-cell"><div class="bm-cell-label">你的選擇</div><div class="bm-cell-val ' + youCls + '">' + youText + '</div></div>' +
+              '<div class="bm-vs" aria-hidden="true">vs</div>' +
+              '<div class="bm-cell"><div class="bm-cell-label">正解（真相）</div><div class="bm-cell-val ' + truthCls + '">' + truthText + '</div></div>' +
+            '</div>' +
+            '<div class="bm-score">' +
+              '<div class="bm-score-top">模型分數 <b>' + (scorePct / 100).toFixed(2) + '</b><span>（0＝穩、1＝可疑）</span></div>' +
+              '<div class="bm-score-bar" aria-hidden="true"><span class="bm-score-mark" style="left:' + scorePct + '%"></span></div>' +
+            '</div>' +
+            '<p class="bm-why">' + esc(c.why) + '</p>' +
+            '<div class="bm-actions"><button class="btn btn--primary bm-next" id="bm-n">' + (i < cards.length - 1 ? '下一則 →' : '看結果') + '</button></div>' +
           '</div>' +
-          '<p class="bm-score">模型分數：<b>' + (c.score / 100).toFixed(2) + '</b></p>' +
-          '<p class="bm-why">' + esc(c.why) + '</p>' +
-          '<div class="bm-actions"><button class="btn btn--primary bm-next" id="bm-n">' + (i < cards.length - 1 ? '下一則 →' : '看結果') + '</button></div>' +
         '</div>';
       result.hidden = false;
       document.getElementById('bm-n').onclick = function () { i++; (i < cards.length) ? show() : end(); };
@@ -238,12 +296,18 @@ const initials = (name) => name.slice(0, 1);
     function end() {
       result.hidden = true;
       result.innerHTML = '';
+      var perfect = (fp === 0 && fn === 0);
       stage.innerHTML =
-        '<div class="bm-panel bm-summary">' +
-          '<h3>當審查員，比想像中難</h3>' +
-          '<p class="bm-score">你誤殺了 <b style="color:var(--c-neg,#c85c41)">' + fp + '</b> 篇正常內容、漏放了 <b style="color:var(--c-warn,#c8a020)">' + fn + '</b> 篇垃圾。</p>' +
-          '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、人權議題、集團洗版這些灰區，才是審查最難、最容易誤殺或漏放的地方。每一個門檻，都是別人言論的生死線——這不該由工程師獨自決定。</p>' +
-          '<div class="bm-actions"><button class="btn btn--secondary bm-r" id="bm-r">再玩一次</button></div>' +
+        '<div class="bm-panel ' + (perfect ? 'is-ok' : 'is-bad') + ' bm-summary-panel">' +
+          '<p class="bm-verdict">' +
+            '<span class="bm-mark" aria-hidden="true">' + (perfect ? '✓' : '!') + '</span>' +
+            '<span>當審查員，比想像中難</span>' +
+          '</p>' +
+          '<div class="bm-body">' +
+            '<p class="bm-tally-line">六則裡，你誤殺了 <b style="color:var(--c-neg,#c85c41)">' + fp + '</b> 篇正常內容、漏放了 <b style="color:var(--c-warn,#c8a020)">' + fn + '</b> 篇垃圾。</p>' +
+            '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、人權議題、集團洗版這些灰區，才是審查最難、最容易誤殺或漏放的地方。每一個門檻，都是別人言論的生死線——這不該由工程師獨自決定。</p>' +
+            '<div class="bm-actions"><button class="btn btn--secondary bm-r" id="bm-r">再玩一次</button></div>' +
+          '</div>' +
         '</div>';
       document.getElementById('bm-r').onclick = function () { i = 0; ok = 0; fp = 0; fn = 0; tallyEl.hidden = true; show(); };
     }

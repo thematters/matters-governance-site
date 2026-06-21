@@ -3,6 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterRail from '../components/ChapterRail.astro';
 import StickyScroller from '../components/StickyScroller.astro';
 import FalsePositiveSlider from '../components/FalsePositiveSlider.astro';
+import RingDetector from '../components/RingDetector.astro';
+import RankingSplitScreen from '../components/RankingSplitScreen.astro';
+import DecisionBoundary from '../components/DecisionBoundary.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="主敘事">
@@ -41,6 +44,18 @@ import '../styles/story.css';
   <!-- 核心 sticky scrollytelling：綠紅 feed 隨捲動變狀態 -->
   <StickyScroller />
 
+  <!-- 內嵌互動 · 集團偵測 Ring（第一章動手 beat：偵測抓的是行為樣態）-->
+  <section class="scene scene-wide reveal">
+    <p class="kicker">親手試 · 集團偵測</p>
+    <h2>有些垃圾單篇分數很低，卻是一整群</h2>
+    <p>先按「單篇模型偵測」，只有兩個明顯垃圾被抓；再按「集團偵測 Ring」，八個分數低到像正常內容的「翻譯社」帳號，因為同模板、多帳號、短時間，整群一次現形。偵測抓的是行為樣態，不是字句。</p>
+    <div class="figure">
+      <div class="figure__head"><span class="figure__title">集團掃描：單一模型 vs 行為偵測</span><span class="figure__hint">按按鈕切換</span></div>
+      <RingDetector />
+    </div>
+    <p style="text-align:center"><a class="read-more" href="detection#ring">深入：集團掃描 Ring 與繁簡折疊</a></p>
+  </section>
+
   <!-- ───────── 第二章·道高一尺 ───────── -->
   <div class="chapter-rest" id="ch-2">
     <p class="chapter-rest__num">第二章</p>
@@ -73,12 +88,16 @@ import '../styles/story.css';
     <a class="read-more" href="moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="crowd">深入：群眾協力</a>
   </section>
 
-  <!-- Ring 集團偵測 -->
-  <section class="scene reveal">
-    <p class="kicker">集團偵測 Ring</p>
-    <h2>剛剛那群低分卻被一起抓的，是怎麼回事？</h2>
-    <p>單篇分數只有 <strong>0.09</strong> 的「翻譯社」幾乎漏網——但它是<strong>一整群幾乎一樣的卡片、來自很多帳號</strong>。集團偵測抓的是這個「行為樣態」，不是字句：同一模板、大量帳號、短時間，一網打盡。可以親手玩玩看。</p>
-    <a class="read-more" href="detection#ring">玩玩看：集團掃描 Ring</a>
+  <!-- 內嵌互動 · 首頁排序對照（第二章動手 beat：決定誰被看見也是治理）-->
+  <section class="scene scene-wide reveal">
+    <p class="kicker">親手試 · 首頁排序</p>
+    <h2>同一批內容，誰會被排到第一名？</h2>
+    <p>方法不只「擋垃圾」，也包含「怎麼決定誰被看見」。先猜哪一則會被演算法排到首頁第一，再看時間序與演算法序的對照——分數裡留言權重最高，獎勵的是引發討論，不是純曝光。</p>
+    <div class="figure">
+      <div class="figure__head"><span class="figure__title">時間序 vs 演算法序</span><span class="figure__hint">點一則先猜</span></div>
+      <RankingSplitScreen />
+    </div>
+    <p style="text-align:center"><a class="read-more" href="ranking">深入：首頁排序與末日爆滑</a></p>
   </section>
 
   <!-- ───────── 第三章·自己的帳號自己救 ───────── -->
@@ -96,6 +115,17 @@ import '../styles/story.css';
     <FalsePositiveSlider />
     <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
     <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
+  </section>
+
+  <!-- 內嵌互動 · 決策邊界（第三章動手 beat：任何一條線都會誤殺）-->
+  <section class="scene scene-wide reveal">
+    <p class="kicker">親手試 · 決策邊界</p>
+    <h2>為什麼一定有人被誤刪？</h2>
+    <p>把每篇內容放進二維特徵空間：綠點（正常）聚在左下、紅點（垃圾）聚在右上，中間是兩者重疊的灰色地帶。拖那條分界線——你會看到，<strong>同一條線同時誤殺一些正常、又放過一些垃圾</strong>，這就是偽陽性無法歸零的幾何原因。</p>
+    <div class="figure">
+      <div class="figure__head"><span class="figure__title">模型怎麼畫那條線：為什麼一定有誤殺</span><span class="figure__hint">拖分界線</span></div>
+      <DecisionBoundary />
+    </div>
   </section>
 
   <!-- 更大的問題（抵達光明：暗→光弧線的 resolution，暖金花園光暈） -->
@@ -208,19 +238,16 @@ import '../styles/story.css';
     gsap.set(heroDark, { opacity: 0 });
     gsap.set(heroBg, { opacity: 1 });
 
-    // 單一時間軸（關鍵：避免兩個 scrub trigger 同時寫 hero-bg/hero-dark 的 opacity 互相打架，
-    // 導致淡出失效、影片殘留在下方章節後面）。
-    //   trigger 從 #scrolly 頂端進場(top bottom) 起算，endTrigger 到第二章(#ch-2) 視窗中央(top center)。
+    // 單一時間軸（關鍵：避免兩個 scrub trigger 同時寫 hero-bg/hero-dark 的 opacity 互相打架）。
+    //   trigger=#scrolly：top bottom 進場 → bottom top 離場（整段 scrollytelling 捲過視窗）。
     //   前 ~88%：花園隨垃圾湧入而變暗，後段收斂讓位 scrolly 自己的 .scrolly-atmos（不過黑）；
-    //   末 ~12%：抵達第二章時整組（影片+暗幕）淡出 →0，下方章節回到 body 暖米底（影片不透在後面）。
-    const endEl = ch2 || document.getElementById('ch-3') || fadeRef;
-    const usingCh2 = endEl === ch2;
+    //   末 ~12%：StickyScroller 捲完時整組（影片+暗幕）淡出 →0。電影區只含 hero+魔高一尺+StickyScroller；
+    //   其後的章節與內嵌互動（RingDetector/排序/決策邊界…）都是暖米底實心元件，落在 body 暖米底、不疊在影片上。
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: fadeRef,
         start: 'top bottom',
-        endTrigger: endEl,
-        end: usingCh2 ? 'top center' : 'bottom center',
+        end: 'bottom top',
         scrub: 1,
       },
     });

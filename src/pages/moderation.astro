@@ -3,19 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ChapterNav from '../components/ChapterNav.astro';
 import ChapterHero from '../components/ChapterHero.astro';
 import BeModerator from '../components/BeModerator.astro';
+import ModerationSpectrum from '../components/ModerationSpectrum.astro';
 import Term from '../components/Term.astro';
 import '../styles/story.css';
-
-// 依「不可逆/嚴厲程度」由輕到重排序，t=0(輕)→1(重) 驅動漸層色
-const d = [
-  { name: '打掃',   eff: '守望相助隊移除留言並公開存證',                   sev: '視情況', t: 0.10 },
-  { name: '降噪',   eff: '依分數在排序時直接排除',                          sev: '輕',     t: 0.22 },
-  { name: '折疊',   eff: '留言收合，仍存在、可展開',                       sev: '輕',     t: 0.34 },
-  { name: '小黑屋', eff: '把帳號或文章移出公開列表，但帳號其實還在、直連網址仍打得開', sev: '中', t: 0.50 },
-  { name: '禁言',   eff: '一段時間不能發言（1–180 天/永久）',              sev: '中',     t: 0.64 },
-  { name: '凍結',   eff: '全面停權，連提領、付款都不行',                   sev: '重',     t: 0.82 },
-  { name: '註銷',   eff: '帳號刪除，不可逆。最嚴厲，早期僅用於色情/賭博/迷姦藥', sev: '最重', t: 1.00 },
-];
 ---
 <BaseLayout title="管理員手段">
   <ChapterHero kicker="主題 · 七種處置" title="從打掃到註銷的光譜" img="illustrations/moderation.jpg" alt="一台推車裝滿被移除的垃圾與黑色小怪物、紅叉卡片" />
@@ -26,119 +16,12 @@ const d = [
     <BeModerator />
   </div>
 
-  <h2 class="spectrum-h2">七種力度，一條不可逆的光譜</h2>
-  <p class="spectrum-sub">同樣是「處置」，可逆性天差地遠。由左到右，邊條從綠走向紅，代價也從「還能撤回」一路升到「不可逆」——把游標移到任一張卡，看它落在光譜的哪個位置。</p>
-
-  <div class="spectrum" id="spectrum">
-    <!-- 光譜軸：漸層 track + 七個對應指示點（hover/focus 卡片時點亮對應位置） -->
-    <div class="spectrum-axis" aria-hidden="true">
-      <div class="spectrum-track"></div>
-      {d.map((r, i) => (
-        <span
-          class="spectrum-pin"
-          data-pin={i}
-          style={`left:${(r.t * 100).toFixed(1)}%; --sev:hsl(${Math.round(112 - r.t * 104)} 56% 45%)`}
-        ></span>
-      ))}
-    </div>
-    <div class="spectrum-ends" aria-hidden="true"><span>輕・可逆</span><span>重・不可逆</span></div>
-
-    <div class="spectrum-list">
-      {d.map((r, i) => (
-        <div
-          class="spectrum-card"
-          data-card={i}
-          tabindex="0"
-          style={`--sev:hsl(${Math.round(112 - r.t * 104)} 56% 45%); --t:${r.t}`}
-        >
-          <span class="spectrum-bar" aria-hidden="true"></span>
-          <div class="spectrum-body">
-            <div class="spectrum-line">
-              <span class="spectrum-name">{r.name}</span>
-              <span class="chip spectrum-chip">{r.sev}</span>
-            </div>
-            <p class="spectrum-eff">{r.eff}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
+  <ModerationSpectrum />
 
   <style>
     /* 子標題放大：比一般 figure__title 更顯眼，先動手再讀解說（scoped 蓋過 ds.css .figure__title） */
     .bm-figure { margin-bottom: 28px; }
     .bm-figure__title { font: 800 clamp(20px, 3.2vw, 26px)/1.3 var(--font-ui); color: var(--ink); }
-
-    /* 子標題：spectrum 章節進場主標（比 figure__title 顯眼，scoped） */
-    .spectrum-h2 { margin: 34px 0 6px; font: 800 clamp(20px, 3.4vw, 27px)/1.3 var(--font-ui); color: var(--ink); }
-    .spectrum-sub { margin: 0 0 18px; font-size: 15px; line-height: 1.7; color: var(--ink-soft); max-width: 46em; }
-
-    .spectrum { margin: 18px 0 26px; }
-
-    /* ── 光譜軸：漸層 track + 七個指示點（對應各項 t 值）── */
-    .spectrum-axis { position: relative; height: 14px; margin: 4px 2px 6px; }
-    .spectrum-track { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
-      height: 8px; border-radius: 99px;
-      background: linear-gradient(90deg, hsl(112 56% 45%), hsl(48 72% 50%), hsl(8 66% 50%)); }
-    /* 指示點：常態小而低調；卡片 hover/focus 時對應點放大、點亮、外圈光環 */
-    .spectrum-pin { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%;
-      transform: translate(-50%, -50%) scale(.62); background: var(--sev);
-      border: 2px solid var(--bg-paper, #fff); box-shadow: 0 1px 3px rgba(22,18,45,.25);
-      opacity: .55; transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease; }
-    .spectrum-pin.is-active { transform: translate(-50%, -50%) scale(1.35); opacity: 1;
-      box-shadow: 0 2px 7px rgba(22,18,45,.32), 0 0 0 5px color-mix(in srgb, var(--sev) 24%, transparent); }
-
-    .spectrum-ends { display: flex; justify-content: space-between; font: 700 12px var(--font-ui);
-      color: var(--ink-soft); margin: 0 2px 18px; }
-
-    .spectrum-list { display: flex; flex-direction: column; gap: 12px; }
-
-    /* ── 玻璃感卡（對齊 .fp-card / .sg-card：frosted + 左 accent 邊條 + 柔陰影）── */
-    .spectrum-card { position: relative; display: flex; gap: 14px; align-items: center;
-      border-radius: 14px; overflow: hidden; padding: 14px 18px; color: var(--ink);
-      background: rgba(255,255,255,.62); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
-      border: 1px solid rgba(255,255,255,.62); box-shadow: 0 4px 16px rgba(22,18,45,.1);
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
-      outline: none; }
-    /* 左側 accent 邊條：色相＝該項在「輕綠→重紅」漸層上的位置（--sev） */
-    .spectrum-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      background: var(--sev); transition: width .2s ease; }
-    /* hover/focus：浮起、邊條加粗、邊框染上該項色相 */
-    .spectrum-card:hover, .spectrum-card:focus-visible { transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(22,18,45,.16);
-      border-color: color-mix(in srgb, var(--sev) 45%, rgba(255,255,255,.62)); }
-    .spectrum-card:hover::before, .spectrum-card:focus-visible::before { width: 5px; }
-    /* 鍵盤 focus 視覺：光環（與站上 focus-visible 一致風格） */
-    .spectrum-card:focus-visible { box-shadow: 0 12px 30px rgba(22,18,45,.16),
-      0 0 0 3px color-mix(in srgb, var(--sev) 32%, transparent); }
-    /* 「註銷」（t=1，最右）最強警示：紅邊條更顯眼、底色帶一抹紅 */
-    .spectrum-card[data-card="6"] { background: color-mix(in srgb, var(--sev) 7%, rgba(255,255,255,.62)); }
-
-    .spectrum-bar { flex: 0 0 auto; width: 4px; align-self: stretch; border-radius: 99px;
-      background: var(--sev); opacity: .9; }
-    .spectrum-body { flex: 1 1 auto; min-width: 0; }
-    .spectrum-line { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-    .spectrum-name { font: 800 16px var(--font-ui); color: var(--ink); }
-    .spectrum-eff { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
-    /* 嚴重度 chip 玻璃化：frosted 半透明、文字＝該項色相 */
-    .spectrum-chip { white-space: nowrap; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-      background: color-mix(in srgb, var(--sev) 16%, rgba(255,255,255,.4));
-      border: 1px solid color-mix(in srgb, var(--sev) 28%, transparent);
-      color: color-mix(in srgb, var(--sev) 78%, var(--ink)); }
-
-    /* ── 進場動畫：捲到時七張卡 stagger 淡入＋上移（GSAP 控制；JS 啟用時先壓低） ── */
-    html.js .spectrum-card { opacity: 0; }
-
-    @media (max-width: 640px) {
-      .spectrum-card { padding: 13px 15px; gap: 12px; }
-      .spectrum-line { flex-wrap: wrap; gap: 6px 10px; }
-    }
-
-    /* reduced-motion：直接呈現最終狀態，不播進場動畫 */
-    @media (prefers-reduced-motion: reduce) {
-      html.js .spectrum-card { opacity: 1; }
-      .spectrum-card, .spectrum-card::before, .spectrum-pin { transition: none; }
-    }
   </style>
 
   <h2>小黑屋：歪打正著的關鍵發明</h2>
@@ -194,49 +77,4 @@ const d = [
   </p>
   <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/who-is-a-spammer">深入閱讀：誰算垃圾製造者？帳號主義 vs 作品主義 →</a></p>
   <ChapterNav slug="moderation" />
-
-  <script>
-    import gsap from 'gsap';
-    import ScrollTrigger from 'gsap/ScrollTrigger';
-    gsap.registerPlugin(ScrollTrigger);
-
-    function initSpectrum() {
-      const root = document.getElementById('spectrum');
-      if (!root || root.dataset.inited) return;
-      root.dataset.inited = '1';
-
-      const cards = Array.prototype.slice.call(root.querySelectorAll('.spectrum-card'));
-      const pins = Array.prototype.slice.call(root.querySelectorAll('.spectrum-pin'));
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      // ── 光譜軸互動：hover/focus 某卡 → 對應指示點點亮（看見它落在可逆性光譜哪裡）──
-      const activate = (i) => pins.forEach((p, j) => p.classList.toggle('is-active', j === i));
-      const clearPins = () => pins.forEach((p) => p.classList.remove('is-active'));
-      cards.forEach((card, i) => {
-        card.addEventListener('mouseenter', () => activate(i));
-        card.addEventListener('mouseleave', clearPins);
-        // focusin/out（會冒泡，對鍵盤 Tab 與程式化 focus 都可靠，優於不冒泡的 focus/blur）
-        card.addEventListener('focusin', () => activate(i));
-        card.addEventListener('focusout', clearPins);
-      });
-
-      // ── reduced-motion：直接呈現最終狀態，不播進場動畫 ──
-      if (reduce) { gsap.set(cards, { opacity: 1, y: 0 }); return; }
-
-      // ── 進場：捲到時七張卡 stagger 淡入＋上移 ──
-      gsap.set(cards, { opacity: 0, y: 16 });
-      gsap.to(cards, {
-        opacity: 1, y: 0, duration: 0.5, ease: 'power2.out',
-        stagger: { each: 0.08, from: 'start' },
-        scrollTrigger: { trigger: root, start: 'top 80%', once: true },
-      });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initSpectrum);
-    } else {
-      initSpectrum();
-    }
-    document.addEventListener('astro:page-load', initSpectrum);
-  </script>
 </BaseLayout>

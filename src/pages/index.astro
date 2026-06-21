@@ -7,6 +7,7 @@ import RingDetector from '../components/RingDetector.astro';
 import RankingSplitScreen from '../components/RankingSplitScreen.astro';
 import DecisionBoundary from '../components/DecisionBoundary.astro';
 import AddressingDemo from '../components/AddressingDemo.astro';
+import ModerationSpectrum from '../components/ModerationSpectrum.astro';
 import ChapterIntro from '../components/ChapterIntro.astro';
 import Term from '../components/Term.astro';
 import '../styles/story.css';
@@ -93,7 +94,15 @@ import '../styles/story.css';
         <h3>群眾守望</h3><p>由使用者組成的「守望相助隊」一起把垃圾收走，每一筆紀錄都公開、可查。</p>
       </div>
     </div>
-    <a class="read-more" href="moderation">深入：七種處置與小黑屋</a>　<a class="read-more" href="crowd">深入：群眾協力</a>
+    <a class="read-more" href="crowd">深入：群眾協力</a>
+  </section>
+
+  <!-- 內嵌互動 · 處置光譜（承工具箱「打掃・小黑屋」：攤開七種處置的輕重與可逆性，疊在第二章 F2 光譜暗底上）-->
+  <section class="scene scene-wide reveal" data-stage="2">
+    <p class="kicker">親手試 · 處置光譜</p>
+    <p>剛剛工具箱裡的「打掃・小黑屋」，其實只是處置的其中一檔。把所有手段排成一條由輕到重的光譜，你會更看清：每往前一步，「萬一做錯要付的不可逆代價」就更大一分。</p>
+    <ModerationSpectrum />
+    <p style="text-align:center"><a class="read-more" href="moderation">深入：七種處置與小黑屋</a></p>
   </section>
 
   <!-- 內嵌互動 · 首頁排序對照（第二章動手 beat：決定誰被看見也是治理）-->

@@ -58,26 +58,36 @@ import '../styles/story.css';
   <!-- 核心 sticky scrollytelling：綠紅 feed 隨捲動變狀態 -->
   <StickyScroller />
 
-  <!-- 內嵌互動 · 集團偵測 Ring（第一章動手 beat：偵測抓的是行為樣態）-->
-  <section class="scene scene-wide reveal">
-    <p class="kicker">親手試 · 集團偵測</p>
-    <h2>有些垃圾單篇分數很低，卻是一整群</h2>
-    <p>先按「單篇模型偵測」，只有兩個明顯垃圾被抓；再按「集團偵測 Ring」，八個分數低到像正常內容的「翻譯社」帳號，因為同模板、多帳號、短時間，整群一次現形。偵測抓的是行為樣態，不是字句。</p>
-    <div class="figure">
-      <div class="figure__head"><span class="figure__title">集團掃描：單一模型 vs 行為偵測</span><span class="figure__hint">按按鈕切換</span></div>
-      <RingDetector />
-    </div>
-    <p style="text-align:center"><a class="read-more" href="detection#ring">深入：集團掃描 Ring 與繁簡折疊</a></p>
-  </section>
-
   <!-- ───────── 第二章·道高一尺 ───────── -->
   <div class="chapter-rest" id="ch-2">
     <p class="chapter-rest__num">第二章</p>
     <h2 class="chapter-rest__name">道高一尺</h2>
-    <p class="chapter-rest__desc">不同的打掃方法，加上守望相助</p>
+    <p class="chapter-rest__desc">不同的打掃方法：門檻、集團、人工、排序</p>
   </div>
 
-  <!-- 模型之外的工具箱 -->
+  <!-- ① 換你親手試 · 偽陽性滑桿（那條門檻你會設在哪）-->
+  <section class="scene scene-wide reveal">
+    <p class="kicker">換你親手試 · 招牌互動</p>
+    <h2>那條門檻，你會設在哪？</h2>
+    <p>方法再多，總會誤判。換你站到審查者那一側，親手拖那條線——往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）：尤其是看起來像垃圾的政治評論、學術考據、防詐科普。</p>
+    <FalsePositiveSlider />
+    <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
+    <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
+  </section>
+
+  <!-- ② 內嵌互動 · 集團偵測 Ring（偵測抓的是行為樣態）-->
+  <section class="scene scene-wide reveal">
+    <p class="kicker">親手試 · 集團偵測</p>
+    <h2>有些垃圾單篇分數很低，卻是一整群</h2>
+    <p>先按「單篇模型偵測」，只有兩個明顯垃圾被抓；再按「集團偵測」，八個分數低到像正常內容的「翻譯社」帳號，因為同模板、多帳號、短時間，整群一次現形。偵測抓的是行為樣態，不是字句。</p>
+    <div class="figure">
+      <div class="figure__head"><span class="figure__title">集團掃描：單一模型 vs 行為偵測</span><span class="figure__hint">按按鈕切換</span></div>
+      <RingDetector />
+    </div>
+    <p style="text-align:center"><a class="read-more" href="detection#ring">深入：集團掃描與繁簡折疊</a></p>
+  </section>
+
+  <!-- ③ 模型之外的工具箱 -->
   <section class="scene scene-wide reveal">
     <p class="kicker">模型之外</p>
     <h2>光靠模型不夠</h2>
@@ -118,20 +128,10 @@ import '../styles/story.css';
   <div class="chapter-rest" id="ch-3">
     <p class="chapter-rest__num">第三章</p>
     <h2 class="chapter-rest__name">自己的帳號自己救</h2>
-    <p class="chapter-rest__desc">方法再好，一定有誤刪受害者——那怎樣會更好？</p>
+    <p class="chapter-rest__desc">誤刪無法歸零——透明的審查、可信的救濟</p>
   </div>
 
-  <!-- 換你親手試 · 偽陽性滑桿（招牌互動） -->
-  <section class="scene scene-wide reveal">
-    <p class="kicker">換你親手試 · 招牌互動</p>
-    <h2>那條門檻，你會設在哪？</h2>
-    <p>方法再多，總會誤判。換你站到審查者那一側，親手拖那條線——往嚴拖，垃圾擋更乾淨，但正常內容開始被誤殺（變灰）：尤其是看起來像垃圾的政治評論、學術考據、防詐科普。</p>
-    <FalsePositiveSlider />
-    <p style="text-align:center">這就是為什麼原則是：<strong>在不確定時，寧可漏看一篇垃圾，不願消音一篇表達。</strong></p>
-    <p style="text-align:center"><a class="read-more" href="false-positive">深入：偽陽性與門檻的倫理</a></p>
-  </section>
-
-  <!-- 內嵌互動 · 決策邊界（第三章動手 beat：任何一條線都會誤殺）-->
+  <!-- 內嵌互動 · 決策邊界（為什麼一定有誤殺：誤刪無法歸零的幾何）-->
   <section class="scene scene-wide reveal">
     <p class="kicker">親手試 · 決策邊界</p>
     <h2>為什麼一定有人被誤刪？</h2>
@@ -139,6 +139,27 @@ import '../styles/story.css';
     <div class="figure">
       <div class="figure__head"><span class="figure__title">模型怎麼畫那條線：為什麼一定有誤殺</span><span class="figure__hint">拖分界線</span></div>
       <DecisionBoundary />
+    </div>
+  </section>
+
+  <!-- 救濟與透明（第三章主軸：誤刪救得回來、整套審查可被檢驗）-->
+  <section class="scene scene-wide reveal">
+    <p class="kicker">那怎樣會更好？</p>
+    <h2>誤刪了，怎麼救回來？</h2>
+    <p>既然誤刪無法歸零，真正的問題就不只是「少殺一點」，而是<strong>被誤殺的人能不能被救回來</strong>，以及整套審查能不能被外界檢驗。讓平台治理可被信任的，是這三件事：</p>
+    <div class="bigq">
+      <a class="board board--hover" href="false-positive" style="--bigq-c:#7258FF">
+        <h3>申訴與可信救濟 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>程序透明、申訴可近、救濟可用；文章只降能見度不刪除＝可逆，誤判救得回來。</p>
+      </a>
+      <a class="board board--hover" href="data" style="--bigq-c:#5a8a93">
+        <h3>透明開盒 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>把偵測模型、處置流程、資料集都攤開——審查才能被檢驗，也能被別的平台採用。</p>
+      </a>
+      <a class="board board--hover" href="censorship-resistance" style="--bigq-c:#6f8f4e">
+        <h3>自己救內容 · 抗審查 <span class="bigq-arr" aria-hidden="true">→</span></h3>
+        <p>就算被下架，IPFS 讓內容指紋還在——使用者始終持有去中心網址。</p>
+      </a>
     </div>
   </section>
 

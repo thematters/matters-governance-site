@@ -324,6 +324,8 @@ import Term from './Term.astro';
       width: 100%; height: 100%; display: flex; flex-direction: column;
       align-items: center; justify-content: center; }
     html.js .grow-stage { height: 60vh; width: 100%; }
+    /* 垃圾卡散佈半徑（inline --gx/--gy 為桌面 ±180px）在窄屏會溢出邊緣被切；整組向中心收 ~24% */
+    html.js .grow-cards { transform: scale(.76); transform-origin: center center; }
     /* 圓底 round 標籤改成浮在舞台頂端的小膠囊（白字暗底），與底部字幕呼應 */
     html.js .grow-cap { position: absolute; top: 64px; left: 50%; transform: translateX(-50%);
       margin: 0; z-index: 6; width: max-content; max-width: calc(100vw - 32px);

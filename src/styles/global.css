@@ -186,10 +186,20 @@ section.block { margin: 56px 0; }
 /* 手機：長文 ＊ 引註改「底部 sheet」(fixed)，不再內聯撐開段落造成跳行/reflow、也不岔出版面外。
    桌面維持原內聯展開（使用者要求 web 不動）。 */
 @media (max-width: 640px) {
+  /* ＊ 觸控目標放大：用 ::before 撐出隱形熱區（不影響行內排版），方便手指點按與再點關閉 */
+  .cite-mark { position: relative; }
+  .cite-mark::before { content: ''; position: absolute; top: -12px; bottom: -12px; left: -9px; right: -9px; }
   .cite-cb:checked ~ .cite-body { position: fixed; left: 12px; right: 12px; bottom: 14px; top: auto; z-index: 80;
-    width: auto; max-width: none; margin: 0;
+    width: auto; max-width: none; margin: 0; max-height: 62vh; overflow-y: auto;
     box-shadow: 0 -4px 20px rgba(22,18,45,.22), 0 12px 34px rgba(22,18,45,.24); }
+  /* 關閉提示（搭配下方 JS 的點空白處關閉／單開行為） */
+  .cite-cb:checked ~ .cite-body::after { content: '輕觸空白處關閉'; display: block; margin-top: 10px;
+    font: 600 11px var(--font-ui); color: var(--ink-soft); opacity: .7; text-align: right; }
+  /* 點擊遮罩：開啟引註時鋪滿、輕觸即關（由 JS 切換 body.cite-open） */
+  .cite-backdrop { position: fixed; inset: 0; z-index: 79; background: rgba(16,14,28,.32); display: none; }
+  body.cite-open .cite-backdrop { display: block; }
 }
+@media (min-width: 641px) { .cite-backdrop { display: none !important; } }
 
 /* ---- 名詞彈註：中文（英文）＋ 滑過/點一下展開的浮層解釋 ---- */
 .term { position: relative; cursor: help; outline: none; }

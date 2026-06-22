@@ -106,6 +106,29 @@ const navLinksHtml = sections
       })();
     </script>
     <script is:inline>
+      /* 手機沉浸：頁首隨捲動方向自動收起/出現（向下捲＝橫幅消失讓 feed 全螢幕；向上捲＝回來導覽）。
+         只在 ≤640px 啟用；桌面完全不動。 */
+      (function () {
+        var header = document.querySelector('.site-header');
+        if (!header) return;
+        var mq = window.matchMedia('(max-width: 640px)');
+        var lastY = window.scrollY || 0, ticking = false;
+        function update() {
+          ticking = false;
+          if (!mq.matches) { header.classList.remove('nav-hidden'); return; }
+          var y = window.scrollY || 0;
+          if (y < 80) { header.classList.remove('nav-hidden'); }      // 頁面頂端一定顯示
+          else if (y > lastY + 6) { header.classList.add('nav-hidden'); }   // 向下捲：收起
+          else if (y < lastY - 6) { header.classList.remove('nav-hidden'); } // 向上捲：出現
+          lastY = y;
+        }
+        document.addEventListener('scroll', function () {
+          if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+        }, { passive: true });
+        update();
+      })();
+    </script>
+    <script is:inline>
       (function () {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         var play = function () {

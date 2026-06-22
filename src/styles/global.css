@@ -101,7 +101,11 @@ section.block { margin: 56px 0; }
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: saturate(1.2) blur(8px);
   border-bottom: 1px solid var(--line);
+  transition: transform .28s ease;
 }
+/* 手機沉浸：向下捲頁首自動收起（橫幅消失、feed 全螢幕），向上捲回來可導覽。
+   .nav-hidden 只由手機 JS 加，桌面永不套用。 */
+.site-header.nav-hidden { transform: translateY(-100%); }
 .nav { display: flex; align-items: center; gap: 16px;
   padding: 11px 20px; max-width: 1120px; margin: 0 auto; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink);

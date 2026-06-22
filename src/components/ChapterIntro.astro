@@ -32,5 +32,6 @@ const { id, num, name, desc, stage } = Astro.props;
     color: #fff; letter-spacing: .03em; text-shadow: 0 2px 28px rgba(0,0,0,.6), 0 1px 5px rgba(0,0,0,.5); }
   .chintro__desc { font: 500 clamp(15px, 2.4vw, 19px)/1.75 var(--font-ui); margin: 0 auto; max-width: 28em;
     color: rgba(255,255,255,.88); text-shadow: 0 1px 14px rgba(0,0,0,.6); }
-  @media (max-width: 680px) { .chintro { min-height: 78vh; } }
+  /* 手機：章節開場收短，標題更快入眼、減少「整屏圖卻沒字」的空滑；padding 一起收 */
+  @media (max-width: 680px) { .chintro { min-height: 56vh; padding: 9vh 18px; } }
 </style>

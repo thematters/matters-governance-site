@@ -231,7 +231,9 @@ const steps = [
      桌面雙欄(視覺＋旁白)在手機水土不服(注意力被撕兩半)；手機改成 feed 滿版釘住整屏
      (去玻璃框/去上下淡出條)，旁白做成半透明字幕卡浮在 feed 下方、隨捲動切換、與畫面同框。 */
   @media (max-width: 720px) {
-    .scrolly { width: 100%; margin-left: 0; transform: none; }
+    /* 滿版到螢幕邊（突破 .container 左右 padding；用 margin 不用 transform，才不破壞 sticky）
+       → feed 與底部 tab bar 都寬度佔滿、邊到邊 */
+    .scrolly { width: 100vw; margin-left: calc(50% - 50vw); transform: none; }
     .scrolly-grid { display: block; }
     /* feed 滿版釘住整屏（去框、去淡出條） */
     .scrolly-figwrap { position: sticky; top: 0; height: 100svh; padding: 0; display: block; }
@@ -248,10 +250,11 @@ const steps = [
     /* 旁白：右欄文字在手機隱藏，步驟只當「隱形捲動間距」驅動既有 ScrollTrigger；
        實際字幕由 JS 寫進 .sg-narrate(浮在 feed 底部、tab bar 之上)，與畫面同框、不再並排。 */
     .scrolly-steps { position: relative; z-index: 1; padding: 0; }
-    .scrolly-step { min-height: 88svh; display: block; }
-    .scrolly-step:first-child { min-height: 64svh; }
-    .scrolly-step[data-i="5"] { min-height: 120svh; }
-    .scrolly-step[data-i="6"] { min-height: 104svh; }
+    /* 步驟＝隱形捲動間距：收短，避免手機要滑太久才換字幕／到下一段（原 ~8 屏 → ~5 屏） */
+    .scrolly-step { min-height: 58svh; display: block; }
+    .scrolly-step:first-child { min-height: 44svh; }
+    .scrolly-step[data-i="5"] { min-height: 82svh; }
+    .scrolly-step[data-i="6"] { min-height: 74svh; }
     .scrolly-step p { display: none; }
   }
 

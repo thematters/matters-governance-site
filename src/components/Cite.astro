@@ -1,18 +1,18 @@
 ---
 // 可展開引註。用法：
 // <Cite src="內容過濾機制（工程端）" quote="攔阻成功率 96%→99.7%" url="...">主張文字</Cite>
+//
+// 注意：本元件出現在長文 <p> 內聯流中。先前用 <details>/<summary> 實作，但 <details> 屬
+// flow content、非 phrasing content，放進 <p> 會被瀏覽器 HTML parser 逐出段落（error recovery），
+// 導致多數引註在 DOM 裡整顆 <details> 消失、少數被抬成 block 自成一行（真機看到的「＊ 自成一列」壞掉）。
+// 改用「隱藏 checkbox ＋ label」純 CSS 開合：input/label/span 都是 phrasing content，內聯合法、不被逐出，
+// 且免 JS 即可展開（漸進增強），桌面維持原本「內聯 ＊ 點開」設計。
 interface Props {
   src: string;
   url?: string;
   quote?: string;
 }
 const { src, url, quote } = Astro.props;
+const id = 'cite-' + Math.random().toString(36).slice(2, 9);
 ---
-<span class="cite" data-claim><slot /><details>
-  <summary aria-label={`出處：${src}`}>＊</summary>
-  <span class="cite-body">
-    <strong>{src}</strong>
-    {quote && <q>{quote}</q>}
-    {url && <a href={url} target="_blank" rel="noopener">原始連結 ↗</a>}
-  </span>
-</details></span>
+<span class="cite" data-claim><slot /><input type="checkbox" id={id} class="cite-cb" aria-label={`展開出處：${src}`} /><label class="cite-mark" for={id}>＊</label><span class="cite-body"><strong>{src}</strong>{quote && <q>{quote}</q>}{url && <a href={url} target="_blank" rel="noopener">原始連結 ↗</a>}</span></span>

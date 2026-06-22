@@ -176,6 +176,13 @@ section.block { margin: 56px 0; }
 .cite-body strong { color: var(--ink); }
 .cite-body q { display: block; color: var(--ink); margin: 4px 0; }
 .cite-body a { font-size: 13px; }
+/* 手機：長文 ＊ 引註改「底部 sheet」(fixed)，不再 display:block 內聯撐開段落造成跳行/reflow、也不岔出版面外。
+   桌面維持原內聯展開（使用者要求 web 不動）。 */
+@media (max-width: 640px) {
+  .cite-body { position: fixed; left: 12px; right: 12px; bottom: 14px; top: auto; z-index: 80;
+    width: auto; max-width: none; margin: 0;
+    box-shadow: 0 -4px 20px rgba(22,18,45,.22), 0 12px 34px rgba(22,18,45,.24); }
+}
 
 /* ---- 名詞彈註：中文（英文）＋ 滑過/點一下展開的浮層解釋 ---- */
 .term { position: relative; cursor: help; outline: none; }
@@ -207,7 +214,13 @@ section.block { margin: 56px 0; }
 /* 手機（≤640px）：名詞浮層收窄，降低靠右溢出（保留 base left:0／.term--right 定位，
    不動位移以免左緣名詞反向溢出；overflow-x:clip 再兜底） */
 @media (max-width: 640px) {
-  .term-pop { max-width: min(260px, 86vw); }
+  /* 名詞註解在手機改「底部 sheet」：固定在視窗底部、近全寬，徹底不會岔出版面外
+     （原本 absolute left:0 在窄屏會超出右緣被切）。scene 內文的 term 無 transform/filter 祖先，fixed 正常定位。 */
+  .term-pop { position: fixed; left: 12px; right: 12px; bottom: 14px; top: auto;
+    width: auto; max-width: none; margin: 0; transform: translateY(10px); z-index: 80;
+    box-shadow: 0 -4px 20px rgba(22,18,45,.22), 0 12px 34px rgba(22,18,45,.24); }
+  .term.term--right .term-pop { left: 12px; right: 12px; }
+  .term:hover .term-pop, .term:focus .term-pop, .term:focus-within .term-pop { transform: translateY(0); }
 }
 
 /* ---- 互動佔位 ---- */

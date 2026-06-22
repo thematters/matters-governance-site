@@ -235,15 +235,17 @@ const steps = [
        → feed 與底部 tab bar 都寬度佔滿、邊到邊 */
     .scrolly { width: 100vw; margin-left: calc(50% - 50vw); transform: none; }
     .scrolly-grid { display: block; }
-    /* feed 滿版釘住整屏（去框、去淡出條） */
-    .scrolly-figwrap { position: sticky; top: 0; height: 100svh; padding: 0; display: block; }
+    /* feed 滿版釘住整屏（去框、去淡出條）。用 100dvh＝動態視窗高度，tab bar 才貼到真正螢幕底（不留 svh 縫） */
+    .scrolly-figwrap { position: sticky; top: 0; height: 100dvh; padding: 0; display: block; }
     .scrolly-fig { background: none; border: none; box-shadow: none; backdrop-filter: none;
       -webkit-backdrop-filter: none; padding: 0; border-radius: 0; height: 100%; }
     .sg-stage { height: 100%; }
     .sg-stage::before { display: none; }
-    .sg-viewport { height: 100svh; -webkit-mask-image: none; mask-image: none; }
-    .sg-feed { padding: 12vh 0 26vh; }
-    .sg-card { width: min(440px, 88vw); }
+    .sg-viewport { height: 100dvh; -webkit-mask-image: none; mask-image: none; }
+    .sg-feed { padding: 11vh 0 24vh; }
+    /* 效能：手機關掉卡片 backdrop-filter(20 張 blur 是捲動卡頓主因)，改實底色 */
+    .sg-card { width: min(440px, 88vw); backdrop-filter: none; -webkit-backdrop-filter: none;
+      background: rgba(255,255,255,.92); will-change: auto; }
     .sg-cap { display: none; }
     .sg-tabbar { display: flex; }
     .sg-narrate { display: block; }

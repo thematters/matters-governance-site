@@ -302,14 +302,18 @@ import Term from './Term.astro';
 
   @media (max-width: 720px) {
     .grow-grid { grid-template-columns: 1fr; gap: 0; }
-    .grow-figwrap { height: auto; top: 54px; padding: 8px 0 16px; }
-    .grow-stage { height: 44vh; }
-    .grow-core { width: 96%; }
-    .relay-end { width: 52px; }
-    .relay-end svg { width: 36px; height: 32px; }
-    .grow-step { min-height: 46vh; }
-    .grow-step p { font-size: 16px; }
-    .grow-card { width: 130px; }
+    .grow-figwrap { height: auto; top: 54px; padding: 8px 0 14px; }
+    /* 關係圖放大清楚一點；去 backdrop-filter(grow-fig/core/card 的 blur 是捲動卡頓源) */
+    .grow-stage { height: 50vh; }
+    .grow-fig { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.18); }
+    .grow-core { width: 98%; }
+    .grow-card { backdrop-filter: none; -webkit-backdrop-filter: none; width: 132px; background: rgba(255,255,255,.92); }
+    .relay-end { width: 54px; }
+    .relay-end svg { width: 38px; height: 34px; }
+    /* 步驟收短(原 5×46vh≈2.7 屏 → 約 2 屏)、文字緊湊，不要長條 */
+    .grow-step { min-height: 38vh; padding: 0; }
+    .grow-step p { font-size: 15px; line-height: 1.7; padding: 12px 14px; }
+    .grow-step__no { width: 30px; height: 30px; font-size: 14px; }
   }
 
   /* reduced-motion：軌道/梭的 width/transform 過渡關掉，靠 JS snapFinal 直接定版 */

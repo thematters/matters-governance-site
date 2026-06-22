@@ -129,6 +129,38 @@ const navLinksHtml = sections
       })();
     </script>
     <script is:inline>
+      /* 手機長文引註（＊）行為：單開（同時只展開一則，避免底部 sheet 互相重疊）＋輕觸空白處關閉。
+         桌面維持原內聯展開（可多則同時開、不重疊），故只在 ≤640px 套用。MPA 全頁載入，無需重入 guard。 */
+      (function () {
+        var boxes = [].slice.call(document.querySelectorAll('.cite-cb'));
+        if (!boxes.length) return;
+        var mq = window.matchMedia('(max-width: 640px)');
+        var backdrop = null;
+        function ensureBackdrop() {
+          if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'cite-backdrop';
+            backdrop.addEventListener('click', closeAll);
+            document.body.appendChild(backdrop);
+          }
+        }
+        function anyOpen() { return boxes.some(function (b) { return b.checked; }); }
+        function closeAll() { boxes.forEach(function (b) { b.checked = false; }); document.body.classList.remove('cite-open'); }
+        boxes.forEach(function (box) {
+          box.addEventListener('change', function () {
+            if (box.checked && mq.matches) {
+              boxes.forEach(function (o) { if (o !== box) o.checked = false; }); // 單開
+              ensureBackdrop();
+              document.body.classList.add('cite-open');
+            } else if (!box.checked && !anyOpen()) {
+              document.body.classList.remove('cite-open');
+            }
+          });
+        });
+        if (mq.addEventListener) mq.addEventListener('change', function (e) { if (!e.matches) document.body.classList.remove('cite-open'); });
+      })();
+    </script>
+    <script is:inline>
       (function () {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         var play = function () {

@@ -118,6 +118,9 @@ import Term from './Term.astro';
           </div>
           <p class="grow-cap" id="grow-cap">第一輪：群眾把公開紀錄交給機器</p>
         </div>
+        <!-- 手機全螢幕浮層字幕（桌面隱藏）：白字暗底，釘在畫面底部，呈現目前步驟全文。
+             桌面維持右側五步驟文字方塊不變。 -->
+        <p class="grow-narrate" id="grow-narrate" aria-hidden="true"></p>
       </div>
 
       <!-- 五個概念步驟：保留「群眾打掃／累積標記／訓練模型／機器自動掃／釋出人力」的精神 -->
@@ -256,6 +259,9 @@ import Term from './Term.astro';
     text-align: center; font: 700 15px var(--font-ui); margin: 14px 0 0; color: var(--ink); min-height: 1.4em;
   }
 
+  /* 手機全螢幕浮層字幕（桌面隱藏；手機 media 開啟）：白字暗底，釘在全螢幕舞台底部 */
+  .grow-narrate { display: none; }
+
   /* 右：五步驟文字 */
   .grow-steps { padding: 6vh 0; }
   .grow-step {
@@ -302,18 +308,46 @@ import Term from './Term.astro';
 
   @media (max-width: 720px) {
     .grow-grid { grid-template-columns: 1fr; gap: 0; }
-    .grow-figwrap { height: auto; top: 54px; padding: 8px 0 14px; }
-    /* 關係圖放大清楚一點；去 backdrop-filter(grow-fig/core/card 的 blur 是捲動卡頓源) */
-    .grow-stage { height: 50vh; }
-    .grow-fig { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.18); }
-    .grow-core { width: 98%; }
+    /* 通用（含無 JS）：去 backdrop-filter(grow-card blur 是捲動卡頓源)、關係圖尺寸收斂 */
+    .grow-core { width: 96%; }
     .grow-card { backdrop-filter: none; -webkit-backdrop-filter: none; width: 132px; background: rgba(255,255,255,.92); }
     .relay-end { width: 54px; }
     .relay-end svg { width: 38px; height: 34px; }
-    /* 步驟收短(原 5×46vh≈2.7 屏 → 約 2 屏)、文字緊湊，不要長條 */
-    .grow-step { min-height: 38vh; padding: 0; }
-    .grow-step p { font-size: 15px; line-height: 1.7; padding: 12px 14px; }
-    .grow-step__no { width: 30px; height: 30px; font-size: 14px; }
+
+    /* ── 全螢幕釘住舞台（仿 StickyScroller，僅 html.js）：關係圖滿屏置中、去玻璃框；
+         步驟文字方塊隱藏、只當隱形捲動間距；說明改底部白字浮層字幕。
+         無 JS 不套用（字幕無法被寫入），改走下方 html:not(.js) 靜態可讀版。 ── */
+    html.js .grow-figwrap { position: sticky; top: 0; height: 100dvh; padding: 0;
+      display: flex; align-items: center; justify-content: center; }
+    html.js .grow-fig { backdrop-filter: none; -webkit-backdrop-filter: none;
+      background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0;
+      width: 100%; height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; }
+    html.js .grow-stage { height: 60vh; width: 100%; }
+    /* 圓底 round 標籤改成浮在舞台頂端的小膠囊（白字暗底），與底部字幕呼應 */
+    html.js .grow-cap { position: absolute; top: 64px; left: 50%; transform: translateX(-50%);
+      margin: 0; z-index: 6; width: max-content; max-width: calc(100vw - 32px);
+      font: 800 12.5px var(--font-ui); color: #fff; padding: 6px 14px; border-radius: 999px;
+      background: rgba(16,14,28,.78); border: 1px solid rgba(255,255,255,.16); }
+    /* 步驟：保留 min-height 當捲動間距，內容（序號＋文字方塊）整段隱藏 */
+    html.js .grow-steps { padding: 0; }
+    html.js .grow-step { min-height: 42vh; padding: 0; }
+    html.js .grow-step__no, html.js .grow-step p { display: none; }
+    /* 底部白字浮層字幕：寫入目前步驟全文（JS 在 step onToggle 更新） */
+    html.js .grow-narrate { display: block; position: absolute; left: 14px; right: 14px; bottom: 28px; z-index: 6;
+      margin: 0; font: 500 15.5px/1.7 var(--font-ui); color: #fff; text-align: left;
+      background: rgba(16,14,28,.82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.18); box-shadow: 0 12px 34px rgba(0,0,0,.5);
+      padding: 13px 16px; border-radius: 16px; }
+
+    /* 無 JS 手機：不釘屏、步驟文字方塊照常顯示為靜態可讀、文字緊湊（浮層字幕保持隱藏） */
+    html:not(.js) .grow-stage { height: 50vh; }
+    html:not(.js) .grow-step { min-height: auto; padding: 0; }
+    html:not(.js) .grow-step p { font-size: 15px; line-height: 1.7; padding: 12px 14px; }
+    html:not(.js) .grow-step__no { width: 30px; height: 30px; font-size: 14px; }
+  }
+  @media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+    html.js .grow-narrate { transition: opacity .3s ease; }
   }
 
   /* reduced-motion：軌道/梭的 width/transform 過渡關掉，靠 JS snapFinal 直接定版 */
@@ -361,6 +395,7 @@ import Term from './Term.astro';
     const ver = document.getElementById('grow-ver');
     const fill = document.getElementById('grow-fill');
     const cap = document.getElementById('grow-cap');
+    const narrate = document.getElementById('grow-narrate'); // 手機全螢幕浮層字幕（桌面隱藏）
     const cardsWrap = document.getElementById('grow-cards');
     const lit = document.getElementById('relay-lit');
     const shuttle = document.getElementById('relay-shuttle');
@@ -389,6 +424,12 @@ import Term from './Term.astro';
       if (hand) hand.classList.toggle('is-lit', which === 'crowd');
       if (bot) bot.classList.toggle('is-lit', which === 'bot');
     }
+    // 手機浮層字幕：寫入該步驟 <p> 全文（桌面 .grow-narrate 隱藏，不影響）
+    function setNarrate(i: number) {
+      if (!narrate || !steps[i]) return;
+      const sp = steps[i].querySelector('p');
+      if (sp) narrate.textContent = sp.textContent;
+    }
 
     // 最終狀態（reduced-motion 與行程末端共用）：機器升到頂、軌道全亮、所有卡吸入、步驟全亮
     function snapFinal() {
@@ -402,6 +443,7 @@ import Term from './Term.astro';
       if (hand) hand.classList.add('is-lit');
       if (bot) bot.classList.add('is-lit');
       steps.forEach((s) => s.classList.add('active'));
+      setNarrate(steps.length - 1);
     }
 
     if (reduce) { snapFinal(); return; }
@@ -469,6 +511,8 @@ import Term from './Term.astro';
           // 字幕跟著步驟：①②＝v1、③＝v2、④⑤＝v3（與三輪節奏對齊）
           const ci = i <= 1 ? 0 : i === 2 ? 1 : 2;
           cap.textContent = rounds[ci].cap;
+          // 手機浮層字幕：寫入目前步驟全文
+          setNarrate(i);
           // 端點點亮：①②在守望隊端、③④⑤在機器端
           litEnd(i <= 1 ? 'crowd' : 'bot');
         },
@@ -476,6 +520,7 @@ import Term from './Term.astro';
     });
     steps[0].classList.add('active');
     litEnd('crowd');
+    setNarrate(0);
 
     let rt: ReturnType<typeof setTimeout>;
     window.addEventListener('resize', () => {

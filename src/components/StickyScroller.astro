@@ -90,6 +90,16 @@ const steps = [
           <div class="sg-ring-label" id="sg-ring-label" aria-hidden="true">集團 · 同一模板 ×3</div>
         </div>
         <p class="sg-cap" id="sg-cap">正常使用者的內容</p>
+        <!-- 手機浮層字幕：浮在全螢幕 feed 底部、tab bar 之上；由 JS 寫入當前 active 步驟全文 -->
+        <p class="sg-narrate" id="sg-narrate" aria-hidden="true"></p>
+        <!-- 擬真社群 app 底部 tab bar（手機才顯示，純裝飾／aria-hidden，賣「我在滑真 app」的沉浸感） -->
+        <nav class="sg-tabbar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="is-on"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+          <svg viewBox="0 0 24 24" class="sg-tabbar__add"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8z"/><path d="M10.5 21a2 2 0 0 0 3 0"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+        </nav>
       </div>
     </div>
     <div class="scrolly-steps">
@@ -186,6 +196,24 @@ const steps = [
   /* 首頁暗色舞台：StickyScroller 落在第一章 N1 暗底上，loose 標題轉白 */
   :global(.dark-stage) .sg-cap { color: #fff; text-shadow: 0 1px 10px rgba(0,0,0,.6); }
 
+  /* 手機浮層字幕（桌面隱藏）：浮在全螢幕 feed 底部、tab bar 之上，半透明暗底＋白字 */
+  .sg-narrate { display: none; position: absolute; left: 14px; right: 14px; bottom: 76px; z-index: 6;
+    margin: 0; font: 500 15.5px/1.7 var(--font-ui); color: #fff; text-align: left;
+    background: rgba(16,14,28,.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.18); box-shadow: 0 12px 34px rgba(0,0,0,.5);
+    padding: 13px 16px; border-radius: 16px; }
+  @media (prefers-reduced-motion: no-preference) { .sg-narrate { transition: opacity .3s ease; } }
+
+  /* 擬真 app 底部 tab bar（桌面隱藏，手機在全螢幕 feed 底部顯示） */
+  .sg-tabbar { display: none; position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+    align-items: center; justify-content: space-around; height: 54px; padding: 0 10px;
+    background: rgba(14,12,26,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255,255,255,.12); }
+  .sg-tabbar svg { width: 24px; height: 24px; fill: none; stroke: rgba(255,255,255,.72);
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .sg-tabbar svg.is-on { fill: #fff; stroke: #fff; }
+  .sg-tabbar svg.sg-tabbar__add { stroke: var(--c-brand, #7258FF); width: 30px; height: 30px; stroke-width: 1.6; }
+
   .scrolly-step { min-height: 90vh; display: flex; align-items: center; }
   .scrolly-step:first-child { min-height: 55vh; }
   .scrolly-step[data-i="0"] { min-height: 70vh; } /* 良善小天地：開場，給綠好文進場空間 */
@@ -199,20 +227,50 @@ const steps = [
   html.js .scrolly-step p { opacity: .35; transform: translateY(6px); }
   html.js .scrolly-step.active p { opacity: 1; transform: none; border-color: color-mix(in srgb, var(--c-brand, #7258FF) 35%, var(--line)); }
 
+  /* ── 手機（≤720px）：scrollytelling 改「全螢幕擬真 feed ＋ 浮層字幕」──
+     桌面雙欄(視覺＋旁白)在手機水土不服(注意力被撕兩半)；手機改成 feed 滿版釘住整屏
+     (去玻璃框/去上下淡出條)，旁白做成半透明字幕卡浮在 feed 下方、隨捲動切換、與畫面同框。 */
   @media (max-width: 720px) {
     .scrolly { width: 100%; margin-left: 0; transform: none; }
-    .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
-    .scrolly-figwrap { height: auto; top: 54px; padding: 8px 0 16px; }
-    .sg-viewport { height: 46vh; }
-    .sg-card { width: 100%; }
-    .scrolly-step { min-height: 70vh; }
-    .scrolly-step[data-i="5"] { min-height: 100vh; }
-    .scrolly-step p { font-size: 18px; }
+    .scrolly-grid { display: block; }
+    /* feed 滿版釘住整屏（去框、去淡出條） */
+    .scrolly-figwrap { position: sticky; top: 0; height: 100svh; padding: 0; display: block; }
+    .scrolly-fig { background: none; border: none; box-shadow: none; backdrop-filter: none;
+      -webkit-backdrop-filter: none; padding: 0; border-radius: 0; height: 100%; }
+    .sg-stage { height: 100%; }
+    .sg-stage::before { display: none; }
+    .sg-viewport { height: 100svh; -webkit-mask-image: none; mask-image: none; }
+    .sg-feed { padding: 12vh 0 26vh; }
+    .sg-card { width: min(440px, 88vw); }
+    .sg-cap { display: none; }
+    .sg-tabbar { display: flex; }
+    .sg-narrate { display: block; }
+    /* 旁白：右欄文字在手機隱藏，步驟只當「隱形捲動間距」驅動既有 ScrollTrigger；
+       實際字幕由 JS 寫進 .sg-narrate(浮在 feed 底部、tab bar 之上)，與畫面同框、不再並排。 */
+    .scrolly-steps { position: relative; z-index: 1; padding: 0; }
+    .scrolly-step { min-height: 88svh; display: block; }
+    .scrolly-step:first-child { min-height: 64svh; }
+    .scrolly-step[data-i="5"] { min-height: 120svh; }
+    .scrolly-step[data-i="6"] { min-height: 104svh; }
+    .scrolly-step p { display: none; }
   }
 
-  html:not(.js) .scrolly-step p { opacity: 1; }
-  /* no-JS：feed 整條可讀（不裁切），步驟全顯示 */
+  /* no-JS：feed 整條可讀（不裁切）、步驟全顯示；手機把釘住/隱形步驟還原成可讀靜態流，藏掉 JS 才有意義的浮層字幕與裝飾 tab bar */
+  html:not(.js) .scrolly-step p { opacity: 1; display: block; }
   html:not(.js) .sg-viewport { height: auto; -webkit-mask-image: none; mask-image: none; }
+  html:not(.js) .scrolly-figwrap { position: static; height: auto; }
+  html:not(.js) .sg-narrate, html:not(.js) .sg-tabbar { display: none; }
+
+  /* 手機 + 偏好減少動態：JS reduced-motion 分支不跑 scrub/字幕，故還原成靜態可讀流（feed 在上、步驟文字在下），
+     不用釘住全螢幕＋空浮層字幕。 */
+  @media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+    .scrolly-figwrap { position: static; height: auto; }
+    .sg-viewport { height: auto; }
+    .sg-narrate, .sg-tabbar { display: none; }
+    .scrolly-step { min-height: 0; padding: 8px 14px 18px; }
+    .scrolly-step p { display: block; font-size: 16px; line-height: 1.7; background: rgba(255,255,255,.6);
+      color: var(--ink); border: 1px solid var(--line); opacity: 1; }
+  }
 </style>
 
 <script>
@@ -229,6 +287,7 @@ const steps = [
     const feed = document.getElementById('sg-feed');
     const viewport = document.getElementById('sg-viewport');
     const cap = document.getElementById('sg-cap');
+    const narrate = document.getElementById('sg-narrate'); // 手機浮層字幕（桌面隱藏）
     const atmos = document.getElementById('scrolly-atmos');
     const glow = document.getElementById('sg-glow');
     const ringFrame = document.getElementById('sg-ring-frame');
@@ -288,6 +347,11 @@ const steps = [
     function setActive(i) {
       steps.forEach((s, j) => s.classList.toggle('active', j === i));
       if (caps[i]) setCaption(caps[i]);
+      // 手機浮層字幕：寫入當前步驟全文（桌面 .sg-narrate 隱藏，不影響）
+      if (narrate && steps[i]) {
+        const sp = steps[i].querySelector('p');
+        if (sp) narrate.textContent = sp.textContent;
+      }
     }
 
     // ── reduced-motion：直接顯示最終狀態，feed 捲到能看見集團，靜態可讀 ──

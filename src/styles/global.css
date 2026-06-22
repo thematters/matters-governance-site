@@ -69,8 +69,9 @@ section.block { margin: 56px 0; }
    桌面尺寸直接套手機會又大又鬆；這裡收一檔字級＋收緊版面間距，讓一畫面塞更多內容又好讀。
    各互動元件/scrollytelling 另在自己的窄斷點微調。 */
 @media (max-width: 640px) {
-  /* 防手機橫向捲動的安全網：clip 不會像 hidden/auto 那樣建立捲動容器，故不破壞 sticky scrollytelling */
-  html { overflow-x: clip; }
+  /* 防手機橫向捲動的安全網：clip 不會像 hidden/auto 那樣建立捲動容器，故不破壞 sticky scrollytelling。
+     html 與 body 都加，確保不論捲動容器在哪一層都擋得住橫向溢出。 */
+  html, body { overflow-x: clip; }
   /* 頁首在手機收一點 padding，抵銷 .btn--sm 觸控放大(44px)帶來的高度 */
   .nav { padding: 9px 16px; }
   body { font-size: 16px; line-height: 1.65; }

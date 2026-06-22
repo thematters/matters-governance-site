@@ -19,12 +19,14 @@ import '../styles/story.css';
        上覆一層暗幕(scrim，依章調整暗度以利白字閱讀)。內容(.dark-stage)疊在最上層。
        不再用影片、不再硬切；放頁面頂層、.full-bleed(帶 transform)之外，fixed 才不失效。 -->
   <div class="stage" id="stage" aria-hidden="true">
-    <img class="stage__img is-active" data-stage-img="0" src="illustrations/hero.jpg" alt="" />
-    <img class="stage__img" data-stage-img="1" src="illustrations/N1-dark-underworld-reference.jpg" alt="" />
-    <img class="stage__img" data-stage-img="2" src="illustrations/F2-moderation-spectrum.jpg" alt="" />
-    <img class="stage__img" data-stage-img="3" src="illustrations/self-rescue.jpg" alt="" />
-    <img class="stage__img" data-stage-img="4" src="illustrations/N2-light-emergence-style-v2.jpg" alt="" />
-    <img class="stage__img" data-stage-img="5" src="illustrations/crowd.jpg" alt="" />
+    <!-- 手機改用直式 9:16 重構圖（<source media>，藝術導向切換）；桌面維持原橫式圖。
+         .stage__img 仍在 <img> 上，JS 切章(.is-active)與 CSS 不受 <picture> 包裹影響。 -->
+    <picture><source media="(max-width: 640px)" srcset="illustrations/mobile/hero-mobile.jpg" /><img class="stage__img is-active" data-stage-img="0" src="illustrations/hero.jpg" alt="" /></picture>
+    <picture><source media="(max-width: 640px)" srcset="illustrations/mobile/ch1-dark-mobile.jpg" /><img class="stage__img" data-stage-img="1" src="illustrations/N1-dark-underworld-reference.jpg" alt="" /></picture>
+    <picture><source media="(max-width: 640px)" srcset="illustrations/mobile/ch2-moderation-mobile.jpg" /><img class="stage__img" data-stage-img="2" src="illustrations/F2-moderation-spectrum.jpg" alt="" /></picture>
+    <picture><source media="(max-width: 640px)" srcset="illustrations/mobile/ch3-self-rescue-mobile.jpg" /><img class="stage__img" data-stage-img="3" src="illustrations/self-rescue.jpg" alt="" /></picture>
+    <picture><source media="(max-width: 640px)" srcset="illustrations/mobile/bigger-light-mobile.jpg" /><img class="stage__img" data-stage-img="4" src="illustrations/N2-light-emergence-style-v2.jpg" alt="" /></picture>
+    <picture><source media="(max-width: 640px)" srcset="illustrations/mobile/appendix-crowd-mobile.jpg" /><img class="stage__img" data-stage-img="5" src="illustrations/crowd.jpg" alt="" /></picture>
   </div>
   <div class="stage-scrim" id="stage-scrim" aria-hidden="true"></div>
 

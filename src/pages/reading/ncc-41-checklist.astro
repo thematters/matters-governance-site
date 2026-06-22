@@ -386,10 +386,17 @@ import '../../styles/story.css';
       padding: 1px 5px; border-radius: 4px;
     }
     .checklist tbody tr:nth-child(even) { background: color-mix(in srgb, var(--line) 16%, transparent); }
+    /* 手機：不再橫向捲動（原 min-width:560px 會把第三欄推出畫面外、無捲動提示）。
+       改 table-layout:fixed 三欄等比塞進螢幕、文字換行＝完整可讀。桌面不變。 */
     @media (max-width: 680px) {
-      .checklist { overflow-x: auto; }
-      .checklist table { min-width: 560px; }
-      .checklist tbody td:first-child { width: auto; }
+      .checklist table { table-layout: fixed; }
+      .checklist thead th, .checklist tbody td {
+        padding: 10px 9px; font-size: 13px; word-break: break-word; overflow-wrap: anywhere;
+      }
+      .checklist thead th:first-child, .checklist tbody td:first-child { width: 42%; }
+      .checklist thead th:nth-child(2), .checklist tbody td:nth-child(2) { width: 16%; }
+      .checklist thead th:last-child, .checklist tbody td:last-child { width: 42%; }
+      .checklist code { font-size: 11.5px; }
     }
   </style>
 

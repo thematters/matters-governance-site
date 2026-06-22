@@ -39,6 +39,9 @@ const authorOf = (c: { cat: string }) => authorByCat[c.cat] || c.cat;
 const initials = (name: string) => name.slice(0, 1);
 // 分數徽章顯示成 Matters 風格的 0–1 兩位小數（資料是 0–100，僅顯示用；data-score 仍整數給 JS）
 const fmtScore = (s: number) => (s / 100).toFixed(2);
+// 手機只顯這 8 張代表卡（涵蓋四象限：清楚正常 2/7、清楚垃圾 8/9、高分被誤殺的正常 17/19、低分漏網的垃圾 15、政治評論誤殺風險 4），
+// 讓互動一屏打完、不必滑過 21 張；讀數由 JS 只計可見卡，數字與畫面一致。
+const mobileShow = new Set([2, 4, 7, 8, 9, 15, 17, 19]);
 ---
 <div class="fp" id="fp-root" data-initial={initial}>
   <!-- 控制列＋讀數移到 feed 之前並 sticky 釘在頂端：拖門檻時滑桿、四格讀數與正在變色的卡片同框、即時可見 -->
@@ -75,7 +78,7 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
   <div class="fp-feed" aria-label="一組正常（綠）與垃圾（紅）貼文，依模型分數被門檻過濾">
     {cards.map((c, i) => (
       <article
-        class={`fp-card fp-${c.truth}${c.border ? ' fp-border' : ''}`}
+        class={`fp-card fp-${c.truth}${c.border ? ' fp-border' : ''}${mobileShow.has(i) ? ' fp-card--m' : ''}`}
         data-score={c.score}
         data-truth={c.truth}
       >
@@ -125,6 +128,16 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
   /* ── feed：卡片全攤開、跟著整頁自然捲（移除原 50vh 內捲與 mask）；操作與回饋同框、無雙層捲動打架 ── */
   .fp-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); grid-auto-rows: max-content;
     align-content: start; gap: 10px; margin-bottom: var(--space-sp16, 16px); padding: 2px; border-radius: 12px; }
+
+  /* 手機一屏化：只顯 8 張代表卡(2 欄緊湊、4 列)、卡片去 backdrop-filter(效能)；讀數由 JS 只計可見卡 */
+  @media (max-width: 640px) {
+    .fp-feed { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .fp-card:not(.fp-card--m) { display: none; }
+    /* 用 .fp-feed .fp-card 提高特異度，確保壓過後面的 base .fp-card（效能：去 blur 改實底） */
+    .fp-feed .fp-card { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.94); }
+    .fp-feed .fp-summary { display: none; }
+    .fp-feed .fp-text { -webkit-line-clamp: 2; font-size: 13.5px; }
+  }
 
   /* 深色舞台（首頁）：sticky 控制列改深玻璃，白字標籤才讀得到 */
   :global(.dark-stage) .fp-stage { background: rgba(20,18,32,.74); border-color: rgba(255,255,255,.14);
@@ -203,7 +216,7 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
   .fp-removed:not(.fp-is-fp) .fp-state::before { content: '已隱藏'; }
 
   @media (max-width: 480px) {
-    .fp-feed { grid-template-columns: 1fr; }
+    /* 8 張代表卡維持 2 欄緊湊（不回 1 欄）；fp-feed 欄數由上方 640px 規則決定 */
     /* 觸控：滑桿 thumb 放大好抓（margin-top 同步抵銷以維持與軌道置中：-(34-8)/2） */
     .fp-range::-webkit-slider-thumb { width: 34px; height: 34px; margin-top: -13px; }
     .fp-range::-moz-range-thumb { width: 34px; height: 34px; }
@@ -251,6 +264,11 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
     var wrap = document.getElementById('fp-wrap');
     var bubble = document.getElementById('fp-bubble');
     var cards = [].slice.call(root.querySelectorAll('.fp-card'));
+    // 手機只顯 8 張代表卡（其餘 display:none）；讀數/結論只計「可見卡」，數字才與畫面一致
+    var counted = cards;
+    function recount() {
+      counted = cards.filter(function (c) { return getComputedStyle(c).display !== 'none'; });
+    }
     var elVal = document.getElementById('fp-threshold-val');
     var elB = document.getElementById('fp-blocked');
     var elL = document.getElementById('fp-leaked');
@@ -269,7 +287,7 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
     }
     function update() {
       var t = +slider.value, blocked = 0, leaked = 0, fp = 0, safe = 0;
-      cards.forEach(function (c) {
+      counted.forEach(function (c) {
         var score = +c.getAttribute('data-score');
         var spam = c.getAttribute('data-truth') === 'spam';
         var removed = score >= t;
@@ -282,7 +300,7 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
       elF.textContent = fp; elS.textContent = safe;
       var msg;
       if (fp === 0 && leaked === 0) {
-        msg = '幾乎完美，但這種理想狀態很罕見，真實內容遠比這 22 張卡片複雜。';
+        msg = '幾乎完美，但這種理想狀態很罕見，真實內容遠比這 ' + counted.length + ' 張卡片複雜。';
       } else if (fp > 0 && leaked > 0) {
         msg = '你誤殺了 ' + fp + ' 篇正常內容，卻還有 ' + leaked + ' 篇垃圾漏網，兩種代價同時發生。';
       } else if (fp > 0) {
@@ -296,7 +314,8 @@ const fmtScore = (s: number) => (s / 100).toFixed(2);
 
     var userTouched = false;
     slider.addEventListener('input', function () { userTouched = true; update(); });
-    window.addEventListener('resize', function () { setVisual(+slider.value); });
+    window.addEventListener('resize', function () { recount(); setVisual(+slider.value); update(); });
+    recount();
     update();
 
     // 進場自動 demo：滑入視野時 thumb 輕輕 wiggle 一次，邀請動手（reduced-motion 不做）

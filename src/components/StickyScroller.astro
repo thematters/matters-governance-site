@@ -331,7 +331,7 @@ const steps = [
         left: (left - sr.left) - pad, top: (top - sr.top) - pad,
         width: (right - left) + pad * 2, height: (bottom - top) + pad * 2,
       });
-      gsap.set(ringLabel, { left: (left - sr.left + (right - left) / 2), top: (top - sr.top) - pad - 28 });
+      gsap.set(ringLabel, { left: (left - sr.left + (right - left) / 2), top: Math.max(6, (top - sr.top) - pad - 28) });
     }
 
     let lastCapText = '';

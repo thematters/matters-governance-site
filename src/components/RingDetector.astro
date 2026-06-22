@@ -210,7 +210,8 @@ const INIT_READOUT = '下面 16 張是社群裡的貼文，每張角落是它「
       const fw = (right - left) + pad * 2;
       const fh = (bottom - top) + pad * 2;
       gsap.set(frame, { left: fl, top: ft, width: fw, height: fh });
-      gsap.set(frameLabel, { left: fl + fw / 2, top: ft - 30 });
+      // 標籤放框上緣；但 clamp 不低於 6px，避免框靠頂時標籤頂出 stage 被切（手機回報「上緣字樣看不到」）
+      gsap.set(frameLabel, { left: fl + fw / 2, top: Math.max(6, ft - 30) });
     }
 
     function killPulses() {

@@ -48,6 +48,7 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
   </div>
 
   <div class="rk-reveal" id="rk-reveal" hidden>
+    <p class="rk-swipehint" aria-hidden="true">← 左右滑，比較<span>時間序 ↔ 演算法序</span> →</p>
     <div class="rk-cols">
       <section class="rk-col rk-col-time" aria-label="時間序的首頁">
         <header class="rk-colhead">
@@ -223,14 +224,20 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
 
   .rk-out { text-align: center; font-size: 16px; margin-top: 16px; }
 
-  /* ── 窄屏：兩欄改上下堆疊，箭頭轉向下 ── */
+  /* 手機左右滑提示（桌面隱藏）；base 放在 media 之前，手機 media 才能覆寫成 block */
+  .rk-swipehint { display: none; text-align: center; font: 700 12.5px var(--font-ui); color: var(--ink-soft);
+    margin: 0 0 10px; }
+  .rk-swipehint span { color: var(--c-brand, #7258FF); }
+  /* ── 手機：兩欄改「左右滑」比較（scroll-snap），一次看一欄、不上下堆 10 張卡；純 CSS、無需 JS ── */
   @media (max-width: 640px) {
-    .rk-cols { grid-template-columns: 1fr; gap: 6px; }
-    .rk-arrow { padding-top: 0; padding-bottom: 4px; justify-self: center; }
-    .rk-arrow::before { content: '↓'; }
-    .rk-arrow { font-size: 0; }
-    .rk-arrow::before { font-size: 22px; }
-    .rk-col-algo { margin-top: 6px; }
+    .rk-cols { display: flex; grid-template-columns: none; gap: 0; align-items: start;
+      overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .rk-cols::-webkit-scrollbar { display: none; }
+    .rk-col { flex: 0 0 100%; scroll-snap-align: center; min-width: 0; padding: 0 2px; }
+    .rk-arrow { display: none; }
+    .rk-swipehint { display: block; }
+    /* 效能：去 backdrop-filter 改實底 */
+    .rk-fcard { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.93); }
   }
 
   @media (prefers-reduced-motion: reduce) {

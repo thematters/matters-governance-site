@@ -58,6 +58,13 @@ html.js .reveal.in-view { opacity: 1; transform: none; }
   border: 1px solid rgba(255,255,255,.16); border-radius: 20px; padding: clamp(16px, 2.4vw, 26px);
   box-shadow: 0 20px 56px rgba(0,0,0,.5); }
 .dark-stage .fp { max-width: 880px; margin-left: auto; margin-right: auto; }
+/* 手機：互動暗面板做成 edge-to-edge 滿版（呼應全螢幕 feed、更像 app；保留內距，去側框與圓角）。
+   用 margin 突破 .scene/.container padding，不用 transform 故不破壞元件內 sticky/量測。 */
+@media (max-width: 640px) {
+  .dark-stage .figure,
+  .dark-stage .fp { width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
+    border-left: none; border-right: none; border-radius: 0; padding: 16px 16px; }
+}
 /* 各互動的 loose 抬頭/讀數/標籤在暗玻璃上轉白（卡片內維持深字，卡片自帶淺色玻璃底）。
    用 .dark-stage .scene .X（3 class）壓過元件 scoped 樣式。彩色統計數字另行提亮、不被白字蓋掉。 */
 .dark-stage .scene .figure__title { color: #fff; }

@@ -48,7 +48,7 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
   </div>
 
   <div class="rk-reveal" id="rk-reveal" hidden>
-    <p class="rk-swipehint" aria-hidden="true">← 左右滑，比較<span>時間序 ↔ 演算法序</span> →</p>
+    <p class="rk-swipehint" aria-hidden="true"><span class="rk-swipearrow">←</span> 左右滑，比較<span>時間序 ↔ 演算法序</span> <span class="rk-swipearrow">→</span></p>
     <div class="rk-cols">
       <section class="rk-col rk-col-time" aria-label="時間序的首頁">
         <header class="rk-colhead">
@@ -116,6 +116,12 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
           })}
         </ol>
       </section>
+    </div>
+
+    <!-- 手機：兩欄左右滑的分頁指示＋可點切換（桌面隱藏；reveal 由 JS 顯示，故可倚賴 JS） -->
+    <div class="rk-tabs" id="rk-tabs" aria-hidden="true">
+      <button type="button" class="rk-tab is-on" data-col="0">🕒 時間序</button>
+      <button type="button" class="rk-tab" data-col="1">✨ 演算法序</button>
     </div>
 
     <p class="rk-legend" aria-hidden="true">
@@ -224,18 +230,35 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
 
   .rk-out { text-align: center; font-size: 16px; margin-top: 16px; }
 
-  /* 手機左右滑提示（桌面隱藏）；base 放在 media 之前，手機 media 才能覆寫成 block */
-  .rk-swipehint { display: none; text-align: center; font: 700 12.5px var(--font-ui); color: var(--ink-soft);
-    margin: 0 0 10px; }
+  /* 手機左右滑提示（桌面隱藏）；base 放在 media 之前，手機 media 才能覆寫成 flex */
+  .rk-swipehint { display: none; align-items: center; justify-content: center; gap: 7px;
+    text-align: center; font: 800 13.5px var(--font-ui); color: var(--c-brand, #7258FF);
+    margin: 0 0 12px; padding: 7px 14px; border-radius: 999px;
+    background: color-mix(in srgb, var(--c-brand, #7258FF) 10%, transparent);
+    width: max-content; max-width: 100%; margin-left: auto; margin-right: auto; }
   .rk-swipehint span { color: var(--c-brand, #7258FF); }
-  /* ── 手機：兩欄改「左右滑」比較（scroll-snap），一次看一欄、不上下堆 10 張卡；純 CSS、無需 JS ── */
+  .rk-swipearrow { font-size: 16px; display: inline-block; animation: rk-nudge 1.3s ease-in-out infinite; }
+  .rk-swipehint .rk-swipearrow:last-child { animation-delay: .15s; }
+  @keyframes rk-nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+  /* 手機分頁 tab（桌面隱藏）：同時是「有兩頁、可左右滑」的指示與可點切換 */
+  .rk-tabs { display: none; }
+
+  /* ── 手機：兩欄改「左右滑」比較（scroll-snap），一次看一欄、不上下堆 10 張卡 ── */
   @media (max-width: 640px) {
-    .rk-cols { display: flex; grid-template-columns: none; gap: 0; align-items: start;
-      overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .rk-cols { display: flex; grid-template-columns: none; gap: 12px; align-items: start;
+      overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      scroll-padding: 0; padding: 0 0 2px; }
     .rk-cols::-webkit-scrollbar { display: none; }
-    .rk-col { flex: 0 0 100%; scroll-snap-align: center; min-width: 0; padding: 0 2px; }
+    /* 87% 寬＋start 對齊：露出下一欄約 13% 邊角，明確暗示「右邊還有一欄、可滑」 */
+    .rk-col { flex: 0 0 87%; scroll-snap-align: start; min-width: 0; padding: 0; }
     .rk-arrow { display: none; }
-    .rk-swipehint { display: block; }
+    .rk-swipehint { display: flex; }
+    .rk-tabs { display: flex; gap: 8px; justify-content: center; margin: 14px 0 0; }
+    .rk-tab { font: 800 13px var(--font-ui); padding: 7px 16px; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--line); background: rgba(255,255,255,.7); color: var(--ink-soft);
+      transition: background .18s, color .18s, border-color .18s; }
+    .rk-tab.is-on { background: var(--c-brand, #7258FF); color: #fff; border-color: var(--c-brand, #7258FF); }
     /* 效能：去 backdrop-filter 改實底 */
     .rk-fcard { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.93); }
   }
@@ -243,6 +266,7 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
   @media (prefers-reduced-motion: reduce) {
     .rk-card, .rk-fcard { transition: none; }
     .rk-card:hover { transform: none; }
+    .rk-swipearrow { animation: none; }
   }
 </style>
 
@@ -273,6 +297,31 @@ const rankGlyph = ['①', '②', '③', '④', '⑤'];
       f.addEventListener('focus', function () { link(id, true); });
       f.addEventListener('blur', function () { link(id, false); });
     });
+
+    // 手機左右滑：tab 可點切換到對應欄，捲動時同步高亮目前欄
+    var cols = document.getElementById('rk-cols-wrap') || reveal.querySelector('.rk-cols');
+    var tabs = [].slice.call(reveal.querySelectorAll('.rk-tab'));
+    var colEls = [].slice.call(reveal.querySelectorAll('.rk-col'));
+    if (cols && tabs.length) {
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () {
+          var i = +t.getAttribute('data-col');
+          if (colEls[i]) cols.scrollTo({ left: colEls[i].offsetLeft - cols.offsetLeft, behavior: 'smooth' });
+        });
+      });
+      var st;
+      cols.addEventListener('scroll', function () {
+        clearTimeout(st);
+        st = setTimeout(function () {
+          var mid = cols.scrollLeft + cols.clientWidth / 2;
+          var active = 0;
+          colEls.forEach(function (c, i) {
+            if (c.offsetLeft - cols.offsetLeft <= mid) active = i;
+          });
+          tabs.forEach(function (t, i) { t.classList.toggle('is-on', i === active); });
+        }, 60);
+      }, { passive: true });
+    }
 
     cards.forEach(function (card) {
       card.addEventListener('click', function () {

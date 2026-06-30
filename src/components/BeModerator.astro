@@ -8,7 +8,7 @@ const cards = [
   { truth: 'legit', cat: '日記',         score: 3,  text: '日記·超級生命密碼', why: '私人日記，無導流、無招攬，模型低分。' },
   { truth: 'legit', cat: '防詐科普',     score: 85, text: '拆解 USDT「穩賺套利」詐騙話術（引述常見錢包與賴 ID 騙術）', why: '為了教學而引述詐騙話術，分數被拉高，但它做的其實正是反詐騙。擋下來，就誤刪了防詐內容。' },
   { truth: 'spam',  cat: '翻譯社（集團）', score: 9,  text: '高雄翻譯社 證件公證 各國文件 急件當日 ‹LINE_ID›', why: '單篇分數只有 0.09、看起來正常，其實是 14 個帳號用同一套模板洗版的集團。分數低，不代表安全。' },
-  { truth: 'legit', cat: '人權議題',     score: 96, text: '海外中國人權律師聯盟之處境與聲援', why: '敏感詞密集讓模型給到 0.96，但這是合法的人權議題寫作。擋了，就消音了一個最該被保護的聲音。' },
+  { truth: 'legit', cat: '業配開箱',     score: 96, text: '【親測】這款益生菌吃兩週的真實心得', why: '滿滿產品名、功效、外部連結，模型給到 0.96，但這其實是真實的使用心得。擋了，就誤刪了正當的開箱／推薦內容。' },
   { truth: 'spam',  cat: '二次詐騙',     score: 85, text: '我曾被詐騙 30 萬，後來找團隊幫我追回，你也遇到詐騙就私訊我', why: '偽裝成受害者的經驗談，其實是在進行第二輪詐騙，正是觸發 2025 年改寫網域查詢（DNS-RPZ）封鎖的那一類文章。' },
 ];
 
@@ -22,7 +22,7 @@ const authorByCat = {
   '日記': '日子手記',
   '防詐科普': '反詐小教室',
   '翻譯社（集團）': '宏達翻譯社',
-  '人權議題': '人權觀察筆記',
+  '業配開箱': '日常開箱筆記',
   '二次詐騙': '老師帶單群',
 };
 const authorOf = (c) => authorByCat[c.cat] || c.cat;
@@ -42,7 +42,7 @@ const initials = (name) => name.slice(0, 1);
     <span class="bm-fp">誤刪 <b id="bm-fp">0</b></span>
     <span class="bm-fn">漏放 <b id="bm-fn">0</b></span>
   </div>
-  <noscript><p class="bm-note">這是一個「換你當審查員」的小測驗：逐則判斷「擋下/放行」，再揭曉模型分數與後果。請開啟 JavaScript。重點：明確的色情/賭博廣告好判，但防詐科普、人權議題、集團洗版這些灰區，才是審查最難、最容易誤刪或漏放的地方。</p></noscript>
+  <noscript><p class="bm-note">這是一個「換你當審查員」的小測驗：逐則判斷「擋下/放行」，再揭曉模型分數與後果。請開啟 JavaScript。重點：明確的色情/賭博廣告好判，但防詐科普、業配開箱、集團洗版這些灰區，才是審查最難、最容易誤刪或漏放的地方。</p></noscript>
 </div>
 
 <!-- is:global：卡片與結果面板由 JS 用 innerHTML 建立（stage.innerHTML / result.innerHTML），
@@ -194,7 +194,7 @@ const initials = (name) => name.slice(0, 1);
     var palette = ['#7a7390', '#b07a4a', '#6f8f4e', '#5a8a93', '#a8597a', '#8a6db0'];
     var authorByCat = {
       '色情廣告': '在地約妹專線', '日記': '日子手記', '防詐科普': '反詐小教室',
-      '翻譯社（集團）': '宏達翻譯社', '人權議題': '人權觀察筆記', '二次詐騙': '老師帶單群'
+      '翻譯社（集團）': '宏達翻譯社', '業配開箱': '日常開箱筆記', '二次詐騙': '老師帶單群'
     };
     var i = 0, ok = 0, fp = 0, fn = 0;
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -305,7 +305,7 @@ const initials = (name) => name.slice(0, 1);
           '</p>' +
           '<div class="bm-body">' +
             '<p class="bm-tally-line">六則裡，你誤刪了 <b style="color:var(--c-neg,#c85c41)">' + fp + '</b> 篇正常內容、漏放了 <b style="color:var(--c-warn,#c8a020)">' + fn + '</b> 篇垃圾。</p>' +
-            '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、人權議題、集團洗版這些灰色地帶，才是審查最難、最容易誤刪或漏放的地方。每一道門檻，都是別人言論的生死線，不該由工程師一個人決定。</p>' +
+            '<p class="bm-why">明確的色情、賭博廣告好判；但防詐科普、業配開箱、集團洗版這些灰色地帶，才是審查最難、最容易誤刪或漏放的地方。每一道門檻，都是別人言論的生死線，不該由工程師一個人決定。</p>' +
             '<div class="bm-actions"><button class="btn btn--secondary bm-r" id="bm-r">再玩一次</button></div>' +
           '</div>' +
         '</div>';

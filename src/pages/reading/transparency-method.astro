@@ -21,11 +21,11 @@ import '../../styles/story.css';
 
   <h2>開源不會自動變成透明，透明也不會自動變成共創</h2>
 
-  <p>關於「公開」這件事，計畫內部反覆校準的重點，與其放在「要不要公開」，更多是放在公開之後到底發生了什麼。把程式碼丟到 GitHub 上，常被當成透明度的終點。但在 g0v Summit 的討論裡，主持人把它退回成第一步：<Cite src="g0v Summit 2026 校正版逐字稿（草案，非現場逐字）" quote="如果只是把程式碼丟出來，其實不等於透明。因為一般使用者不一定能讀懂程式碼，也不一定知道資料怎麼來，規則怎麼被套用，模型怎麼影響結果。">讓一般使用者讀不懂程式碼的關鍵，是它預設了讀者已經是工程師</Cite>。</p>
+  <p>關於「公開」這件事，計畫內部一再討論的，與其說是「要不要公開」，更多是「公開之後到底發生了什麼」。把程式碼丟到 GitHub 上，常被當成透明度的終點。但在 g0v Summit 的討論裡，主持人把它退回成第一步：<Cite src="g0v Summit 2026 校正版逐字稿（草案，非現場逐字）" quote="如果只是把程式碼丟出來，其實不等於透明。因為一般使用者不一定能讀懂程式碼，也不一定知道資料怎麼來，規則怎麼被套用，模型怎麼影響結果。">讓一般使用者讀不懂程式碼的關鍵，是它預設了讀者已經是工程師</Cite>。</p>
 
   <blockquote class="callout callout--quote">「如果只是把程式碼丟出來，其實不等於透明……所以開源只是第一步。後面還需要文件、案例、可理解的說明、申訴管道，以及社群能夠參與的工作流程。」</blockquote>
 
-  <p>這句話其實界定了本網站存在的理由：把 repo 裡的 enum、SQL 過濾與門檻參數，翻譯成可讀、可討論、可申訴的形式。更深的一刀來自使用者端。長期使用者、同時有 PTT 自治經驗的 Denken，在工作坊上把「開放」與「共創」之間的距離點破：<Cite src="g0v Summit 2026 簡報文字記錄（Denken 觀察 2）" quote="開源 ≠ 社群參與；開放 API ≠ 使用者能影響治理決策。" url="https://github.com/thematters/spam-detection-scaffold">Matters 走到了開放 API、開源 spam-detection-scaffold，卻沒有走到共創</Cite>。所謂開放應用程式介面（<Term zh="應用程式介面" en="API">讓其他程式可以串接、自動取用平台資料或功能的對外介面。</Term>），是讓外部程式能串接、自動取用平台資料；但能取用資料，不等於能參與決策。他親身參與多次公開工程會議，最後常常發現「只有我」。</p>
+  <p>這句話其實就講出了本網站為什麼存在：把 repo 裡的 enum、SQL 過濾與門檻參數，翻成看得懂、能討論、能申訴的形式。更深的一刀來自使用者端。長期使用者、同時有 PTT 自治經驗的 Denken，在工作坊上把「開放」與「共創」之間的距離點破：<Cite src="g0v Summit 2026 簡報文字記錄（Denken 觀察 2）" quote="開源 ≠ 社群參與；開放 API ≠ 使用者能影響治理決策。" url="https://github.com/thematters/spam-detection-scaffold">Matters 走到了開放 API、開源 spam-detection-scaffold，卻沒有走到共創</Cite>。所謂開放應用程式介面（<Term zh="應用程式介面" en="API">讓其他程式可以串接、自動取用平台資料或功能的對外介面。</Term>），是讓外部程式能串接、自動取用平台資料；但能取用資料，不等於能參與決策。他親身參與多次公開工程會議，最後常常發現「只有我」。</p>
 
   <p>於是這裡有一個三段遞進，每一段的落差都比上一段更難跨：<strong>開源 ≠ 透明</strong>（程式碼公開，但不可讀）；<strong>透明 ≠ 共創</strong>（看得懂，但無法影響決策）。Denken 的結論不是責怪「Matters 不夠好」，而是給出更謙遜的一句：不同社群會長出不同的治理形態，平台應該支撐它，而不是替它設計。透明開盒真正費力的工程，不在公開的那一刻，而在公開之後。後面這段才是計畫尚未完成、也最容易被高估的部分。</p>
 
@@ -35,7 +35,7 @@ import '../../styles/story.css';
 
   <blockquote class="callout callout--quote">「我們想說我們已經太小了，開源出去，feedback 已經換到更多了，再多一點點沒關係。」</blockquote>
 
-  <p>對一個中小型平台，開源換到的社群信任與外部回饋，已經大於被繞過的邊際風險。同一件事在超大型平台上算出來是負的，因為攤開等於把規避地圖直接交給對手；在小平台上卻是正的，因為它本來缺的不是防線，而是願意一起來看防線的人。所以這不是一條普世真理，而是被自身規模與處境決定的局部結論。</p>
+  <p>對一個中小型平台，開源換到的社群信任與外部回饋，已經大過被人繞過的那點風險。同一筆帳，超大型平台算起來划不來，因為攤開等於把規避地圖直接交給對手；小平台卻划得來，因為它本來缺的不是防線，而是願意一起來看防線的人。所以這不是一條到哪都成立的道理，而是被自己的規模和處境決定的——換個平台答案就不一樣了。</p>
 
   <h2>分層開源：程式碼立即公開，敏感參數延時 6–12 個月</h2>
 
@@ -45,7 +45,7 @@ import '../../styles/story.css';
 
   <blockquote class="callout callout--quote">「sustaining 一個 censorship-resistant 平台，很多時候要犧牲透明度來換安全。」</blockquote>
 
-  <p>這句結論略顯悲涼，卻很誠實。它和守望相助隊「處置行為全公開」形成一組刻意的張力：同一個平台，在<strong>處置行為</strong>上追求極致透明（問責），在<strong>偵測參數</strong>上卻必須延遲揭露（安全）。哪些該即時透明、哪些該延時，從來不是技術問題，而是治理判斷。研究報告也因此全程用【內部】標記，把這道分層落實在文件層級。</p>
+  <p>這句結論聽起來有點無奈，卻很誠實。它和守望相助隊「處置行為全公開」剛好形成一組刻意的拉扯：同一個平台，處置行為要做到最透明（為了問責），偵測參數卻得延遲揭露（為了安全）。哪些該馬上公開、哪些該延後，從來不是技術問題，而是治理判斷。研究報告也因此全程用【內部】標記，把這道分層一路落實到文件上。</p>
 
   <h2>一份還沒發布的資料集，如何在安全與開放之間設計</h2>
 
@@ -82,11 +82,11 @@ import '../../styles/story.css';
     <p><strong>③ 準識別子粗化</strong>：時間粗化到「年-月」桶（<code>created_bucket</code>），不提供精確 timestamp，降低靠時間反推個案的風險。</p>
   </div>
 
-  <p>pipeline 的程式碼註解裡藏著魔鬼般的細節，恰恰證明去識別不是跑一條 regex 就了事：聯絡方式佔位符化後，後面常殘留「<code>&lt;LINE_ID&gt;:abc888</code>」這種真實 handle，所以要再收尾兩遍，把緊跟佔位符的帳號 token 一併吃掉；錢包地址、QQ 號、被空白拆開的 URL（<code>https:// example.com</code>）也都各自有專門規則。這些細節說明，去識別的品質決定在邊界案例怎麼處理，而非主規則本身。</p>
+  <p>pipeline 的程式碼註解裡有不少瑣碎卻關鍵的細節，正好說明去識別不是跑一條 regex 就了事：聯絡方式換成佔位符之後，後面常常還黏著「<code>&lt;LINE_ID&gt;:abc888</code>」這種真實 handle，所以要再收尾兩遍，把緊跟佔位符的帳號 token 一起吃掉；錢包地址、QQ 號、被空白拆開的 URL（<code>https:// example.com</code>）也都各有專門規則。這些細節說明，去識別做得好不好，差別就在這些邊角案例怎麼處理，而不在主規則本身。</p>
 
   <h3>標籤結構與可信度分層</h3>
 
-  <p>資料集沒有把所有標籤都當成等價的真理。每筆樣本除了二元 <code>spam</code>／<code>ham</code>，還帶研究用的 <code>spam_category</code>（seo／gambling／pharma／scam／porn／mlm／circumvention／market_report／other）、<code>label_source</code>（標籤來源）與 <code>label_weight</code>（建議訓練權重，沿用內部 2.0／1.0／0.5 的慣例）。來源的可信度被明白排序：管理員逐篇判定（<code>admin_set_spam</code>）與人工矯正（<code>human_relabel</code>）權重 2.0，被推翻的處置（<code>reversed_moderation</code>／<code>restored_content</code>）是「這其實是 ham」的強訊號，純模型輔助（<code>model_assisted</code>）權重最低，資料卡也明文要求下游別把它當 ground truth。</p>
+  <p>資料集並沒有把每一個標籤都當成同等可靠。每筆樣本除了二元 <code>spam</code>／<code>ham</code>，還帶研究用的 <code>spam_category</code>（seo／gambling／pharma／scam／porn／mlm／circumvention／market_report／other）、<code>label_source</code>（標籤來源）與 <code>label_weight</code>（建議訓練權重，沿用內部 2.0／1.0／0.5 的慣例）。來源的可信度被明白排序：管理員逐篇判定（<code>admin_set_spam</code>）與人工矯正（<code>human_relabel</code>）權重 2.0，被推翻的處置（<code>reversed_moderation</code>／<code>restored_content</code>）是「這其實是 ham」的強訊號，純模型輔助（<code>model_assisted</code>）權重最低，資料卡也明文要求下游別把它當 ground truth。</p>
 
   <p>還有一個容易被忽略卻很關鍵的設計：<strong>test split 凍結</strong>。切分以 id 雜湊穩定分流，test 一經發布就永不變動，當作協作 benchmark 的唯一裁判集，避免不同貢獻者各自洗榜、也避免測試集洩漏。對一個「邀請外部回貢標註、共同訓練」的資料集來說，這是維持評測公正性的地基。</p>
 
@@ -109,7 +109,7 @@ import '../../styles/story.css';
     </div>
   </div>
 
-  <p><Cite src="matters-spam-dataset DATACARD（已知標籤噪音）" url="https://huggingface.co/datasets/thematters/matters-spam" quote="本資料集已用人工+LLM-judge 矯正 4,980 筆（human_relabel），其中 2,649 筆由 spam 改回 ham，但未矯正部分仍可能殘留華語長文誤標。">資料卡把代理標籤的已知噪音寫進「組成」一節，並用 label_source／label_weight 提供可信度分層</Cite>。被改回 ham 的這類樣本，正是壓低誤殺的關鍵 hard-negative，它教模型認得「長得像被處置、其實是正常內容」的樣子。資料卡同時誠實標出盲點：高變化模板與跨帳號廣告集團（<Term zh="集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號；原始碼裡稱為 Ring。</Term>）在純文本層偵測不足。把「我們哪裡還會錯」寫進對外文件，本身就是一種透明度。</p>
+  <p><Cite src="matters-spam-dataset DATACARD（已知標籤噪音）" url="https://huggingface.co/datasets/thematters/matters-spam" quote="本資料集已用人工+LLM-judge 矯正 4,980 筆（human_relabel），其中 2,649 筆由 spam 改回 ham，但未矯正部分仍可能殘留華語長文誤標。">資料卡把代理標籤的已知噪音寫進「組成」一節，並用 label_source／label_weight 提供可信度分層</Cite>。被改回 ham 的這類樣本，正是壓低誤刪的關鍵 hard-negative，它教模型認得「長得像被處置、其實是正常內容」的樣子。資料卡同時誠實標出盲點：高變化模板與跨帳號廣告集團（<Term zh="垃圾集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號；原始碼裡稱為 Ring。</Term>）在純文本層偵測不足。把「我們哪裡還會錯」寫進對外文件，本身就是一種透明度。</p>
 
   <h3>用法邊界：開放，但不是無條件</h3>
 
@@ -117,7 +117,7 @@ import '../../styles/story.css';
 
   <h2>分層揭露，既是方法也是回答</h2>
 
-  <p>把這幾段拼起來，會看到一個一致的姿態：透明是一道光譜，而不是開關。程式碼立即公開、敏感參數延時、資料去識別後分級釋出，並在公開之後持續把它翻譯成可讀、可討論、可參與的形式。後面這一段，計畫自己也承認還沒走完。這套分層揭露既是方法，也是這個計畫對「安全與透明能不能兼得」的具體回答：答案不是直接兼得，而是逐項排序、逐層設計，把每一個「公開或延時」的決定攤在桌上，讓它本身也可被檢驗。</p>
+  <p>把這幾段拼起來，會看到一條一致的原則：透明是一道光譜，而不是開關。程式碼立即公開，敏感參數延後，資料去識別後分級釋出，而且公開之後還得持續把它翻成看得懂、能討論、能參與的形式。後面這一段，計畫自己也承認還沒走完。這套分層揭露既是方法，也是這個計畫對「安全與透明能不能兼得」的回答：不是兩個一起拿到，而是逐項排序、逐層設計，把每一個「現在公開、還是先延後」的決定攤在桌上，讓這個決定本身也能被檢驗。</p>
 
   <ReadingNav slug="transparency-method" />
 </BaseLayout>

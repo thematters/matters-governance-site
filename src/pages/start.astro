@@ -4,10 +4,10 @@ import '../styles/story.css';
 
 // 每個主題配一張既有插圖縮圖（history→dns-rpz、about→seed 為近義替代）＋分流色。
 const topics = [
-  { href: './', label: '主敘事', desc: '跟著卡片捲動，親手走一遍審查的意義，從這裡開始。', lane: '一般', img: 'hero.jpg', feature: true },
-  { href: 'false-positive', label: '偽陽性', star: true, desc: '拖動門檻看誤殺：一條分數線，兩種代價。', lane: '一般', img: 'false-positive.jpg' },
-  { href: 'detection', label: '偵測技術 + 集團掃描', desc: '模型怎麼抓垃圾、怎麼揪出整群洗版的集團（Ring）。', lane: '開發者', img: 'detection.jpg' },
-  { href: 'moderation', label: '七種處置', desc: '從打掃到註銷的光譜、小黑屋的設計史。', lane: '一般', img: 'moderation.jpg' },
+  { href: './', label: '故事', desc: '從零認識垃圾內容、刪除垃圾的方法，以及被誤刪怎麼辦？', lane: '一般', img: 'hero.jpg', feature: true },
+  { href: 'false-positive', label: '偽陽性', star: true, desc: '拖動門檻看誤刪：一條分數線，兩種代價。', lane: '一般', img: 'false-positive.jpg' },
+  { href: 'detection', label: '偵測技術 + 集團掃描', desc: '模型怎麼抓垃圾、怎麼揪出整群洗版的垃圾集團（Ring）。', lane: '開發者', img: 'detection.jpg' },
+  { href: 'moderation', label: '七種處置', desc: '從打掃到註銷的光譜、關小黑屋的設計史。', lane: '一般', img: 'moderation.jpg' },
   { href: 'ranking', label: '首頁排序', desc: '降權 ≠ 刪除；決定誰被看見，才是真正的權力。', lane: '開發者', img: 'ranking.jpg' },
   { href: 'crowd', label: '群眾協力', desc: '守望相助隊、海巡機器人、陪審團為何失敗。', lane: '一般', img: 'crowd.jpg' },
   { href: 'censorship-resistance', label: '抗審查 + DNS-RPZ', desc: '分散式儲存（IPFS）的三層韌性、2025 春節整個網域被誤封。', lane: '政策', img: 'censorship-resistance.jpg' },
@@ -28,9 +28,8 @@ const laneClass = (l: string) => ({ '一般': 'lane-a', '開發者': 'lane-d', '
 
   <div class="topics-page">
     <header class="topics-hero">
-      <p class="kicker">全章節索引</p>
       <h1>全部主題</h1>
-      <p class="topics-lead">想跳著讀嗎？這裡列出全部 14 個主題。一般讀者建議從<a href="./">主敘事</a>開始；關心政策或技術的讀者，也可以直接挑想看的章節。</p>
+      <p class="topics-lead">想跳著讀嗎？這裡列出全部 12 個小故事。</p>
     </header>
 
     <div class="full-bleed topics-gridwrap">

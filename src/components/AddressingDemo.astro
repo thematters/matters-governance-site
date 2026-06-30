@@ -204,7 +204,7 @@
       killAnim(httpNode);
       httpPanel.classList.add('is-dead');
       setStatus(httpStatus, false, '✕ 404，內容消失（唯一伺服器被刪）');
-      out.innerHTML = '<strong>位置定址</strong>：內容只掛在那一個伺服器上，刪掉它（或改寫 DNS），內容就 404 消失，傳統封鎖就是這樣奏效的。';
+      out.innerHTML = '<strong>位置定址</strong>：內容只掛在那一個伺服器上，刪掉它（或改寫 DNS），內容就 404 消失，傳統的封鎖手段就是靠這招。';
     }
 
     // IPFS：刪一個節點 → 只要還有節點持有 CID 就讀得到（綠、存活）

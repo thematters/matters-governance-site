@@ -34,12 +34,12 @@ const initK = 100;
 
   <div class="db-readout" aria-live="polite">
     <div class="db-stat"><b id="db-block">0</b><span>正確擋下</span></div>
-    <div class="db-stat db-stat-fp"><b id="db-fp">0</b><span>誤殺正常</span></div>
+    <div class="db-stat db-stat-fp"><b id="db-fp">0</b><span>誤刪正常</span></div>
     <div class="db-stat db-stat-leak"><b id="db-leak">0</b><span>漏網垃圾</span></div>
     <div class="db-stat"><b id="db-safe">0</b><span>正確保留</span></div>
   </div>
   <p class="db-note" id="db-note"></p>
-  <noscript><p class="db-note">這是可拖曳的互動：拖動分界線，會看到中間的重疊區——有些「正常」內容看起來很像垃圾、有些垃圾很隱蔽。<strong>任何一條直線都會同時誤殺一些正常內容、放過一些垃圾</strong>，這就是偽陽性無法歸零的幾何原因。請開啟 JavaScript 操作。</p></noscript>
+  <noscript><p class="db-note">這是可拖曳的互動：拖動分界線，會看到中間的重疊區——有些「正常」內容看起來很像垃圾、有些垃圾很隱蔽。<strong>任何一條直線都會同時誤刪一些正常內容、放過一些垃圾</strong>，這就是偽陽性無法歸零的幾何原因。請開啟 JavaScript 操作。</p></noscript>
 </div>
 
 <style>
@@ -104,9 +104,9 @@ const initK = 100;
       elB.textContent = block; elF.textContent = fp; elL.textContent = leak; elS.textContent = safe;
       handle.setAttribute('aria-valuenow', Math.round(k));
       var msg;
-      if (fp > 0 && leak > 0) msg = '看到了嗎？同一條線同時誤殺了 ' + fp + ' 篇正常、又放過 ' + leak + ' 篇垃圾，中間的重疊區讓兩種錯一起發生。';
-      else if (fp > 0) msg = '為了把垃圾擋乾淨，誤殺了 ' + fp + ' 篇正常內容。往右上拖鬆一點？垃圾就會開始漏網。';
-      else if (leak > 0) msg = '沒有誤殺，但放過了 ' + leak + ' 篇垃圾。往左下拖嚴一點？正常內容就開始被誤殺。';
+      if (fp > 0 && leak > 0) msg = '看到了嗎？同一條線同時誤刪了 ' + fp + ' 篇正常、又放過 ' + leak + ' 篇垃圾，中間的重疊區讓兩種錯一起發生。';
+      else if (fp > 0) msg = '為了把垃圾擋乾淨，誤刪了 ' + fp + ' 篇正常內容。往右上拖鬆一點？垃圾就會開始漏網。';
+      else if (leak > 0) msg = '沒有誤刪，但放過了 ' + leak + ' 篇垃圾。往左下拖嚴一點？正常內容就開始被誤刪。';
       else msg = '剛好全部分對，但真實內容的重疊遠比這 21 點嚴重，這種完美幾乎不存在。';
       elN.textContent = msg;
     }

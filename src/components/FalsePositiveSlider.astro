@@ -64,13 +64,13 @@ const mobileShow = new Set([2, 4, 7, 8, 9, 15, 17, 19]);
           <span style="left:100%"><i>100</i></span>
         </div>
       </div>
-      <div class="fp-scale"><span>← 寬鬆：少誤殺，多漏網</span><span>嚴格：多誤殺，少漏網 →</span></div>
+      <div class="fp-scale"><span>← 寬鬆：少誤刪，多漏網</span><span>嚴格：多誤刪，少漏網 →</span></div>
     </div>
 
     <div class="fp-readout" aria-live="polite">
       <div class="fp-stat fp-stat-blocked"><b id="fp-blocked">0</b><span>擋下垃圾</span></div>
       <div class="fp-stat fp-stat-leaked"><b id="fp-leaked">0</b><span>漏網垃圾</span></div>
-      <div class="fp-stat fp-stat-fp"><b id="fp-fp">0</b><span>誤殺正常</span></div>
+      <div class="fp-stat fp-stat-fp"><b id="fp-fp">0</b><span>誤刪正常</span></div>
       <div class="fp-stat fp-stat-safe"><b id="fp-safe">0</b><span>安全保留</span></div>
     </div>
   </div>
@@ -108,7 +108,7 @@ const mobileShow = new Set([2, 4, 7, 8, 9, 15, 17, 19]);
 
   <p class="fp-conclusion" id="fp-conclusion"></p>
   <noscript>
-    <p class="fp-noscript">這是一個可拖曳的互動：拖動門檻，看模型如何在「擋垃圾」與「誤殺正常內容」之間取捨。請開啟 JavaScript 操作。結論是——門檻調得越嚴，被誤殺的正常內容越多，而那往往正是平台最該保護的表達。</p>
+    <p class="fp-noscript">這是一個可拖曳的互動：拖動門檻，看模型如何在「擋垃圾」與「誤刪正常內容」之間取捨。請開啟 JavaScript 操作。結論是——門檻調得越嚴，被誤刪的正常內容越多，而那往往正是平台最該保護的表達。</p>
   </noscript>
 </div>
 
@@ -204,7 +204,7 @@ const mobileShow = new Set([2, 4, 7, 8, 9, 15, 17, 19]);
   .fp-is-fp::before { background: var(--c-neg, #c85c41); width: 4px; }
   .fp-is-fp .fp-text { color: var(--ink); }
   .fp-is-fp .fp-state { opacity: 1; transform: none; background: var(--c-neg, #c85c41); }
-  .fp-is-fp .fp-state::before { content: '誤殺'; }
+  .fp-is-fp .fp-state::before { content: '誤刪'; }
 
   /* ── 狀態：is-leaked＝垃圾漏網，warn 標「漏網」 ── */
   .fp-is-leaked .fp-state { opacity: 1; transform: none; background: var(--c-warn, #c8a020); }
@@ -302,11 +302,11 @@ const mobileShow = new Set([2, 4, 7, 8, 9, 15, 17, 19]);
       if (fp === 0 && leaked === 0) {
         msg = '幾乎完美，但這種理想狀態很罕見，真實內容遠比這 ' + counted.length + ' 張卡片複雜。';
       } else if (fp > 0 && leaked > 0) {
-        msg = '你誤殺了 ' + fp + ' 篇正常內容，卻還有 ' + leaked + ' 篇垃圾漏網，兩種代價同時發生。';
+        msg = '你誤刪了 ' + fp + ' 篇正常內容，卻還有 ' + leaked + ' 篇垃圾漏網，兩種代價同時發生。';
       } else if (fp > 0) {
-        msg = '為了把垃圾擋乾淨，你誤殺了 ' + fp + ' 篇正常內容（偽陽性）。被誤殺的，往往正是平台最該保護的表達。';
+        msg = '為了把垃圾擋乾淨，你誤刪了 ' + fp + ' 篇正常內容（偽陽性）。被誤刪的，往往正是平台最該保護的表達。';
       } else {
-        msg = '沒有誤殺，但還有 ' + leaked + ' 篇垃圾漏網。想再擋嚴一點？小心代價。';
+        msg = '沒有誤刪，但還有 ' + leaked + ' 篇垃圾漏網。想再擋嚴一點？小心代價。';
       }
       elC.textContent = msg;
       setVisual(t);

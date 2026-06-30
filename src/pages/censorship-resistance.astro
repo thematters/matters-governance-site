@@ -12,7 +12,8 @@ import '../styles/story.css';
 
   <h2>內容定址 vs 位置定址</h2>
   <p>
-    我們平常用的網路（HTTP）是「位置定址」：內容綁在某個 IP 或網域上，只要把檔案刪掉、或改掉 <Term zh="網域名稱系統" en="DNS">把人記得住的網址翻成電腦用的位址，像網路的電話簿。</Term>，它就失效了。<Term zh="分散式儲存" en="IPFS">把檔案打散、複製到全球許多台電腦上保存的網路。只要還有一台留著，內容就讀得到。</Term> 改用「內容定址」：每份內容有一個獨一無二的<strong>內容指紋（CID）</strong>，只要還有一台電腦留著它就讀得到，傳統的封鎖手段對它沒輒。這套靠三項技術接力：分散式儲存（IPFS，2018）→ IPNS 固定地址（2022）→ ENS 好記名稱（2022）。
+    我們平常用的網路（HTTP）是「位置定址」：內容綁在某個 IP 或網域上，只要把檔案刪掉、或改掉 <Term zh="網域名稱系統" en="DNS">把人記得住的網址翻成電腦用的位址，像網路的電話簿。</Term>，它就失效了。<Term zh="分散式儲存" en="IPFS">把檔案打散、複製到全球許多台電腦上保存的網路。只要還有一台留著，內容就讀得到。</Term> 則改用「內容定址」：每份內容有一個獨一無二的<strong>內容指紋（CID）</strong>，只要還有一台電腦留著它就讀得到。換句話說，刪檔案、改網域這些傳統的封鎖手段，對它擋不住。
+    這套韌性靠三項技術接力：分散式儲存（IPFS，2018）→ IPNS 固定地址（2022）→ ENS 好記名稱（2022）。
   </p>
   <div class="figure">
     <div class="figure__head"><span class="figure__title">HTTP vs IPFS：刪掉一個節點會怎樣</span><span class="figure__hint">點節點，把它下架</span></div>
@@ -21,8 +22,8 @@ import '../styles/story.css';
 
   <h2>三層內容韌性</h2>
   <p>
-    內容的韌性可以分成三層：<strong>第三層</strong>（首頁、搜尋、推薦）有可能被收編；<strong>第二層</strong>（分散式儲存上的內容）沒辦法被下架；<strong>第一層</strong>（ENS 好記名稱、Tor 洋蔥網路、聯邦宇宙等）則能另闢蹊徑。
-    由此推出一個關鍵：「憲法的言論保障，管得到第二層（內容還在不在），卻管不到第三層（入口怎麼排）」。本計畫的核心主張就是這種分層治理：
+    內容的韌性可以分成三層，由內往外數：<strong>第一層</strong>（ENS 好記名稱、Tor 洋蔥網路、聯邦宇宙等）能另闢蹊徑；<strong>第二層</strong>（分散式儲存上的內容）沒辦法被下架；<strong>第三層</strong>（首頁、搜尋、推薦）則有可能被收編。
+    這帶出一個重點：「憲法的言論保障，管得到第二層（內容還在不在），卻管不到第三層（入口怎麼排）」。我們這次最想講的，就是這種分層的治理：
     平台可以封掉內容，但使用者手上始終握有一個去中心化的網址。
   </p>
 
@@ -32,11 +33,11 @@ import '../styles/story.css';
   </figure>
 
   <p>
-    這套「不可下架」並非紙上談兵：2025 春節，Matters 整個網域被改寫網域查詢（DNS-RPZ）誤封三天，平台第一次成為被治理的一方——
-    而文章本體其實還寫在 IPFS 上、沒被消滅。這個完整事件、它照出的「倫理鏡子」與比例原則拷問，收在治理史編年裡。
+    這套「不可下架」並非紙上談兵：2025 春節，Matters 整個網域被改寫網域查詢（DNS-RPZ）誤封三天，平台第一次反過來成了被審查的對象——
+    而文章本體其實還寫在 IPFS 上、沒被消滅。這件事像一面鏡子，逼大家想清楚封鎖到底該不該、該封到什麼程度；完整經過收在 Matters 治理編年史裡。
   </p>
-  <p style="text-align:center;margin:16px 0 6px"><a class="read-more" href="history">深入：2025 春節 DNS-RPZ 誤封事件（治理史）</a></p>
+  <p style="text-align:center;margin:16px 0 6px"><a class="read-more" href="history">延伸閱讀：2025 春節 DNS-RPZ 誤封事件（治理史）</a></p>
 
-  <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/hack-the-platform">深入閱讀：Hack the Platform：可改作的小實驗</a>　<a class="read-more" href="reading/why-resist-at-all">抗審查真的不可或缺嗎</a></p>
+  <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/hack-the-platform">延伸閱讀：Hack the Platform：可改作的小實驗</a>　<a class="read-more" href="reading/why-resist-at-all">抗審查真的不可或缺嗎</a></p>
   <ChapterNav slug="censorship-resistance" />
 </BaseLayout>

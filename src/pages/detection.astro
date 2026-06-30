@@ -8,15 +8,15 @@ import Term from '../components/Term.astro';
 import '../styles/story.css';
 ---
 <BaseLayout title="偵測技術">
-  <ChapterHero kicker="主題 · 垃圾偵測技術與集團掃描" title="怎麼把垃圾從每天 2–3 萬篇裡找出來" img="illustrations/detection.jpg" alt="白色機器人拿放大鏡檢查內容卡，牆上是垃圾偵測的群聚圖" video="detection-robot-high-motion-4s" />
-  <p class="lead">「最好的方式，就是用它的魔法打敗它：它在發垃圾訊息，我們就用語言模型去讀它到底在說什麼。」</p>
+  <ChapterHero kicker="主題 · 平台如何防治垃圾？演算法、行為辨識與白名單" title="怎麼把垃圾從每天 1 萬篇文章裡找出來" img="illustrations/detection.jpg" alt="白色機器人拿放大鏡檢查內容卡，牆上是垃圾偵測的群聚圖" video="detection-robot-high-motion-4s" />
+  <p class="lead">「最好的方式就是用魔法對抗魔法，壞蛋濫發垃圾訊息，我們就用語言模型去大量讀取誰是垃圾。」</p>
 
-  <h2>兩條防線</h2>
+  <h2>對抗垃圾內容的兩層防線</h2>
   <p><strong>第一道是行為層</strong>：在註冊、登入、按讚賞時用 <Term zh="真人驗證" en="reCAPTCHA／Turnstile">註冊或登入時用來分辨「你是真人還是機器人」的小測驗或背景檢查。</Term> 擋掉機器人（2020 年起）。<strong>第二道是內容層</strong>：2024 年起用語言模型逐篇分析內容在說什麼。</p>
 
-  <h2>內容模型怎麼學</h2>
+  <h2>內容模型是什麼？機器怎麼學習？</h2>
   <p>
-    因為要做的是「讀懂語意」，團隊用擅長理解的 <Term zh="理解語意的模型" en="Encoder">專門「讀懂、理解」文字語意的 AI 模型，和負責「生成」文字的聊天型模型分工不同；常見的有 BERT 這一類。</Term> 來訓練，材料是營運團隊人工標記的<strong>約 4 萬篇</strong>正、反面範例（程式上用 granite 嵌入模型加 LoRA 微調）。被判違規的文章<strong>不會被刪掉，只是不再出現在公開頁面</strong>。攔阻成功率從 <strong>96% 提升到 99.7%</strong>，誤判率從 <strong>3.1% 降到 0.13%</strong>。留言則改用更小的 e5-small 模型，偽陽性只有 <strong>0.33%</strong>：小模型在這件事上反而比笨重的大模型更準。
+    因為要做的是「讀懂語意」的模型，團隊用擅長理解的 <Term zh="理解語意的模型" en="Encoder">專門「讀懂、理解」文字語意的 AI 模型，和負責「生成」文字的聊天型模型分工不同；常見的有 BERT 這一類。</Term> 來訓練，訓練材料是營運團隊人工標記的<strong>約 4 萬篇</strong>正、反面範例（程式上用 granite 嵌入模型加 LoRA 微調）。目前的做法是，被判違規的文章<strong>不會被刪掉，只是不再出現在公開頁面</strong>。2026 年在不斷努力下，攔阻成功率從 <strong>96% 提升到 99.7%</strong>，誤判率從 <strong>3.1% 降到 0.13%</strong>。留言則改用更小的 e5-small 模型，誤判率只有 <strong>0.33%</strong>，小模型反而比笨重的大模型更精準。
   </p>
   <div class="stat-row">
     <div class="stat board">
@@ -34,27 +34,27 @@ import '../styles/story.css';
   </div>
 
   <div class="figure">
-    <div class="figure__head"><span class="figure__title">模型怎麼畫那條線：為什麼一定有誤殺</span><span class="figure__hint">拖分界線</span></div>
+    <div class="figure__head"><span class="figure__title">模型怎麼畫線，為什麼一定有誤刪</span><span class="figure__hint">拖分界線</span></div>
     <DecisionBoundary />
   </div>
 
-  <h2>模型會「自我中毒」</h2>
+  <h2>模型一不小心就會「自我中毒」</h2>
   <p>
-    舊模型每天重新訓練，久了會把自己的錯誤越放越大，問題出在它自己，不在外人攻擊：某個帳號某天被標記成垃圾，之後它寫的正常文章也一直被當垃圾，就「像把可樂倒進麵團，越揉越分不清楚」。還好這個分數只用在後台，沒有影響到排序。修正的辦法，是用更強的 <Term zh="大型語言模型" en="LLM">像 ChatGPT、Claude 這類能讀寫、理解語言的大型 AI 模型。</Term>（Claude Sonnet）重新標記 5,000 筆，成本大約 <strong>1 美元</strong>，就把<strong>誤殺率降到原本的十分之一</strong>。
+    舊模型每天重新訓練，久了會把自己的錯誤越放越大，問題出在沒有及時把錯誤內容挑出來。某個帳號某天被標記成垃圾，之後它寫的正常文章也一直被當成垃圾，就像把可樂倒進麵團，越揉越分不清楚。好在這個分數只用在後台，沒有影響到排序。我們修正的辦法是用更強的 <Term zh="大型語言模型" en="LLM">像 ChatGPT、Claude 這類能讀寫、理解語言的大型 AI 模型。</Term>（Claude Sonnet）初步重新標記 5,000 筆，成本大約 <strong>1 美元</strong>，就把<strong>誤殺率降到原本的十分之一</strong>。
   </p>
 
-  <h2 id="ring">集團偵測：抓的是整群帳號的行為</h2>
+  <h2 id="ring">垃圾集團偵測：抓的是整群帳號的行為</h2>
   <p>
-    有一種垃圾，單篇分數很低（某個「高雄翻譯社」只有 <strong>0.09</strong>），實際上卻是一整群帳號用同一套模板在洗版。<Term zh="集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號。原始碼裡稱為 Ring。</Term>偵測抓的，就是「同一組指紋、大量新帳號、集中在短時間」這種<strong>行為模式</strong>。其中關鍵的一步是<strong>繁簡字合併比對</strong>：「披著…」用繁體去搜尋 0 筆命中，折成簡體「披着…」再搜，一下就對上 28 個帳號。處置都是可逆的，而且要兩個訊號同時成立才會動手。
+    有一種垃圾，模型給出的垃圾分數很低（某個「高雄翻譯社」只有 <strong>0.09</strong>），實際上卻是一整群帳號用同一套模板在洗版。<Term zh="垃圾集團" en="Ring">同一個人或團隊操作、用相同版型大量洗版的一群帳號。原始碼裡稱為 Ring。</Term>偵測抓的就是「同一組指紋、大量新帳號、集中在短時間」這類<strong>行為模式</strong>。其中關鍵的一步是<strong>繁簡字合併比對</strong>：「披著…」用繁體去搜尋 0 筆命中，折成簡體「披着…」再搜，一下就對上 28 個帳號。我們在垃圾模型之後，更多設計了批次凍結垃圾集團帳號，降低管理人員的負擔，提升正常使用者的體驗。
   </p>
   <div class="figure">
-    <div class="figure__head"><span class="figure__title">集團掃描：單一模型 vs 行為偵測</span><span class="figure__hint">點節點看關聯</span></div>
+    <div class="figure__head"><span class="figure__title">垃圾集團掃描：單一模型 vs 行為偵測</span><span class="figure__hint">點節點看關聯</span></div>
     <RingDetector />
   </div>
 
-  <h2>一個便宜又有效的解法</h2>
-  <p>面對短文垃圾，團隊沒有只靠模型。「閒聊」頻道改用社群設計，採 <Term zh="邀請制白名單" en="opt-in">預設不開放，想參與的人要主動申請、通過審核才能加入。</Term>，<strong>半個月內就把垃圾清成零</strong>，「比模型還便宜、還有效」。</p>
+  <h2>還有一個便宜又有效的解法</h2>
+  <p>面對短文垃圾，團隊不只靠模型，「閒聊」頻道改用社群設計，採 <Term zh="邀請制白名單" en="opt-in">預設不開放，想參與的人要主動申請、通過審核才能加入。</Term>，<strong>半個月內就把垃圾清成零</strong>，「比模型還便宜、還有效」，但缺點就是正常使用者需要主動申請才可以加入。</p>
 
-  <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/how-the-model-learns">深入閱讀：模型怎麼學、怎麼被毒、怎麼救</a></p>
+  <p class="reading-cta" style="text-align:center;margin:30px 0 6px"><a class="read-more" href="reading/how-the-model-learns">延伸閱讀：模型怎麼學、怎麼自我中毒，又如何解毒？</a></p>
   <ChapterNav slug="detection" />
 </BaseLayout>
